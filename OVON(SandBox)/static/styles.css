@@ -1,0 +1,13 @@
+#weather-info{
+    white-space: pre-line;
+}
+
+/* CSS Styles for Cassandra's responses */
+.cassandra-response {
+    color: rgb(252, 123, 144);
+}
+
+/* CSS Styles for Jake's responses */
+.jake-response {
+    color: blue;
+}
