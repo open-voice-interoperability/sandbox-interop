@@ -7,7 +7,6 @@
       var contentType = "application/json";
 
       function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
-        //var remoteURL = "";
         if( sbOVON_CommObject == null ){
           try{
             sbOVON_CommObject = new XMLHttpRequest();
@@ -16,7 +15,7 @@
             alert( 'Failed to make ejTalker communication object' );
             return false;
           }
-          sbOVON_CommObject.onreadystatechange=OVONstateChecker;
+          sbOVON_CommObject.onreadystatechange=sbOVONstateChecker;
         }
 
         remoteURL = assistantObject.assistant.serviceAddress;
@@ -35,12 +34,10 @@
           sbOVON_CommObject.open( 'POST', remoteURL, true );
           sbOVON_CommObject.setRequestHeader("Content-type", contentType );
           sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
-          //sbOVON_CommObject.send( "in=" + JSON.stringify( "OVONmsg" ) ); // send to server
-          //sbOVON_CommObject.send( "this is a test" ); // send to server
         }
       }
 
-      function OVONstateChecker(){ // should something come in do this
+      function sbOVONstateChecker(){ // should something come in do this
         if( sbOVON_CommObject.readyState == 4 ){
           if( sbOVON_CommObject.status == 200 ){
             sbData = sbOVON_CommObject.responseText;

@@ -1,9 +1,9 @@
 // Manage all the known Assistants
 
 function ejGetAgentParams( someAgentName ){ //return object for this agent
-  for (let i = 0; i < asistantTable.length; i++) {
-    if( asistantTable[i].assistant.name === someAgentName ){
-      return asistantTable[i];
+  for (let i = 0; i < assistantTable.length; i++) {
+    if( assistantTable[i].assistant.name === someAgentName ){
+      return assistantTable[i];
     }
   }
 }
@@ -120,7 +120,19 @@ const assistantTable = [
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:15455/ejAgent",
+      serviceAddress: "http://localhost:15455/ejCassandra",
+      authCode: "h229k00m8bv",
+      contentType: "application/x-www-form-urlencoded",
+    }
+  }
+  {
+    assistant: {
+      name: "Burokratt",
+      voiceIndex: 142,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "Estonia",
+      serviceAddress: "https://dev.buerokratt.ee/ovon",
       authCode: "h229k00m8bv",
       contentType: "application/x-www-form-urlencoded",
     }
