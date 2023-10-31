@@ -5,6 +5,7 @@
       var sbTimeout = 10000;
       var remoteURL = "";
       var contentType = "application/json";
+      var jsonLOG;
 
       function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
         if( sbOVON_CommObject == null ){
@@ -28,12 +29,17 @@
         }else{ // not so much
           alert( "Ajax object is NULL" );
         }
-        setTimeout( "sendRequest( remoteURL )", sbTimeout );
+        //setTimeout( "sendRequest( remoteURL )", sbTimeout );
 
         if( sbOVON_CommObject != null ){  
           sbOVON_CommObject.open( 'POST', remoteURL, true );
           sbOVON_CommObject.setRequestHeader("Content-type", contentType );
+          sbOVON_CommObject.setRequestHeader("Access-Control-Allow-Origin", "*" );
+          //sbOVON_CommObject.setRequestHeader("Content-type", contentType );
           sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
+          jsonLOG += JSON.stringify( OVONmsg, null, "\t" )
+          localStorage.setItem( "jsonLOG", jsonLOG );
+          displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
         }
       }
 
@@ -43,6 +49,10 @@
             sbData = sbOVON_CommObject.responseText;
             if( sbData.length ){
               retOVONJSON = JSON.parse(sbData);
+              jsonLOG += JSON.stringify( retOVONJSON, null, "\t" )
+              localStorage.setItem( "jsonLOG", jsonLOG );
+              displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
+
               serviceEventsOVON( retOVONJSON );
             }
           }

@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../Scripts/css/styles.css">
     <title>Asking Questions</title>
-    <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>
-    <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
-    <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
+    <script src="../Scripts/aSBAssistantsData.js"></script>
+    <script src="../Scripts/aSBAssistant.js"></script>
 </head>
-<body onload="sbConversationStart();">
+<body>
+    <h1>Ask Your Questions</h1>
+
     <p id="connectionStatus"></p>
     <input type="text" id="questionInput" placeholder="Type your questions here">
     <button id="askButton">Ask</button>
     <button id="clearChatButton">Clear Chat</button>
-    <a href="sbHome.html"><button>Back Home</button></a>  
+    <a href="aSBHPage.html"><button>Back Home</button></a>
     <div id="response" ></div>
-    <div id="msgLOG" ></div>
-</body>
+    <div id="msgLOG" ></div></body>
 </html>
