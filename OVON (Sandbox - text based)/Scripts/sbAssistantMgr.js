@@ -151,14 +151,14 @@ const assistantTable = [
   },
   {
     assistant: {
-      name: "eva",
+      name: "ejtalk",
       voiceIndex: 115,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:8890",
+      serviceAddress: "https://ejtalk.pythonanywhere.com",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/x-www-form-urlencoded",
     }
   }
 ]

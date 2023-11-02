@@ -35,7 +35,6 @@
           sbOVON_CommObject.open( 'POST', remoteURL, true );
           sbOVON_CommObject.setRequestHeader("Content-type", contentType );
           sbOVON_CommObject.setRequestHeader("Access-Control-Allow-Origin", "*" );
-          //sbOVON_CommObject.setRequestHeader("Content-type", contentType );
           sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
           jsonLOG += JSON.stringify( OVONmsg, null, "\t" )
           localStorage.setItem( "jsonLOG", jsonLOG );
