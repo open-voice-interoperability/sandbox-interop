@@ -160,6 +160,30 @@ const assistantTable = [
       authCode: "h229k00m8bv",
       contentType: "application/x-www-form-urlencoded",
     }
+  },
+  {
+    assistant: {
+      name: "george",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "localhost:8766",
+      authCode: "h229k00m8bv",
+      contentType: "application/json",
+    }
+  },
+  {
+    assistant: {
+      name: "mary",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "https://codeMom.pythonanywhere.com",
+      authCode: "h229k00m8bv",
+      contentType: "application/json",
+    }
   }
 ]
 //      serviceAddress: "http://localhost:15455/clientEvent",
