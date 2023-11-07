@@ -10,11 +10,26 @@
 </head>
 <body onload="sbConversationStart();">
     <p id="connectionStatus"></p>
-    <input type="text" id="questionInput" placeholder="Type your questions here">
-    <button id="askButton">Ask</button>
+    <input type="text" id="reply" placeholder="Type your reply here">
+    <button id="askButton" onclick="sendReply();">Ask</button>
     <button id="clearChatButton">Clear Chat</button>
-    <a href="sbHome.html"><button>Back Home</button></a>  
-    <div id="response" ></div>
+    <a href="sbHome.html"><button>Back Home</button></a>
+    <table>
+        <tr>
+            <td><h3>Response:</h3></td>
+            <td><span id="response" ></span></td>
+        </tr>
+        <tr>
+            <td><h3>Message SENT:</h3></td>
+            <td><span id="msgSENT" ></span></td>
+        </tr>
+        <tr>
+            <td><h3>Message RECEIVED:</h3></td>
+            <td><span id="msgRECEIVED" ></span></td>
+        </tr>
+    </table>
+  
+    <span id="response2" ></span>
     <div id="msgLOG" ></div>
 </body>
 </html>

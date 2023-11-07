@@ -23,22 +23,42 @@
         textColor = assistantObject.assistant.markerColor;
         voiceIndex = assistantObject.assistant.voiceIndex;
         contentType = assistantObject.assistant.contentType;
+        assistantName = assistantObject.assistant.name;
+/*
         if( sbOVON_CommObject != null ){ // it is good so use it
           sbOVON_CommObject.open( 'POST', remoteURL, true );
           sbOVON_CommObject.send( null );
         }else{ // not so much
           alert( "Ajax object is NULL" );
         }
+*/        
         //setTimeout( "sendRequest( remoteURL )", sbTimeout );
         if( sbOVON_CommObject != null ){  
+          jsonSENT = JSON.stringify( OVONmsg, null, "\t" );
           sbOVON_CommObject.open( 'POST', remoteURL, true );
 //          sbOVON_CommObject.setRequestHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Method, Content-Type" );
 //          sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
 //          sbOVON_CommObject.setRequestHeader("Access-Control-Allow-Method", 'POST' );
-          sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
-          jsonLOG += JSON.stringify( OVONmsg, null, "\t" )
+          if( assistantName == "einstein"){ // hack for openAI
+            input = OVONmsg.ovon.events[0].eventType;
+            if( input == "utterance"){
+              input = OVONmsg.ovon.events[0].parameters.dialogEvent.features.text.tokens[0].value;
+              sbOVON_CommObject.setRequestHeader('Authorization', "Bearer YourAuthCodeHere" );
+              sbOVON_CommObject.setRequestHeader('Content-Type', "application/json" );
+              jsonSENT = '{"model": "gpt-3.5-turbo","messages": [{"role": "user", "content": "'
+              jsonSENT += input;
+              jsonSENT += '."}],"temperature": 0.7}'
+              sbOVON_CommObject.send( jsonSENT ); // send to server
+            }
+          }else{
+            sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
+            var targ = document.getElementById("msgSENT");
+            targ.innerHTML = jsonSENT;
+          }
+
+          jsonLOG += jsonSENT;
           localStorage.setItem( "jsonLOG", jsonLOG );
-          displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
+          //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
         }
       }
 
@@ -48,9 +68,13 @@
             sbData = sbOVON_CommObject.responseText;
             if( sbData.length ){
               retOVONJSON = JSON.parse(sbData);
-              jsonLOG += JSON.stringify( retOVONJSON, null, "\t" )
+              jsonRECEIVED = JSON.stringify( retOVONJSON, null, "\t" );
+              var targ = document.getElementById("msgRECEIVED");
+              targ.innerHTML = jsonRECEIVED;
+
+              jsonLOG += jsonRECEIVED;
               localStorage.setItem( "jsonLOG", jsonLOG );
-              displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
+              //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
 
               serviceEventsOVON( retOVONJSON );
             }

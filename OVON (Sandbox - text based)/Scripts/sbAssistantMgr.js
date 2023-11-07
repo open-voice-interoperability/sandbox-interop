@@ -51,7 +51,7 @@ const assistantTable = [
         markerColor: "#b30000",
         serviceName: "HumanUser",
         serviceAddress: "OriginationPoint",
-        authCode: "hugi666ikjjerg",
+        authCode: "hugi666ikjjerg"
       }
     },
     {
@@ -62,7 +62,7 @@ const assistantTable = [
       markerColor: "#000000",
       serviceName: "AssistantCommunications",
       serviceAddress: "localhost:15445",
-      authCode: "456398nns",
+      authCode: "456398nns"
     }
   },
   {
@@ -74,7 +74,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "localhost:8889",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -86,7 +86,7 @@ const assistantTable = [
       serviceName: "WeatherAssistant",
       serviceAddress: "localhost:8890",
       authCode: "lekg99k9e",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -98,7 +98,7 @@ const assistantTable = [
       serviceName: "DaVinci_LLM",
       serviceAddress: "https://www.asteroute.com/ovontest",
       authCode: "69jjg45cf0",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -110,7 +110,7 @@ const assistantTable = [
       serviceName: "Debbie_OVONAUTO",
       serviceAddress: "https://secondAssistant.pythonanywhere.com",
       authCode: "69jjg45cf0",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -122,7 +122,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "http://localhost:15455/ejCassandra",
       authCode: "h229k00m8bv",
-      contentType: "application/x-www-form-urlencoded",
+      contentType: "application/x-www-form-urlencoded"
     }
   },
   {
@@ -134,7 +134,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "http://localhost:8887",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -146,7 +146,7 @@ const assistantTable = [
       serviceName: "Estonia",
       serviceAddress: "https://dev.buerokratt.ee/ovon",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -158,7 +158,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "https://ejtalk.pythonanywhere.com",
       authCode: "h229k00m8bv",
-      contentType: "application/x-www-form-urlencoded",
+      contentType: "application/x-www-form-urlencoded"
     }
   },
   {
@@ -170,7 +170,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "localhost:8766",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/json"
     }
   },
   {
@@ -182,7 +182,31 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "https://codeMom.pythonanywhere.com",
       authCode: "h229k00m8bv",
-      contentType: "application/json",
+      contentType: "application/json"
+    }
+  },
+  {
+    assistant: {
+      name: "einstein",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "https://api.openai.com/v1/chat/completions",
+      authCode: "AuZ9SYtXn",
+      contentType: "application/json"
+    }
+  },
+  {
+    assistant: {
+      name: "leah",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "https://lrb24.pythonanywhere.com",
+      authCode: "AuZ9SYtXn",
+      contentType: "application/json"
     }
   }
 ]
