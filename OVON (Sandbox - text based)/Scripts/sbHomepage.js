@@ -131,6 +131,8 @@ function buildInviteOVON( someAssistant ){
     OVON_invite.ovon.conversation.id = conversationID; // once set it is retained until SB restart
     OVON_invite.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
     OVON_invite.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
+    d = new Date();
+    OVON_invite.ovon.events[1].parameters.dialogEvent.span.startTime = d.toISOString();
     return OVON_invite;
 }
 
@@ -171,7 +173,8 @@ function buildUtteranceOVON( someAssistant ){
     }
     OVON_utterance.ovon.conversation.id = conversationID; // once set it is retained until SB restart
     OVON_utterance.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
-    //OVON_utterance.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
+    d = new Date();
+    OVON_utterance.ovon.events[0].parameters.dialogEvent.span.startTime = d.toISOString();
     return OVON_utterance;
 }
 
@@ -237,4 +240,13 @@ function sendReply() {
     dateStr += addDateNumFixLeadZeros( d.getSeconds() + 1 );
     return dateStr;
   }
+
+  // settings stuff here
+    function loadSettingsValues(){
+        document.getElementById("firstName").value = localStorage.getItem( "humanFirstName" );
+    }
+
+    function setFirstName(){
+        localStorage.setItem( "humanFirstName", document.getElementById("firstName").value );
+    }
   

@@ -24,14 +24,7 @@
         voiceIndex = assistantObject.assistant.voiceIndex;
         contentType = assistantObject.assistant.contentType;
         assistantName = assistantObject.assistant.name;
-/*
-        if( sbOVON_CommObject != null ){ // it is good so use it
-          sbOVON_CommObject.open( 'POST', remoteURL, true );
-          sbOVON_CommObject.send( null );
-        }else{ // not so much
-          alert( "Ajax object is NULL" );
-        }
-*/        
+       
         //setTimeout( "sendRequest( remoteURL )", sbTimeout );
         if( sbOVON_CommObject != null ){  
           jsonSENT = JSON.stringify( OVONmsg, null, "\t" );

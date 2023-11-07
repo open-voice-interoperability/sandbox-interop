@@ -168,7 +168,7 @@ const assistantTable = [
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
-      serviceAddress: "localhost:8766",
+      serviceAddress: "http:localhost:7001",
       authCode: "h229k00m8bv",
       contentType: "application/json"
     }
