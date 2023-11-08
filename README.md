@@ -48,23 +48,23 @@ __A browser/assistant system for experimentation with OVON messaging. It is:__
 		* it runs somewhere on the web
 	* __ovon_auto:__
 		* is currently being sent an _invite_ and an _utterance_
-			* once it responds you can type some input
-			* it only knows about tire rotation on your Subaru
-			* the assistant responds to most things with "I don't know about..."
-			* it runs on pythonanywhere.com
+		* once it responds you can type some input
+		* it only knows about tire rotation on your Subaru
+		* the assistant responds to most things with "I don't know about..."
+		* it runs on pythonanywhere.com
 	* __leah:__
 		* is currently being sent an _invite_ and an _utterance_
-			* it responds with "Thanks for the invitation ..."
-			* you can type "hello" and she will respond in kind
-			* it doesn't know anything else
-			* it runs on pythonanywhere.com
+		* it responds with "Thanks for the invitation ..."
+		* you can type "hello" and she will respond in kind
+		* it doesn't know anything else
+		* it runs on pythonanywhere.com
 
 * After you select an Assistant _click_ on __Start SandBox Conversation__
 	* This will take you to the sbConverse.html page
 	* On loading the initial OVON Envelope is sent to the Assistant
 	* You will see the SENT/RECEIVED OVON messages
 	* You will see the extracted text response
-	* You may type in the INPUT box to send and "utterance"
+	* You may type in the INPUT box to send an "utterance"
 	* (remember to end with the "enter" key)
 
 ## Directory Structure and Files
