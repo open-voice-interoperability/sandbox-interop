@@ -1,0 +1,6 @@
+Something I'd add on the readme for people who are not familiar with pip at the begin:
+10:21
+On Linux, run first sudo apt update. Then the command would be: sudo apt install python3-pip
+On Mac, using brew, first brew install python3
+Then brew postinstall python3
+Try calling pip3 -V to see if it worked.

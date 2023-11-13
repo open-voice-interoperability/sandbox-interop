@@ -244,9 +244,14 @@ function sendReply() {
   // settings stuff here
     function loadSettingsValues(){
         document.getElementById("firstName").value = localStorage.getItem( "humanFirstName" );
+        document.getElementById("OpenAI").value = localStorage.getItem( "OpenAIKey" );
     }
 
     function setFirstName(){
         localStorage.setItem( "humanFirstName", document.getElementById("firstName").value );
+    }
+
+    function setOpenAIKey(){
+        localStorage.setItem( "OpenAIKey", document.getElementById("OpenAI").value );
     }
   

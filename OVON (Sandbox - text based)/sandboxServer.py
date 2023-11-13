@@ -21,6 +21,13 @@ class Serv(SimpleHTTPRequestHandler):
             self.send_response(404)
         self.end_headers()
         self.wfile.write(bytes(file_to_open, 'utf-8'))
+    def do_PUT(self):
+#        print self.headers
+        length = int(self.headers["Content-Length"])
+        path = self.translate_path(self.path)
+        with open(path, "wb") as dst:
+            dst.write(self.rfile.read(length))
+            self.send_response(200)
 
 httpd = HTTPServer(('localhost', port), Serv)
 httpd.serve_forever()

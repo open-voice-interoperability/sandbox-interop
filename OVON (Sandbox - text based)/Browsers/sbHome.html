@@ -5,10 +5,16 @@
     <title>OVON - Web Browser Assistant</title>
     <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
 </head>
 <body onload="sbStart()">
     <h1>OVON SandBox Homepage</h1>
     <span id="assistantSelect"></span>
     <h5><a href="sbConverse.html"><b>Start SandBox Conversation</b></a></h5>
+    <input type="text" id="rf" placeholder="FileName to Read" onchange="readSBFile(document.getElementById('rf').value);">
+    <a href="sbSettings.html">Sandbox Settings</a>
+    <h3>Test File Read</h3>
+    <span><pre id="fileData"></pre></span>
+    <button id="writeFile" onclick="writeSBFile('../testWrite.txt', document.getElementById('fileData').innerHTML);">Write</button>
 </body>
 </html>
