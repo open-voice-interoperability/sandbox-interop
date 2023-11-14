@@ -213,6 +213,8 @@ function sendReply() {
     inputText = document.getElementById("reply");
     input = inputText.value;
 
+    inputText.value = "";
+
     //put the input in an utterance
     aIndex = localStorage.getItem( "currentAssistantIndex");
     ovonUtt = buildUtteranceOVON( assistantTable[aIndex] );

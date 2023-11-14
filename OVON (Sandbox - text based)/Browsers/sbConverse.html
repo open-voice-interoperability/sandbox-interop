@@ -18,6 +18,13 @@
             <td>
                 <input type="text" id="reply" placeholder="Type your reply here" onchange="sendReply();">
             </td>
+            <button id="showLog" onclick="showLogs();">Show Log</button>
+            <script>
+                function showLogs() {
+                  // Redirect the user to the logs.html page
+                  window.location.href = 'logs.html';
+                }
+              </script>
         </tr>
         <tr>
             <td><h3>Response:</h3></td>

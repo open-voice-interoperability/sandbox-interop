@@ -6,6 +6,7 @@ var sbTimeout = 10000;
 var remoteURL = "";
 var contentType = "application/json";
 var jsonLOG;
+var conversationLOG = [];
 
 function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   if( sbOVON_CommObject == null ){
@@ -52,6 +53,14 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
     jsonLOG += jsonSENT;
     localStorage.setItem( "jsonLOG", jsonLOG );
     //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
+    const sentMessage = {
+      direction: 'sent',
+      timestamp: new Date().toISOString(),
+      content: jsonSENT,
+    };
+
+    conversationLOG.push(sentMessage);
+    localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
   }
 }
 
@@ -68,7 +77,14 @@ function sbOVONstateChecker(){ // should something come in do this
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );
         //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
+        const receivedMessage = {
+          direction: 'received',
+          timestamp: new Date().toISOString(),
+          content: jsonRECEIVED,
+        };
 
+        conversationLOG.push(receivedMessage);
+        localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
         serviceEventsOVON( retOVONJSON );
       }
     }
@@ -81,7 +97,8 @@ function RenderResponseOVON( oneEvent, indx, arr ){
   console.log(oneEvent);
   if( type == "utterance" ){
     say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;  
-    displayResponseUtterance( say, textColor)
+    displayResponseUtterance( say, textColor);
+    console.log(conversationLOG);
     //OvonSpeak( say, voiceIndex );
 //}else if( type == "bye"){
 //  Do and "invite" to the previous Assistant

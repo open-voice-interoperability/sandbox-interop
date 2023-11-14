@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logs</title>
+</head>
+<body>
+  <h1>Logs</h1>
+  <button type="button" onclick="applyFilter('all')">Show All</button>
+  <button type="button" onclick="applyFilter('sent')">OVON Sent</button>
+  <button type="button" onclick="applyFilter('received')">OVON Received</button>
+  <button type="button" onclick="showFullDialog()">Full Dialog</button>
+  <button type="button" onclick="goBack()">Back</button>
+  <div id="logContainer"></div>
+
+  <script>
+    // Retrieve logs from local storage
+    const logs = JSON.parse(localStorage.getItem('conversationLog')) || [];
+  
+    // Display logs
+    const logContainer = document.getElementById('logContainer');
+    displayLogs(logs);
+  
+    // Function to display logs based on the selected filter
+    function applyFilter(filter) {
+      let filteredLogs = [];
+      if (filter === 'sent') {
+        filteredLogs = logs.filter(log => log.direction === 'sent');
+      } else if (filter === 'received') {
+        filteredLogs = logs.filter(log => log.direction === 'received');
+      } else {
+        filteredLogs = logs;
+      }
+      displayLogs(filteredLogs);
+    }
+
+    function showFullDialog() {
+    const fullDialog = logs.map(log => {
+        try {
+            const contentObject = JSON.parse(log.content);
+            const sender = contentObject?.ovon?.sender?.from || 'Unknown';
+            let token;
+
+            if (log.direction.toLowerCase() === 'sent') {
+                const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
+                token = tokens ? tokens[0]?.value : 'Token not found';
+            } else if (log.direction.toLowerCase() === 'received') {
+                const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
+                token = tokens ? tokens[0]?.value : 'Token not found';
+            }
+
+            return `${sender} - ${token}`;
+        } catch (error) {
+            console.error('Error parsing log content:', error);
+            return 'Error parsing log content';
+        }
+    });
+
+    displayLogs(fullDialog); // Display full dialog
+}
+  
+  
+    // Function to display logs
+    function displayLogs(logsToDisplay) {
+        const logContainer = document.getElementById('logContainer');
+        logContainer.innerHTML = ''; // Clear previous logs
+
+        logsToDisplay.forEach(log => {
+            const logElement = document.createElement('div');
+
+            // Check if the log has the 'direction' property before using toLowerCase()
+            const logDirection = log.direction ? log.direction.toLowerCase() : '';
+
+            // Conditionally display based on log direction
+            if (logDirection === 'sent' || logDirection === 'received') {
+            // For OVON sent and OVON received, display the content
+            logElement.textContent = `${log.content}`;
+            } else {
+            // For input token and response token, display the entire log object
+            logElement.textContent = `${log}`;
+            }
+
+            logContainer.appendChild(logElement);
+        });
+    }
+  
+    // Function to go back to sbConverse.html
+    function goBack() {
+      window.location.href = 'sbConverse.html'; // Adjust the URL as needed
+    }
+  </script>
+</body>
+</html>
