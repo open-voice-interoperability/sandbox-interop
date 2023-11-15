@@ -305,6 +305,18 @@ const assistantTable = [
       authCode: "AuZ9SYtXn",
       contentType: "application/json"
     }
+  },
+  {
+    assistant: {
+      name: "library",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "https://ovon.xcally.com/smartlibrary",
+      authCode: "AuZ9SYtXn",
+      contentType: "application/json"
+    }
   }
 ]
 //      serviceAddress: "http://localhost:15455/clientEvent",
