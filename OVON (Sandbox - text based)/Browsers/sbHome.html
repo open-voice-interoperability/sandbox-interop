@@ -12,7 +12,16 @@
     <h1>OVON SandBox Homepage</h1>
     <span id="assistantSelect"></span>
     <div id="assistantSettings" style="display: none;"></div>
+
     <h5><a href="sbConverse.html"><b>Start SandBox Conversation</b></a></h5>
+    
+    <button onclick="startBareInvite()"><b>Bare Invite</b></a></button>
+    <br>
+    <br>
+    <input type="text" id="whisperMessage" placeholder="Enter your message"></input>
+    <button onclick="inviteWithUtterance()"><b>Invite w/ Whisper</b></button>
+    <br>
+    <br>
     <input type="text" id="rf" placeholder="FileName to Read" onchange="readSBFile(document.getElementById('rf').value);">
     <a href="sbSettings.html">Sandbox Settings</a>
     <h3>Test File Read (e.g. testRead.txt )</h3>

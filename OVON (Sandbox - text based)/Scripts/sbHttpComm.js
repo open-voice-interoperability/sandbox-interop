@@ -72,7 +72,7 @@ function sbOVONstateChecker(){ // should something come in do this
         jsonRECEIVED = JSON.stringify( retOVONJSON, null, 2 );
         var targ = document.getElementById("msgRECEIVED");
         targ.innerHTML = jsonRECEIVED;
-
+        displayMsgRECEIVED(jsonRECEIVED, textColor); //
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );
         //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
@@ -92,7 +92,6 @@ function sbOVONstateChecker(){ // should something come in do this
 
 function RenderResponseOVON( oneEvent, indx, arr ){
   const type = oneEvent.eventType;
-  console.log(type);
   console.log(oneEvent);
   if( type == "utterance" ){
     say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;  

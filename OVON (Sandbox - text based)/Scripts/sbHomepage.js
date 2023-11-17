@@ -9,16 +9,28 @@ function sbStart(){
     loadAssistantSelect();
 }
 
+
 selectedAssistantIndex= localStorage.getItem( "currentAssistantIndex" );
 
 var assistantObject = assistantTable[selectedAssistantIndex];
-function sbConversationStart(){
-    //responseDiv = document.getElementById("response");
+var bareInviteSelected = false;
+
+function sbConversationStart() {
     msgLogDiv = document.getElementById("msgLOG");
-    localStorage.setItem( "currentConversationID", "" );
+    localStorage.setItem("currentConversationID", "");
     jsonLOG = "";
-    OVONmsg = buildInviteOVON( assistantObject );
-    sbPostToAssistant( assistantObject, OVONmsg );
+
+    if (localStorage.getItem("bareInviteSelected") === "true") {
+        // The Bare Invite button was selected
+        console.log("Bare Invite button was selected");
+        const OVONmsg = buildInviteOVON(assistantObject);
+        clearValue(OVONmsg);
+    }
+    else{
+        OVONmsg = buildInviteOVON(assistantObject);
+        sbPostToAssistant(assistantObject, OVONmsg);
+    }
+    
 }
 
 function buildFullInviteOVON( someAssistant ){
@@ -83,6 +95,25 @@ function buildFullInviteOVON( someAssistant ){
     OVON_invite.ovon.sender.from = "url_of_sender"; // in reality it is extracted from any invite browser sees
     OVON_invite.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
     return OVON_invite;
+}
+
+function startBareInvite() {
+    localStorage.setItem("bareInviteSelected", "true");
+    location.href = 'sbConverse.html';
+}
+
+function inviteWithUtterance(OVONmsg) {
+    // Retrieve the message from the input field
+    
+}
+
+function clearValue(OVONmsg) {
+    // Function to clear the value of "tokens" property in the buildInviteOVON function
+    console.log("clearValue was called");
+    OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = "";
+    sbPostToAssistant(assistantObject, OVONmsg);
+    localStorage.removeItem("bareInviteSelected"); // Reset the flag
+
 }
 
 function buildInviteOVON( someAssistant ){
@@ -193,6 +224,13 @@ function displayResponseUtterance( text, col ) {
     //document.getElementById( 'response' ).innerHTML = resp;
     return;
   }
+
+  function displayMsgRECEIVED(text, col) {
+    var resp = `<span style='color:${col};'>${text}</span>`;
+    var msgRECEIVEDDiv = document.getElementById("msgRECEIVED");
+    msgRECEIVEDDiv.innerHTML = resp;
+    return;
+}
 
 //Present the Assistant msgLOG html innerHTML string
 function displayMsgLOG( text, col ) {

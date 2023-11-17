@@ -76,37 +76,44 @@ function displayAssistantSettings() {
 
   // Modify this part based on your settings structure
   var settingsHTML = `
+  <div style="background-color: #009999; padding: 5px; border-radius: 5px;">
+
   <h2>${selectedAssistant.assistant.name}'s Settings</h2>
   <div>
             <label for="assistantID"><b>Assistant ID:</b></label>
-            <span id="assistantID">${uniqueID}</span>
+            <strong><input style="background-color: #00ace6; type="text" id="assistantID" value="${uniqueID}"></strong>
         </div>
   <div>
       <label for="voiceIndex"><b>Voice Index:</b></label>
-      <input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}">
+      <strong><input style="background-color: #00ace6; type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}"></strong>
   </div>
   <div>
       <label for="lightColor"><b>Light Color:</b></label>
-      <input type="text" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
+      <input style="background-color: #00ace6; type="text" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
   </div>
   <div>
       <label for="markerColor"><b>Marker Color:</b></label>
-      <input type="text" id="markerColor" value="${selectedAssistant.assistant.markerColor}">
+      <input type="color" id="markerColor" value="${selectedAssistant.assistant.markerColor}">
   </div>
   <div>
       <label for="serviceName"><b>Service Name:</b></label>
-      <input type="text" id="serviceName" value="${selectedAssistant.assistant.serviceName}">
+      <strong><input style="background-color: #00ace6; type="text" id="serviceName" value="${selectedAssistant.assistant.serviceName}"></strong>
   </div>
   <div>
-      <label for="serviceAddress"><b>Service Address:</b> ${selectedAssistant.assistant.serviceAddress}</label>
-  </div>
+      <label for="serviceAddress"><b>Service Address:</b></label>
+      <strong><input  style="background-color: #00ace6; type="text" id="serviceAddress" value="${selectedAssistant.assistant.serviceAddress}"></strong>
+      </div>
   <div>
-      <label for="authCode"><b>Auth Code:</b> ${selectedAssistant.assistant.authCode}</label>
-  </div>
+      <label for="authCode"><b>Auth Code:</b></label>
+      <strong><input style="background-color: #00ace6; type="text" id="authCode" value="${selectedAssistant.assistant.authCode}"></strong>
+
+      </div>
   <div>
-      <label for="contentType"><b>Content Type:</b> ${selectedAssistant.assistant.contentType}</label>
-  </div>
-  <button onclick="updateAssistantSettings()">Update Assistant Settings</button>
+      <label for="contentType"><b>Content Type:</b></label>
+      <strong><input style="background-color: #00ace6; type="text" id="contentType" value="${selectedAssistant.assistant.contentType}"></strong>
+
+      </div>
+  <button style="background-color: #ff944d; onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
 `;
 
   // Display settings and input fields in a single box

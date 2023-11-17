@@ -18,8 +18,7 @@
             <td>
                 <input type="text" id="reply" placeholder="Type your reply here" onchange="sendReply();">
             </td>
-            <a href="logs.html" target="_blank">Logs(new window)</a>
-            <button id="showLog" onclick="showLogs();">Show Log</button>
+            <button onclick="window.open('logs.html', '_blank')">Logs</button>
             <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
             <script>
                 function showLogs() {
