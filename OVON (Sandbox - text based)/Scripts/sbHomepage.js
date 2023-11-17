@@ -246,12 +246,17 @@ function sendReply() {
   // settings stuff here
     function loadSettingsValues(){
         document.getElementById("firstName").value = localStorage.getItem( "humanFirstName" );
+ //       document.getElementById("dataPath").value = localStorage.getItem( "dataPath" );
         document.getElementById("OpenAI").value = localStorage.getItem( "OpenAIKey" );
     }
 
     function setFirstName(){
         localStorage.setItem( "humanFirstName", document.getElementById("firstName").value );
     }
+
+    //function setDataPath(){
+    //    localStorage.setItem( "dataPath", document.getElementById("dataPath").value );
+    //}
 
     function setOpenAIKey(){
         localStorage.setItem( "OpenAIKey", document.getElementById("OpenAI").value );

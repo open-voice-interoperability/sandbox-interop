@@ -14,7 +14,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
       sbOVON_CommObject = new XMLHttpRequest();
     }catch(e){
       sbOVON_CommObject = null;
-      alert( 'Failed to make ejTalker communication object' );
+      alert( 'Failed to make sandbox communication object' );
       return false;
     }
     sbOVON_CommObject.onreadystatechange=sbOVONstateChecker;
@@ -28,9 +28,8 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   
   //setTimeout( "sendRequest( remoteURL )", sbTimeout );
   if( sbOVON_CommObject != null ){  
-    jsonSENT = JSON.stringify( OVONmsg, null, "\t" );
+    jsonSENT = JSON.stringify( OVONmsg, null, 2 );
     sbOVON_CommObject.open( 'POST', remoteURL, true );
-//          sbOVON_CommObject.setRequestHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Method, Content-Type" );
 //          sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
 //          sbOVON_CommObject.setRequestHeader("Access-Control-Allow-Method", 'POST' );
     if( assistantName == "einstein"){ // hack for openAI
@@ -70,7 +69,7 @@ function sbOVONstateChecker(){ // should something come in do this
       sbData = sbOVON_CommObject.responseText;
       if( sbData.length ){
         retOVONJSON = JSON.parse(sbData);
-        jsonRECEIVED = JSON.stringify( retOVONJSON, null, "\t" );
+        jsonRECEIVED = JSON.stringify( retOVONJSON, null, 2 );
         var targ = document.getElementById("msgRECEIVED");
         targ.innerHTML = jsonRECEIVED;
 
@@ -127,17 +126,33 @@ function readSBFile( pathFromRoot ){
   request.send();
 }
 
-function writeSBFile( pathFromRoot, data ){
+function writeSBFile( fileName, data ){
+  var request = new XMLHttpRequest();
+  readFileData = "";
+  request.open("PUT", fileName, true);
+  request.onreadystatechange = function() {
+      if (request.readyState === 4) {  // document is ready
+          if (request.status === 200) {  // file was written???
+            readFileData = request.responseText;
+          }
+      }
+  }
+  request.send( data );
+}
+
+function getDirectoryList( pathFromRoot ){
   var url = pathFromRoot;
   var request = new XMLHttpRequest();
   readFileData = "";
-  request.open("PUT", url, true);
-  request.onreadystatechange = function() {
+  request.open("POST", url, true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
       if (request.readyState === 4) {  // document is ready to parse.
           if (request.status === 200) {  // file is was written???
             readFileData = request.responseText;
           }
       }
   }
-  request.send( data );
+  fType = "sbDirectory"
+  request.send(fType);
 }

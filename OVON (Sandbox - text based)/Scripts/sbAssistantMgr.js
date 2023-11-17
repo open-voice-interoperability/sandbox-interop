@@ -241,7 +241,7 @@ const assistantTable = [
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "Estonia",
-      serviceAddress: "https://dev.buerokratt.ee/ovon",
+      serviceAddress: "https://dev.buerokratt.ee/ovonr/chat/rasa/ovon",
       authCode: "h229k00m8bv",
       contentType: "application/json"
     }

@@ -18,7 +18,9 @@
             <td>
                 <input type="text" id="reply" placeholder="Type your reply here" onchange="sendReply();">
             </td>
+            <a href="logs.html" target="_blank">Logs(new window)</a>
             <button id="showLog" onclick="showLogs();">Show Log</button>
+            <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
             <script>
                 function showLogs() {
                   // Redirect the user to the logs.html page
@@ -27,15 +29,15 @@
               </script>
         </tr>
         <tr>
-            <td><h3>Response:</h3></td>
+            <td><h3 style="color:green;">Response:</h3></td>
             <td><span id="response"></span></td>
         </tr>
         <tr>
-            <td><h3>Message SENT:</h3></td>
+            <td><h3 style="color:blue;">SENT:</h3></td>
             <td><span><pre style="color:blue;" id="msgSENT"></pre></span></td>
         </tr>
         <tr>
-            <td><h3>Message RECEIVED:</h3></td>
+            <td><h3 style="color:red;">RECEIVED:</h3></td>
             <td><span><pre style="color:red;" id="msgRECEIVED"></pre></span></td>
         </tr>
     </table>

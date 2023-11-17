@@ -15,9 +15,10 @@
     <h5><a href="sbConverse.html"><b>Start SandBox Conversation</b></a></h5>
     <input type="text" id="rf" placeholder="FileName to Read" onchange="readSBFile(document.getElementById('rf').value);">
     <a href="sbSettings.html">Sandbox Settings</a>
-    <h3>Test File Read</h3>
+    <h3>Test File Read (e.g. testRead.txt )</h3>
     <span><pre id="fileData"></pre></span>
-    <button id="writeFile" onclick="writeSBFile('../testWrite.txt', document.getElementById('fileData').innerHTML);">Write</button>
+    <button id="writeJSON" onclick="writeSBFile('testJSONLog.txt', jsonLOG);">Write JSON Log</button>
+    <button id="dir" onclick="getDirectoryList('../');">Directory</button>
 
     <script>
         document.getElementById("assistantSelect").addEventListener("change", function() {
