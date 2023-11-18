@@ -6,6 +6,7 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import requests
 import os
+import mimetypes
 
 port = 6002
 print ("Started Sandbox Browser Service: ", port, "\n")
@@ -18,18 +19,30 @@ class Serv(SimpleHTTPRequestHandler):
         self.end_headers()
     def do_GET(self):
         if self.path == '/':
-            self.path = '/index.html'
+            self.path = '/sbStartup.html'
         try:
-            file_to_open = open(self.path[1:]).read()
-            self.send_response(200)
+            if self.path.__contains__(".png") or self.path.__contains__(".jpg"):
+                file_to_open = self.path
+                file_to_open = file_to_open[1:]
+                imgfile = open(file_to_open, 'rb').read()
+                mimetype = mimetypes.MimeTypes().guess_type(file_to_open)[0]
+                self.send_response(200)
+                self.send_header('Content-type', mimetype)
+                self.end_headers()
+                self.wfile.write(imgfile)
+            else:
+                file_to_open = open(self.path[1:]).read()
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(bytes(file_to_open, 'utf-8'))
         except:
             file_to_open = "File not found"
             self.send_response(404)
         self.end_headers()
-        self.wfile.write(bytes(file_to_open, 'utf-8'))
+        #self.wfile.write(bytes(file_to_open, 'utf-8'))
+
+        #print(os.listdir())
     def do_PUT(self):
-        #for f in os.listdir("C:/ejDev/OVON/sandbox-interop/OVON (Sandbox - text based)"):
-        #    print(f)
         rootpath = os.path.realpath(os.path.dirname(__file__))
         rootpath = rootpath.replace("\\", "/" )
         print( "Directory of the Sandbox: ", rootpath)
@@ -51,6 +64,8 @@ class Serv(SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'text/html')
         self.end_headers()
     def do_POST(self):
+        #for f in os.listdir("C:/ejDev/OVON/sandbox-interop/OVON (Sandbox - text based)"):
+        #    print(f)
         res = []
         for path in os.listdir(self.path):
             if os.path.isfile(os.path.join(self.path, path)): # is it a file?

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Multi Agent Conversations (Start Page)</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" href="misc/ejTalker.css" media="screen" type="text/css">
+    <script language="JavaScript" src= "ejJScript/ejSpeech.js"></script>
+    <script language="JavaScript" src= "ejJScript/ejUtility.js"></script>
+    <script language="JavaScript" src= "ejJScript/ejTalkBrowser.js"></script>
+    <script language="JavaScript" src= "ejJScript/ejTalkerAPI.js"></script> 
+    <script language="JavaScript">
+      ejSetCookie('ejServerIP',"localhost:15455");
+      ejSetCookie('ejTestPhrase',"Hello. How do you like this voice?");
+      ejSetCookie( "reLogonPage", "ejStartup.html");
+      ejSetCookie('ejStartingSTEP',"ejAgentStart.step.xml");
+      ejSetCookie( "ejAgentName", "cassandra")
+      ejSetCookie('ejPassword', 'password');
+      ejSetCookie('ejFileLocation', '');
+      ejSetCookie( 'humanName', 'emmett');
+      ejSetCookie( 'formattedLogType', 'exchangePacketJSON');
+    </script>
+  </head>
+
+<body onload="ejStart()">
+  <h1><img src="misc/casssocvid-2.gif" height="100" width="100"/><img src="misc/ejTalkLogo.png" height="50" width="100"/><b>Conversations with Multiple Agents</b></h1>
+
+  <table class="ejTable">
+    <tr>
+      <td>Human's Name:</td>
+      <td width="100"><input id="human" value="emmett" onchange="ejSetCookie('humanName', document.getElementById('human').value)" width="60"></input></td>
+    </tr>
+    <tr>
+      <td>Choose Agent:</td>
+      <td>
+        <select name="agents" id="agSel" onchange="ejSetCookie('ejAgentName',document.getElementById('agSel').value);document.getElementById('user').value=document.getElementById('agSel').value">
+          <option value="cassandra">Cassandra</option>
+          <option value="bond">James Bond</option>
+          <option value="agent99">Agent 99</option>
+          <option value="bistro">French Restraunt</option>
+          <option value="coin12">US Dude</option>
+          <option value="matahari">Mata Hari</option>
+          <option value="child">School Girl</option>
+        </select>
+      </td>
+      <td border="1"><input id="startStep" value="ejAgentStart.step.xml" onchange="ejSetCookie('ejStartingSTEP',document.getElementById('startStep').value)"></input></td>
+    </tr>
+    <tr>
+      <td><button onclick="ejSpeak(document.getElementById('ejTTS_Text').value);">Test Voice</button></td>
+      <td colspan="4"><input id="ejTTS_Text" onchange="ejSetCookie('ejTestPhrase',document.getElementById('ejTTS_Text').innerText,365)" value="Hello. How do you like this voice?"></input></td>
+    </tr>
+    <tr>
+      <td><button type='button' id='useTTS' onclick="ejToggleButton( 'ejTTS_ON', 'useTTS', 'ttsON', 'ttsOFF' );">ttsON</button></td>
+      <td align="left" colspan="2">
+        <h5><a href="ejConverse.html"><b class="ejGreen">ejTalk Demo CONVERSATION</b></a></h5>
+      </td>
+      <td align="left" colspan="2">
+        <h5><a href="sbConverse.html"><b class="ejRed">Sandbox CONVERSATION</b></a></h5>
+      </td>
+    </tr>
+    <tr><td colspan="4"><span id="information"></span></td></tr>
+    <tr>
+      <td>ServerURL:port:</td>
+      <td><input id="servURL" value="localhost:15455" onchange="ejSetCookie('ejServerIP',document.getElementById('servURL').value,365)"></input></td>
+    </tr>
+</table>
+  <br/>
+</body>
+</html>
