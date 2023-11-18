@@ -76,7 +76,7 @@ function displayAssistantSettings() {
 
   // Modify this part based on your settings structure
   var settingsHTML = `
-  <div style="background-color: #009999; padding: 5px; border-radius: 5px;">
+  <div style="background-color: #2e81b8; padding: 5px; border-radius: 5px;">
 
   <h2>${selectedAssistant.assistant.name}'s Settings</h2>
   <div>

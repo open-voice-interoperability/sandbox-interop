@@ -14,6 +14,7 @@ selectedAssistantIndex= localStorage.getItem( "currentAssistantIndex" );
 
 var assistantObject = assistantTable[selectedAssistantIndex];
 var bareInviteSelected = false;
+var InviteWithWhisper = false;
 
 function sbConversationStart() {
     msgLogDiv = document.getElementById("msgLOG");
@@ -21,10 +22,16 @@ function sbConversationStart() {
     jsonLOG = "";
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
-        // The Bare Invite button was selected
-        console.log("Bare Invite button was selected");
         const OVONmsg = buildInviteOVON(assistantObject);
         clearValue(OVONmsg);
+    }
+    else if(localStorage.getItem("InviteWithWhisper") === "true") {
+            // The Bare Invite button was selected
+            const OVONmsg = buildInviteOVON(assistantObject);
+            const whisperMessage = localStorage.getItem("whisperMessage");
+            clearValue(OVONmsg, whisperMessage);
+            localStorage.removeItem("InviteWithWhisper");
+            localStorage.removeItem("whisperMessage");
     }
     else{
         OVONmsg = buildInviteOVON(assistantObject);
@@ -102,18 +109,31 @@ function startBareInvite() {
     location.href = 'sbConverse.html';
 }
 
-function inviteWithUtterance(OVONmsg) {
-    // Retrieve the message from the input field
-    
+function inviteWithUtterance() {
+    const whisperMessage = document.getElementById("whisperMessage").value;
+    if (whisperMessage.trim() !== "") {
+        localStorage.setItem("InviteWithWhisper", "true");
+        localStorage.setItem("whisperMessage", whisperMessage);
+        location.href = 'sbConverse.html';
+    } else {
+        alert("Please enter a Whisper message before inviting.");
+    }
 }
 
-function clearValue(OVONmsg) {
-    // Function to clear the value of "tokens" property in the buildInviteOVON function
-    console.log("clearValue was called");
-    OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = "";
-    sbPostToAssistant(assistantObject, OVONmsg);
-    localStorage.removeItem("bareInviteSelected"); // Reset the flag
+function clearValue(OVONmsg, whisperMessage) {
 
+    if (localStorage.getItem("InviteWithWhisper") === "true") {
+        const whisperMessage = localStorage.getItem("whisperMessage");
+        OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = whisperMessage;
+        localStorage.removeItem("InviteWithWhisper");
+        localStorage.removeItem("whisperMessage");
+    } else {
+        // For Bare Invite, clear the value
+        OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = "";
+        localStorage.removeItem("bareInviteSelected");
+    }
+
+    sbPostToAssistant(assistantObject, OVONmsg);
 }
 
 function buildInviteOVON( someAssistant ){
