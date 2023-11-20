@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../Scripts/css/styles.css">
-    <title>Asking Questions</title>
+    <title>Conversation</title>
     <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
 </head>
 <body onload="sbConversationStart();">
-    <a href="sbSettings.html">Sandbox Settings</a>
-    <button id="askButton" onclick="sendReply();">Ask</button>
+    <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h2>
     <a href="sbHome.html"><button>Back Home</button></a>
-    <table>
-        <tr>
-            <td><h3>Input:</h3></td>
-            <td>
-                <input type="text" id="reply" placeholder="Type your reply here" onchange="sendReply();">
-            </td>
-            <button onclick="window.open('logs.html', '_blank')">Logs</button>
-            <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
-            <script>
-                function showLogs() {
-                  // Redirect the user to the logs.html page
-                  window.location.href = 'logs.html';
-                }
-              </script>
-        </tr>
-        <tr>
+    <button onclick="window.open('logs.html', '_blank')">Logs</button>
+    <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
+    <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
+<table>
+    <tr>
+        <td><h1><b>Input</b></h1></td>
+        <td width="50"><img src="../Media/img/Interoperability_Logo_icon_color.jpg" alt="clickMic" height="50" width="50"/></td>
+    </tr>
+    <tr>
+        <td><h3>Utterance:</h3></td>
+        <td><input type="text" id="reply" placeholder="Type your UTTERANCE here" size="50" onchange="sendReply();"/></td>
+    </tr>
+    <tr>
+        <td><h3>Input Whisper:</h3></td>
+        <td>
+            <input type="text" id="reply" placeholder="Type your WHISPER here" size="50" onchange="sendReply();"/>
+        </td>
+    </tr>
+<tr>
             <td><h3 style="color:green;">Response:</h3></td>
             <td><span id="response"></span></td>
         </tr>

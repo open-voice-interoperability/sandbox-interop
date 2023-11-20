@@ -2,26 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>OVON - Web Browser Assistant</title>
+    <title>Start Conversation</title>
     <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
     <link rel="stylesheet" href="../Scripts/css/styles.css">
 </head>
 <body onload="sbStart()">
-    <h1>OVON SandBox Homepage</h1>
+    <h1><img src="/Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h1>
+    <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
+    <br/>
     <span id="assistantSelect"></span>
     <div id="assistantSettings" style="display: none;"></div>
-
-    <h5><a href="sbConverse.html"><b>Start SandBox Conversation</b></a></h5>
+    <button onclick="window.open('sbConverse.html', '_blank')">Start Conversation</button>
     
+    <br/>
+    <br/>
     <button onclick="startBareInvite()"><b>Bare Invite</b></a></button>
-    <br>
-    <br>
-    <input type="text" id="whisperMessage" placeholder="Enter your message"></input>
-    <button onclick="inviteWithUtterance()"><b>Invite w/ Whisper</b></button>
-    <br>
-    <br>
+    <br/>
+    <br/>
+    <button onclick="inviteWithUtterance()"><b>Invite w/ WHISPER</b></button>
+    <input type="text" id="whisperMessage" placeholder="Enter WHISPER message here ..."></input>
+    <br/>
+    <br/>
     <input type="text" id="rf" placeholder="FileName to Read" onchange="readSBFile(document.getElementById('rf').value);">
     <a href="sbSettings.html">Sandbox Settings</a>
     <h3>Test File Read (e.g. testRead.txt )</h3>

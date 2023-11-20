@@ -31,7 +31,6 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
     jsonSENT = JSON.stringify( OVONmsg, null, 2 );
     sbOVON_CommObject.open( 'POST', remoteURL, true );
 //          sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
-//          sbOVON_CommObject.setRequestHeader("Access-Control-Allow-Method", 'POST' );
     if( assistantName == "einstein"){ // hack for openAI
       input = OVONmsg.ovon.events[0].eventType;
       if( input == "utterance"){
@@ -51,7 +50,6 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
 
     jsonLOG += jsonSENT;
     localStorage.setItem( "jsonLOG", jsonLOG );
-    //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
     const sentMessage = {
       direction: 'sent',
       timestamp: new Date().toISOString(),
@@ -75,7 +73,6 @@ function sbOVONstateChecker(){ // should something come in do this
         displayMsgRECEIVED(jsonRECEIVED, textColor); //
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );
-        //displayMsgLOG( jsonLOG, "#ffffff" ); // show the log so far
         const receivedMessage = {
           direction: 'received',
           timestamp: new Date().toISOString(),
@@ -99,9 +96,9 @@ function RenderResponseOVON( oneEvent, indx, arr ){
     console.log(conversationLOG);
     //OvonSpeak( say, voiceIndex );
 //}else if( type == "bye"){
-//  Do and "invite" to the previous Assistant
+//  Do "invite" to the PREVIOUS Assistant
 //}else if( type == "invite"){
-//  Do "invite" to a new Assistant
+//  Do "invite" to a NEW Assistant
   }
 }
 
