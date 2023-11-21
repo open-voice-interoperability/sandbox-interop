@@ -1,4 +1,4 @@
-// Manage all the known Assistants
+var selectedAssistantIndex = 0;
 
 function ejGetAgentParams( someAgentName ){ //return object for this agent
   for (let i = 0; i < assistantTable.length; i++) {
@@ -12,6 +12,8 @@ function ejGetAgentParams( someAgentName ){ //return object for this agent
 function loadAssistantSelect() {
   var selCntl = '<label for="AssistantList">Choose an Assistant:</label>';
   selCntl += '<select name="startAssistant" id="sbAssist" onchange="saveAssistantIndex();">';
+  selCntl += '<option value="" disabled selected>Select an Assistant</option>';
+
   for (var i = 2; i < assistantTable.length; i++) { // note avoid the first two
     selCntl += '<option value="';
     selCntl += i;
@@ -26,7 +28,7 @@ function loadAssistantSelect() {
 
 function saveAssistantIndex() {  
   selectedAssistantIndex = document.getElementById("sbAssist").selectedIndex;
-  selectedAssistantIndex += 2;
+  selectedAssistantIndex = selectedAssistantIndex >= 2 ? selectedAssistantIndex + 1 : 2; 
   localStorage.setItem( "currentAssistantIndex", selectedAssistantIndex );
  }
     // Function to handle assistant selection change
@@ -35,16 +37,15 @@ function handleAssistantSelectionChange() {
   if (selectedAssistantIndex !== "") {
     // Assistant is selected, show the settings
     document.getElementById('assistantSettings').style.display = 'block';
+    var selectedAssistantIndex = document.getElementById("sbAssist").value;
+    var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
+    
+    localStorage.setItem('markerColor', selectedAssistant.markerColor);
     displayAssistantSettings();
   } else {
     // No assistant selected, hide the settings
     document.getElementById('assistantSettings').style.display = 'none';
   }
-}
-
-// Function to get all assistant options
-function getAllAssistantOptions() {
-  return assistantTable;
 }
 
 function generateRandomID() {
@@ -113,24 +114,33 @@ function displayAssistantSettings() {
       <strong><input style="background-color: #00ace6; type="text" id="contentType" value="${selectedAssistant.assistant.contentType}"></strong>
 
       </div>
-  <button style="background-color: #ff944d; onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
+  <button id="updateSettingsButton" style="background-color: #ff944d;" onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
 `;
 
   // Display settings and input fields in a single box
   document.getElementById('assistantSettings').innerHTML = settingsHTML;
 }
-
+var updateClicked = false;
 // Function to update the assistant settings based on user input
 function updateAssistantSettings() {
+  console.log("Update button clicked");
+  updateClicked = true;
+
   var selectedAssistantIndex = document.getElementById("sbAssist").value;
   var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
 
+  selectedAssistant.assistantID = document.getElementById("assistantID").value;
   selectedAssistant.voiceIndex = document.getElementById("voiceIndex").value;
   selectedAssistant.lightColor = document.getElementById("lightColor").value;
   selectedAssistant.markerColor = document.getElementById("markerColor").value;
   selectedAssistant.serviceName = document.getElementById("serviceName").value;
-
-  displayAssistantSettings(); // Update the displayed settings
+  selectedAssistant.serviceAddress = document.getElementById("serviceAddress").value;
+  selectedAssistant.authCode = document.getElementById("authCode").value;
+  selectedAssistant.contentType = document.getElementById("contentType").value;
+  localStorage.setItem("markerColor", selectedAssistant.markerColor);
+  localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
+  console.log("Marker Color: " + selectedAssistant.markerColor);
+  displayAssistantSettings();
 }
 
 
@@ -145,7 +155,6 @@ function updateAssistantSettings() {
 */
 // ...
 
-var selectedAssistantIndex = 0; // Global Index
 const assistantTable = [
     {
       assistant: {
@@ -167,30 +176,6 @@ const assistantTable = [
       serviceName: "AssistantCommunications",
       serviceAddress: "localhost:15445",
       authCode: "456398nns"
-    }
-  },
-  {
-    assistant: {
-      name: "Eva",
-      voiceIndex: 142,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "localhost:8889",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "Jake",
-      voiceIndex: 141,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "WeatherAssistant",
-      serviceAddress: "localhost:8890",
-      authCode: "lekg99k9e",
-      contentType: "application/json"
     }
   },
   {

@@ -1,5 +1,32 @@
 // Utility functions for the Sandbox
 
+function sbConversationStart() {
+    msgLogDiv = document.getElementById("msgLOG");
+    localStorage.setItem("currentConversationID", "");
+    jsonLOG = "";
+    var selectedColor = localStorage.getItem('markerColor');
+    const baseEnvelope = baseEnvelopeOVON(assistantObject);
+
+    if (localStorage.getItem("bareInviteSelected") === "true") {
+        // The Bare Invite button was selected
+        const OVONmsg = bareInviteOVON(baseEnvelope, assistantObject);
+        clearValue(OVONmsg);
+    } else if(localStorage.getItem("InviteWithWhisper") === "true") {
+        // The Invite with Whisper option was selected
+        const whisperMessage = localStorage.getItem("whisperMessage");
+            // Handle invite with a message as the utterance
+            const OVONmsg = bareInviteOVON (baseEnvelope, assistantObject);
+            console.log(OVONmsg);
+            OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject, whisperMessage));
+            console.log(OVONmsg)
+            sbPostToAssistant(assistantObject, OVONmsg);
+        
+        localStorage.removeItem("InviteWithWhisper");
+        localStorage.removeItem("whisperMessage");
+    }
+}
+
+
 function baseEnvelopeOVON( someAssistant ){
     const OVON_Base = {
         "ovon": {
@@ -10,9 +37,9 @@ function baseEnvelopeOVON( someAssistant ){
                 "from": "https://someBotThatSentTheEnvelope.com",
             },
             "responseCode" : 200,
-            "events": []
-        }
-    }
+            "events": [],
+        },
+    };
     conversationID = localStorage.getItem( "currentConversationID" );
     if( conversationID == "" ){
         conversationID = "convoID8403984"; // in reality build a unique one
@@ -23,7 +50,7 @@ function baseEnvelopeOVON( someAssistant ){
     return OVON_Base;
 }
 
-function bareInviteOVON( someAssistant ){
+function bareInviteOVON(baseEnvelope, someAssistant ){
     const OVON_invite = {
         "eventType": "invite",
         "parameters": {
@@ -33,7 +60,8 @@ function bareInviteOVON( someAssistant ){
         }
     }
     OVON_invite.parameters.to.url = someAssistant.assistant.serviceAddress;
-    return OVON_invite;
+    baseEnvelope.ovon.events.push(OVON_invite);
+    return baseEnvelope;
 }
 
 function bareByeOVON( someAssistant ){
@@ -73,6 +101,7 @@ function buildUtteranceOVON( speaker, utteranceStr ){
 }
 
 function buildWhisperOVON( speaker, whisperStr ){
+    const name = speaker.name;
     const OVON_Utterance = {
         "eventType": "whisper",
         "parameters": {
@@ -88,7 +117,6 @@ function buildWhisperOVON( speaker, whisperStr ){
             }
         }
     }
-    OVON_Utterance.parameters.dialogEvent.speakerId = speaker;
     d = new Date();
     OVON_Utterance.parameters.dialogEvent.span.startTime = d.toISOString();
     OVON_Utterance.parameters.dialogEvent.features.text.tokens[0].value = whisperStr;
@@ -112,7 +140,6 @@ function inviteWithUtterance() {
 }
 
 function clearValue(OVONmsg, whisperMessage) {
-
     if (localStorage.getItem("InviteWithWhisper") === "true") {
         const whisperMessage = localStorage.getItem("whisperMessage");
         OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = whisperMessage;
@@ -120,189 +147,10 @@ function clearValue(OVONmsg, whisperMessage) {
         localStorage.removeItem("whisperMessage");
     } else {
         // For Bare Invite, clear the value
-        OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = "";
         localStorage.removeItem("bareInviteSelected");
     }
 
     sbPostToAssistant(assistantObject, OVONmsg);
-}
-
-function buildBareInviteOVON( someAssistant ){
-    const OVON_invite = {
-        "ovon": {
-            "conversation": {
-                "id": "someUniqueIdCreatedByTheFirstParticipant",
-            },
-            "sender": {
-                "from": "https://someBotThatOfferedTheInvite.com",
-            },
-            "responseCode" : 200,
-            "events": [
-                {
-                    "eventType": "invite",
-                    "parameters": {
-                        "to": {
-                            "url": "https://someBotThatIsBeingInvited.com"
-                        }
-                    }
-                },   
-            ]
-        }
-    }
-    conversationID = localStorage.getItem( "currentConversationID" );
-    if( conversationID == "" ){
-        conversationID = "convoID_";
-        conversationID += cleanDateTimeString();
-        localStorage.setItem( "currentConversationID", conversationID );
-    }
-    OVON_invite.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_invite.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
-    OVON_invite.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
-    return OVON_invite;
-}
-
-function buildWhisperInviteOVON( someAssistant ){
-    const OVON_invite = {
-        "ovon": {
-            "conversation": {
-                "id": "someUniqueIdCreatedByTheFirstParticipant",
-            },
-            "sender": {
-                "from": "https://someBotThatOfferedTheInvite.com",
-            },
-            "responseCode" : 200,
-            "events": [
-                {
-                    "eventType": "invite",
-                    "parameters": {
-                        "to": {
-                            "url": "https://someBotThatIsBeingInvited.com"
-                        }
-                    }
-                },   
-                {
-                    "eventType": "utterance",
-                    "parameters": {
-                        "dialogEvent": {
-                            "speakerId": "human",
-                            "span": { "startTime": "2023-06-14 02:06:07+00:00" },
-                            "features": {
-                                "text": {
-                                    "mimeType": "text/plain",
-                                    "tokens": [ { "value": "Is it time for my tire rotation."  } ]
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-    }
-    conversationID = localStorage.getItem( "currentConversationID" );
-    if( conversationID == "" ){
-        conversationID = "convoID_";
-        conversationID += cleanDateTimeString();
-        localStorage.setItem( "currentConversationID", conversationID );
-    }
-    OVON_invite.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_invite.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
-    OVON_invite.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
-    d = new Date();
-    OVON_invite.ovon.events[1].parameters.dialogEvent.span.startTime = d.toISOString();
-    return OVON_invite;
-}
-
-function buildInviteOVON( someAssistant ){
-    const OVON_invite = {
-        "ovon": {
-            "conversation": {
-                "id": "someUniqueIdCreatedByTheFirstParticipant",
-            },
-            "sender": {
-                "from": "https://someBotThatOfferedTheInvite.com",
-            },
-            "responseCode" : 200,
-            "events": [
-                {
-                    "eventType": "invite",
-                    "parameters": {
-                        "to": {
-                            "url": "https://someBotThatIsBeingInvited.com"
-                        }
-                    }
-                },   
-                {
-                    "eventType": "utterance",
-                    "parameters": {
-                        "dialogEvent": {
-                            "speakerId": "human",
-                            "span": { "startTime": "2023-06-14 02:06:07+00:00" },
-                            "features": {
-                                "text": {
-                                    "mimeType": "text/plain",
-                                    "tokens": [ { "value": "Is it time for my tire rotation."  } ]
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-    }
-    conversationID = localStorage.getItem( "currentConversationID" );
-    if( conversationID == "" ){
-        conversationID = "convoID_";
-        conversationID += cleanDateTimeString();
-        localStorage.setItem( "currentConversationID", conversationID );
-    }
-    OVON_invite.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_invite.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
-    OVON_invite.ovon.events[0].parameters.to.url = someAssistant.assistant.serviceAddress;
-    d = new Date();
-    OVON_invite.ovon.events[1].parameters.dialogEvent.span.startTime = d.toISOString();
-    return OVON_invite;
-}
-
-function buildUtteranceOVON( someAssistant ){
-    const OVON_utterance = {
-        "ovon": {
-            "conversation": {
-                "id": "someUniqueIdCreatedByTheFirstParticipant",
-            },
-            "sender": {
-                "from": "https://someBotThatOfferedTheInvite.com",
-            },
-            "responseCode" : 200,
-            "events": [
-                {
-                    "eventType": "utterance",
-                    "parameters": {
-                        "dialogEvent": {
-                            "speakerId": "human",
-                            "span": { "startTime": "2023-06-14 02:06:07+00:00" },
-                            "features": {
-                                "text": {
-                                    "mimeType": "text/plain",
-                                    "tokens": [ { "value": "Is it time for my tire rotation."  } ]
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-    }
-    conversationID = localStorage.getItem( "currentConversationID" );
-    if( conversationID == "" ){
-        conversationID = "convoID_";
-        conversationID += cleanDateTimeString();
-        localStorage.setItem( "currentConversationID", conversationID );
-    }
-    OVON_utterance.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_utterance.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
-    d = new Date();
-    OVON_utterance.ovon.events[0].parameters.dialogEvent.span.startTime = d.toISOString();
-    return OVON_utterance;
 }
 
 //Present the Assistant response html innerHTML string
@@ -344,17 +192,22 @@ function displayMsgLOG( text, col ) {
 
 //Present the Assistant msgLOG html innerHTML string
 function sendReply() {
-    inputText = document.getElementById("reply");
-    input = inputText.value;
+    const inputText = document.getElementById("reply");
+    const input = inputText.value;
 
     inputText.value = "";
 
     //put the input in an utterance
-    aIndex = localStorage.getItem( "currentAssistantIndex");
-    ovonUtt = buildUtteranceOVON( assistantTable[aIndex] );
-    ovonUtt.ovon.events[0].parameters.dialogEvent.span.startTime = cleanDateTimeString();
-    ovonUtt.ovon.events[0].parameters.dialogEvent.features.text.tokens[0].value = input;
-    sbPostToAssistant( assistantTable[aIndex], ovonUtt );
+    const aIndex = localStorage.getItem( "currentAssistantIndex");
+    const baseEnvelope = baseEnvelopeOVON(assistantTable[aIndex]);
+    
+    const ovonUtt = buildUtteranceOVON("someSpeakerID", input);
+  
+    // Add the utterance event to the base envelope
+    baseEnvelope.ovon.events.push(ovonUtt);
+
+    // Send the post to the assistant
+    sbPostToAssistant(assistantTable[aIndex], baseEnvelope);
     
     return;
   }

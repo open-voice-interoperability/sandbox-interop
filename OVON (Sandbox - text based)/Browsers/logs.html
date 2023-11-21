@@ -35,26 +35,39 @@
     }
 
     function showFullDialog() {
-    const fullDialog = logs.map(log => {
-        try {
-            const contentObject = JSON.parse(log.content);
-            const sender = contentObject?.ovon?.sender?.from || 'Unknown';
-            let token;
+      const fullDialog = logs.map(log => {
+      try {
+      const contentObject = JSON.parse(log.content);
+      const sender = contentObject?.ovon?.sender?.from || 'Unknown';
+      let token;
 
-            if (log.direction.toLowerCase() === 'sent') {
-                const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
-                token = tokens ? tokens[0]?.value : 'Token not found';
-            } else if (log.direction.toLowerCase() === 'received') {
-                const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
-                token = tokens ? tokens[0]?.value : 'Token not found';
-            }
-
-            return `${sender} - ${token}`;
-        } catch (error) {
-            console.error('Error parsing log content:', error);
-            return 'Error parsing log content';
+      if (log.direction.toLowerCase() === 'sent') {
+        // Check if it's an "invite" event type
+        if (contentObject?.ovon?.events[0]?.eventType === 'invite') {
+          // Handle "invite" differently
+          const url = contentObject?.ovon?.events[0]?.parameters?.to?.url || 'URL not found';
+          return `${sender} - Bare Invite to: ${url}`;
+        } else {
+          // Handle "utterance" event type
+          const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
+          token = tokens ? tokens[0]?.value : 'Token not found';
+          console.log(token);
+          return `${sender} - ${token}`;
         }
-    });
+      } else if (log.direction.toLowerCase() === 'received') {
+        const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
+        token = tokens ? tokens[0]?.value : 'Token not found';
+        console.log(token);
+        return `${sender} - ${token}`;
+      }
+
+      return 'Invalid log direction';
+    } catch (error) {
+      console.error('Error parsing log content:', error);
+      return 'Error parsing log content';
+    }
+  });
+
 
     displayLogs(fullDialog); // Display full dialog
 }

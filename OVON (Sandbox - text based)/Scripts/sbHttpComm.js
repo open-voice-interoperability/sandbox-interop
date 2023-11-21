@@ -55,7 +55,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
       timestamp: new Date().toISOString(),
       content: jsonSENT,
     };
-
+    
     conversationLOG.push(sentMessage);
     localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
   }
@@ -66,10 +66,12 @@ function sbOVONstateChecker(){ // should something come in do this
     if( sbOVON_CommObject.status == 200 ){
       sbData = sbOVON_CommObject.responseText;
       if( sbData.length ){
+        var textColor = localStorage.getItem('markerColor');
         retOVONJSON = JSON.parse(sbData);
         jsonRECEIVED = JSON.stringify( retOVONJSON, null, 2 );
         var targ = document.getElementById("msgRECEIVED");
         targ.innerHTML = jsonRECEIVED;
+        console.log(jsonRECEIVED);
         displayMsgRECEIVED(jsonRECEIVED, textColor); //
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );
@@ -78,7 +80,6 @@ function sbOVONstateChecker(){ // should something come in do this
           timestamp: new Date().toISOString(),
           content: jsonRECEIVED,
         };
-
         conversationLOG.push(receivedMessage);
         localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
         serviceEventsOVON( retOVONJSON );
@@ -89,11 +90,9 @@ function sbOVONstateChecker(){ // should something come in do this
 
 function RenderResponseOVON( oneEvent, indx, arr ){
   const type = oneEvent.eventType;
-  console.log(oneEvent);
   if( type == "utterance" ){
     say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;  
     displayResponseUtterance( say, textColor);
-    console.log(conversationLOG);
     //OvonSpeak( say, voiceIndex );
 //}else if( type == "bye"){
 //  Do "invite" to the PREVIOUS Assistant
