@@ -30,7 +30,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   if( sbOVON_CommObject != null ){  
     jsonSENT = JSON.stringify( OVONmsg, null, 2 );
     sbOVON_CommObject.open( 'POST', remoteURL, true );
-//          sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
+          //sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
     if( assistantName == "einstein"){ // hack for openAI
       input = OVONmsg.ovon.events[0].eventType;
       if( input == "utterance"){

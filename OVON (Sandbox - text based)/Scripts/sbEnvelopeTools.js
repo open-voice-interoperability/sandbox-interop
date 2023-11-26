@@ -4,12 +4,14 @@ function sbConversationStart() {
     msgLogDiv = document.getElementById("msgLOG");
     localStorage.setItem("currentConversationID", "");
     jsonLOG = "";
+    localStorage.setItem( "uttCount", 0 );
     var selectedColor = localStorage.getItem('markerColor');
     const baseEnvelope = baseEnvelopeOVON(assistantObject);
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected
         const OVONmsg = bareInviteOVON(baseEnvelope, assistantObject);
+        sbPostToAssistant(assistantObject, OVONmsg);
         clearValue(OVONmsg);
     } else if(localStorage.getItem("InviteWithWhisper") === "true") {
         // The Invite with Whisper option was selected

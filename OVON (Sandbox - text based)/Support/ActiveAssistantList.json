@@ -1,0 +1,180 @@
+[
+  {
+    "assistant": {
+      "name": "myHuman",
+      "voiceIndex": 666,
+      "lightColor": "#ff6666",
+      "markerColor": "#b30000",
+      "serviceName": "HumanUser",
+      "serviceAddress": "OriginationPoint",
+      "authCode": "hugi666ikjjerg"
+    }
+  },
+  {
+    "assistant": {
+      "name": "assistantBrowser",
+      "voiceIndex": 999,
+      "lightColor": "#b3b3cc",
+      "markerColor": "#000000",
+      "serviceName": "AssistantCommunications",
+      "serviceAddress": "localhost:15445",
+      "authCode": "456398nns"
+    }
+  },
+  {
+    "assistant": {
+      "name": "Eva",
+      "voiceIndex": 142,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "localhost:8889",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "Jake",
+      "voiceIndex": 141,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "WeatherAssistant",
+      "serviceAddress": "localhost:8890",
+      "authCode": "lekg99k9e",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "wizard",
+      "voiceIndex": 133,
+      "lightColor": "#99e6e6",
+      "markerColor": "#29a3a3",
+      "serviceName": "DaVinci_LLM",
+      "serviceAddress": "https://www.asteroute.com/ovontest",
+      "authCode": "69jjg45cf0",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "ovon_auto",
+      "voiceIndex": 142,
+      "lightColor": "#99e6e6",
+      "markerColor": "#29a3a3",
+      "serviceName": "Debbie_OVONAUTO",
+      "serviceAddress": "https://secondAssistant.pythonanywhere.com",
+      "authCode": "69jjg45cf0",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "cassandra",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http://localhost:15455/ejCassandra",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "Madison",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http://localhost:8887",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "Burokratt",
+      "voiceIndex": 142,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "Estonia",
+      "serviceAddress": "https://dev.buerokratt.ee/ovonr/chat/rasa/ovon",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "ejtalk",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "https://ejtalk.pythonanywhere.com",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "george",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http:localhost:7001",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "mary",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "https://codeMom.pythonanywhere.com",
+      "authCode": "h229k00m8bv",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "einstein",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "https://api.openai.com/v1/chat/completions",
+      "authCode": "AuZ9SYtXn",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "leah",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "https://lrb24.pythonanywhere.com",
+      "authCode": "AuZ9SYtXn",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "library",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "https://ovon.xcally.com/smartlibrary",
+      "authCode": "AuZ9SYtXn",
+      "contentType": "application/json"
+    }
+  }
+]

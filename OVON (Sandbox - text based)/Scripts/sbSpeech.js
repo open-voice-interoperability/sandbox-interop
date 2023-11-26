@@ -16,9 +16,8 @@ function startASR(){
 }
 
 recognition.onresult = function(event) {
-  var nbestCnt = 0;
+  var nbestCnt = 0; //nBests in the future?
   var finalAsrText="";
-  var finalConf = 1.0;
   var conf = 1.0;
 
   var exdate=new Date();
@@ -31,32 +30,17 @@ recognition.onresult = function(event) {
   localStorage.setItem( "uttCount", ++uttCount );
   var finalAsrText = event.results[0][0].transcript;
   finalAsrText = cleanOutPunctuation( finalAsrText);
-  ejSetCookie( "ejLastInputUTT", finalAsrText );
+  localStorage.setItem( "sbLastInputUTT", finalAsrText );
   var conf = event.results[0][0].confidence;
-  conf += .01;// So that the shit value of 0.0 doesn't ruin confidence calcs in the ejTalker
+  conf += .01; // So "0" doesn't lead to disregarding it
   conf = conf.toFixed(3);
-  var duration = endTime - startTime;
-
-  OVON_Input.OVON.mode = "input/voice";
-  OVON_Input.OVON.originPointType = ejBrowserType;
-
-  var assistantName = ejGetCookie( "ejAgentName" );
-  var myHumansName = ejGetCookie( "humanName" );
-
-  add_ids_OVON( OVON_Input, ejGetCookie("conversationID"), assistantName, myHumansName, uttCount );
-  add_times_OVON( OVON_Input, startTime, duration, exdate.toUTCString() );
-  add_resultFormat_OVON( OVON_Input, "text/plain", "en", "UTF-8", "webkitSpeechRecognition" );
-  add_resultFinalComplete_OVON( OVON_Input, finalAsrText, conf );
-   
-  // Note: the Offset values are faked just to show what it would look like
-  //--------------------------------------add_finalCompleteTokens_OVON( OVON_Input, finalAsrText, conf, duration ); // for simplicity now
-
+  
+  // DO THIS LATER ???================================================
+  /*
   if (event.results.length > 1 ) { // load nBest ASR results if any
     add_nBest_OVON( OVON_Input, event )
   }
 
-  // DO THIS LATER================================================
-  /*
   OVON_Input.result.analysis.finalComplete.intent = "someIntention";
   OVON_Input.uttPackage.result.analysis.finalComplete.confidence = 0.96;
   OVON_Input.uttPackage.result.analysis.finalComplete.emotion = "ejAmbivalent";
@@ -78,18 +62,6 @@ recognition.onresult = function(event) {
   */
 //===============================================================
 
-  localStorage.setItem( "thisExchPacketJSON", JSON.stringify( OVON_Input, null, "\t" ) );
-  uttOVON_XML = convertJSONtoXML(OVON_Input);
-  localStorage.setItem( "thisExchPacket", uttOVON_XML );
-
-  var log = localStorage.getItem( "exchangePacket" ) + "\n"; //XML Version
-  log += prettyXML( uttOVON_XML);
-  localStorage.setItem( "exchangePacket", log );
-
-  log = localStorage.getItem( "exchangePacketJSON" ) + "\n"; //JSON Version
-  log += localStorage.getItem( "thisExchPacketJSON" );
-  localStorage.setItem( "exchangePacketJSON", log );
-
   var wc = "assistantBrowser";
   buildSeqDiagJSON( "myHuman", wc, finalAsrText, finalAsrText, "" );
   buildSeqDiagJSON( wc, wc, "[[Client ASR]]", "Speech recognition via browser webKit", "" );
@@ -99,57 +71,10 @@ recognition.onresult = function(event) {
   var JSQ = JSON.stringify( seqDiagJSON );
   localStorage.setItem( "seqDiagJSON", JSQ );
 
-  uttOVON_XML = "<ovonJSON>";
-  uttOVON_XML += JSON.stringify( OVON_Input );
-  uttOVON_XML += "</ovonJSON>";
-
-  //ejHistory.push( OVON_Input );
-  //sessionHistoryString = JSON.stringify(ejHistory, null, '\t');
-  //localStorage.setItem( 'sessionHistory', sessionHistoryString );
-  //var checkHist = localStorage.getItem( 'sessionHistory' );
-  ejSaveHistoryToLocalStorage( OVON_Input );
-
-  if( assistantName=="wizard" || assistantName=="ovon auto"){
-    OVON_Human_Continuation.ovon.events[0]["parameters"]["dialog-event"].features.text.tokens[0].value = finalAsrText;
-    ovonSend(assistantName, OVON_Human_Continuation );
-  }
-  
-  ejGenericOVONInput( uttOVON_XML );
-}
-
-function ovonSend( assName, ovonMsg ){
-  var thisAgent = ejGetAgentParams( assName );
-  if( thisAgent ){
-    vIndex = thisAgent.agent.voiceIndex;
-    srv = thisAgent.agent.serviceAddress;
-    cont = thisAgent.agent.contentType;
-  }
-
-  if( ejComObjectOVON == null ){
-    try{
-      ejComObjectOVON = new XMLHttpRequest();
-    }catch(e){
-      ejComObjectOVON = null;
-      alert( 'Failed to make ejTalker communication object' );
-      return false;
-    }
-    ejComObjectOVON.onreadystatechange=OVONstateChecker;
-  }
-
-  if( ejComObjectOVON != null ){ // it is good so use it
-    ejComObjectOVON.open( 'POST', srv, true );
-    ejComObjectOVON.send( null );
-  }else{ // not so much
-    alert( "Ajax object is NULL" );
-  }
-  setTimeout( "sendRequest( srv )", ejTimeOutMS );
-
-  if( ejComObjectOVON != null ){  
-    ejComObjectOVON.open( 'POST', srv, true );
-
-    ejComObjectOVON.setRequestHeader("Content-type", cont);
-    ejComObjectOVON.send( ovonMsg ); // send this to remote agent
-  }
+  //=============
+  // build the msg here and then send it
+  // sbPostToAssistant( assistantObject, OVONmsg )
+  //=============
 }
       
 //build the TTS Voice <select> html innerHTML string
@@ -172,6 +97,7 @@ function loadVoiceSelect() {
 
 function saveTTSVoiceIndex() {  
   var vInd = document.getElementById("ejTTS").selectedIndex;
+  // maybe add the "name" and index to the spoken example?
   var msg = new SpeechSynthesisUtterance("How is this voice?");
   var voices = speechSynthesis.getVoices();
   msg.voice = voices[vInd];
@@ -179,24 +105,22 @@ function saveTTSVoiceIndex() {
   window.speechSynthesis.speak(msg);
 }
 
-function saveTTS_TestText() { 
-  var test =  document.getElementById("ejTTS_Text").value;
+function saveTTS_TestText() { // allow setting a "test phrase" to be set
+  var test =  document.getElementById("sbTTS_Text").value;
   test += " ";
-  ejSetCookie( "ejTestPhrase", document.getElementById("ejTTS_Text").value, 365 );
+  localStorage.setItem( "sbTTSTestPhrase", test );
 }
 
 var thisSay;
-function ejSpeak(say) {
+function sbSpeak( say, assistantObject ) {
   var ejAgentName = ejGetCookie( "ejAgentName" );
   thisSay = say;
-  // New: use ejAgentName to assign the correct agent voice. Just for Edge for now
-  vIndex = 2;
-  aColor = "#ffffff";
+  vIndex = 2; // default to index=2 and gray if not "Edge" browser
+  aColor = "#555555";
   if( ejBrowserType == "chromium based edge"){
-    thisAgent = ejGetAgentParams( ejAgentName );
-    if( thisAgent ){
-      vIndex = thisAgent.agent.voiceIndex;
-      aColor = thisAgent.agent.lightColor;
+    if( assistantObject ){
+      vIndex = assistantObject.agent.voiceIndex;
+      aColor = assistantObject.agent.lightColor;
     }
   }
 
@@ -206,25 +130,12 @@ function ejSpeak(say) {
   //msg.volume=0-1,msg.rate=0.1-10,msg.pitch=0-2,msg.text="stuff to say",msg.lang='en-US'
 
   msg.onend = function (event) {
-    var ASRAutoRestart = ejGetCookie( "reListen" );
     startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-    if( ASRAutoRestart == "true" ){
-      startASR();
-    }
-    processCommands();
+    processCommands(); // not sure we need this here?????
   };
 
   window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
   window.speechSynthesis.speak(msg);
-
-  var ttsSW = ejGetCookie( "ejTTS_ON");
-  if( ttsSW == 'false'){
-    processCommands();
-  }
-
-  var log = localStorage.getItem( "exchangePacket" ) + "\n";
-  log += prettyXML( ejRenderOVON );
-  localStorage.setItem( "exchangePacket", log );
 }
 
 function processCommands(){
@@ -299,56 +210,19 @@ function processCommands(){
   buildSeqDiagJSON( ejAgentName, wc, shortMessage, longMessage, "" );
   buildSeqDiagJSON( wc, wc, "[[Client TTS]]", "Speech synthesis via browser webKit", ejAgentName );
   buildSeqDiagJSON( wc, "myHuman", thisSay, thisSay, ejAgentName );
-  if( clientAction ){ // think about when there is more than one "command" being done
-    buildSeqDiagJSON( wc, wc, shortACtion, longAction, ejGetCookie( "ejAgentName" ) );
-    //NOTE: We are getting agent from cookie since  it may have changed with an agent switch
 
-
-
-// This is the pattern for OVON Negotiates (hack for now)
-const OVON_Negotiate = {
-  OVON: {
-    mode: "negotiate/isAvailable",
-    response: "none",
-    ID: {
-      conversation: "",
-    },
-
-  }
-}
-add_ids_OVON( OVON_Negotiate, ejGetCookie("conversationID"), ejGetCookie( "ejAgentName" ), ejGetCookie( "humanName" ), localStorage.getItem( "uttCount" ) );
-
-
-    //buildSeqDiagJSON( wc, ejGetCookie( "ejAgentName" ), "Negotiate_isAvailable", "", "" ); // ask if ass is available
-    //ejSaveHistoryToLocalStorage( OVON_Negotiate );
-
-    //OVON_Negotiate.OVON.response = "200_Ready";
-    //buildSeqDiagJSON( ejGetCookie( "ejAgentName" ), wc, "200_Ready", "", "" ); // ass confirms available
-    //ejSaveHistoryToLocalStorage( OVON_Negotiate );
-
-    buildSeqDiagJSON( wc, ejGetCookie( "ejAgentName" ), command, "", "" ); 
-
-
-    buildSeqDiagJSON( ejGetCookie( "ejAgentName" ), ejGetCookie( "ejAgentName" ), "[[INITIALIZE]]", "", "" );
-  }
   var JSQ = JSON.stringify( seqDiagJSON, null, "\t" );
   localStorage.setItem( "seqDiagJSON", JSQ );
 }
 
-
-function ejTypeInput( inputHTMLID ) {
+function sbTypeInput( inputHTMLID ) {
   var typedText = document.getElementById( inputHTMLID ).value;
-  ejSetCookie( "ejLastInputUTT", typedText );
+  localStorage.setItem( "sbLastInputUTT", typedText );
 
   if ( typedText != null && typedText != "" ){
-    buildOVON_InputTyping( typedText );
-    //var packet = localStorage.getItem( "thisExchPacket" );
-
-    var packet = "<ovonJSON>";
-    packet += JSON.stringify( OVON_Input );
-    packet += "</ovonJSON>";
-
-    ejGenericOVONInput( packet );
-
+    //=============
+    // build the msg here and then send it
+    // sbPostToAssistant( assistantObject, OVONmsg )
+    //=============
   }
 }

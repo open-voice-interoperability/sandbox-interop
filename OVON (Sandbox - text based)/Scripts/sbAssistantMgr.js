@@ -211,7 +211,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "http://localhost:15455/ejCassandra",
       authCode: "h229k00m8bv",
-      contentType: "application/x-www-form-urlencoded"
+      contentType: "application/json"
     }
   },
   {
@@ -247,7 +247,7 @@ const assistantTable = [
       serviceName: "PrimaryAssistant",
       serviceAddress: "https://ejtalk.pythonanywhere.com",
       authCode: "h229k00m8bv",
-      contentType: "application/x-www-form-urlencoded"
+      contentType: "application/json"
     }
   },
   {
