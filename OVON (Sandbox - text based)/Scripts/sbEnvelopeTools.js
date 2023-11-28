@@ -10,13 +10,14 @@ function sbConversationStart() {
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected
+        setEvelopeConvoID(baseEnvelope);
         const OVONmsg = bareInviteOVON(baseEnvelope, assistantObject);
         sbPostToAssistant(assistantObject, OVONmsg);
         clearValue(OVONmsg);
     } else if(localStorage.getItem("InviteWithWhisper") === "true") {
         // The Invite with Whisper option was selected
         const whisperMessage = localStorage.getItem("whisperMessage");
-            // Handle invite with a message as the utterance
+        setEvelopeConvoID(baseEnvelope);
         const OVONmsg = bareInviteOVON (baseEnvelope, assistantObject);
         OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject, whisperMessage));
         sbPostToAssistant(assistantObject, OVONmsg);
@@ -46,7 +47,7 @@ function baseEnvelopeOVON( someAssistant ){
         localStorage.setItem( "currentConversationID", conversationID );
     }
     OVON_Base.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_Base.ovon.sender.from = "url_of_sender"; // in reality it is extracted from any invite browser sees
+    OVON_Base.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
     return OVON_Base;
 }
 
@@ -155,7 +156,7 @@ function clearValue(OVONmsg) {
         localStorage.removeItem("bareInviteSelected");
     }
 
-    sbPostToAssistant(assistantObject, OVONmsg);
+   
 }
 
 //Present the Assistant response html innerHTML string

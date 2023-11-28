@@ -43,13 +43,14 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
         sbOVON_CommObject.send( jsonSENT ); // send to server
       }
     }else{
-      sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
+      sbOVON_CommObject.send(JSON.stringify( OVONmsg )); // send to server
       var targ = document.getElementById("msgSENT");
       targ.innerHTML = jsonSENT;
+      jsonLOG += jsonSENT;
+      localStorage.setItem( "jsonLOG", jsonLOG );
     }
 
-    jsonLOG += jsonSENT;
-    localStorage.setItem( "jsonLOG", jsonLOG );
+    
     const sentMessage = {
       direction: 'sent',
       timestamp: new Date().toISOString(),
@@ -62,6 +63,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
 }
 
 function sbOVONstateChecker(){ // should something come in do this
+
   if( sbOVON_CommObject.readyState == 4 ){
     if( sbOVON_CommObject.status == 200 ){
       sbData = sbOVON_CommObject.responseText;
@@ -71,7 +73,6 @@ function sbOVONstateChecker(){ // should something come in do this
         jsonRECEIVED = JSON.stringify( retOVONJSON, null, 2 );
         var targ = document.getElementById("msgRECEIVED");
         targ.innerHTML = jsonRECEIVED;
-        console.log(jsonRECEIVED);
         displayMsgRECEIVED(jsonRECEIVED, textColor); //
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );

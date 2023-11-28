@@ -1,9 +1,66 @@
 #assistantSettings, #userInput {
-    border: 1px solid #ccc;
+    border: 4px solid #016384;
     padding: 10px;
     margin-top: 20px;
-    max-width: 400px; /* Adjust max-width as needed */
+    max-width: 500px; /* Adjust max-width as needed */
     float: right;
     margin-right: 50px;
+    background-color: #00ace6;
 }
 
+#assistantSettings h2 {
+    color: black; /* Adjust text color as needed */
+    margin-bottom: 1px;
+    margin-top: -1px;
+}
+
+#assistantSettings label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 2px;
+    color: black; /* Adjust label text color as needed */
+}
+
+#assistantSettings input[type="text"] {
+    color: black; /* Adjust text color as needed */
+}
+
+#assistantSettings input[type="color"] {
+    width: 30px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+}
+#assistantSettings input:hover {
+    background-color: rgb(218, 216, 216);
+}
+
+#assistantSettings button {
+    background-color: #ff944d;
+    color: black; /* Adjust text color as needed */
+    border: 2px solid #ff944d;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#assistantSettings button:hover {
+    background-color: #ff7733; /* Adjust hover color as needed */
+    border: 2px solid #983301;
+}
+
+
+
+.log {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1.5px solid #000000;
+    padding: 10px;
+  }
+
+  .element {
+    margin-bottom: 5px;
+  }
+
+
+  .label {
+    font-weight: bold;
+  }
