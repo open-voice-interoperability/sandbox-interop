@@ -23,12 +23,12 @@
     </tr>
     <tr>
         <td><h3>Utterance:</h3></td>
-        <td><input type="text" id="reply" placeholder="Type your UTTERANCE here" size="50" onchange="sendReply();"/></td>
+        <td><input type="text" id="utterance" placeholder="Type your UTTERANCE here" size="50" onkeyup="checkEnterKey(event, sendReply);"/></td>
     </tr>
     <tr>
         <td><h3>Whisper:</h3></td>
         <td>
-            <input type="text" id="reply" placeholder="Type your WHISPER here" size="50" onchange="sendReply();"/>
+            <input type="text" id="whisper" placeholder="Type your WHISPER here" size="50"/><button onclick="sendReply();">Send Whisper</button>
         </td>
     </tr>
 <tr>

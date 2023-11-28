@@ -17,11 +17,9 @@ function sbConversationStart() {
         // The Invite with Whisper option was selected
         const whisperMessage = localStorage.getItem("whisperMessage");
             // Handle invite with a message as the utterance
-            const OVONmsg = bareInviteOVON (baseEnvelope, assistantObject);
-            console.log(OVONmsg);
-            OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject, whisperMessage));
-            console.log(OVONmsg)
-            sbPostToAssistant(assistantObject, OVONmsg);
+        const OVONmsg = bareInviteOVON (baseEnvelope, assistantObject);
+        OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject, whisperMessage));
+        sbPostToAssistant(assistantObject, OVONmsg);
         
         localStorage.removeItem("InviteWithWhisper");
         localStorage.removeItem("whisperMessage");
@@ -99,30 +97,31 @@ function buildUtteranceOVON( speaker, utteranceStr ){
     d = new Date();
     OVON_Utterance.parameters.dialogEvent.span.startTime = d.toISOString();
     OVON_Utterance.parameters.dialogEvent.features.text.tokens[0].value = utteranceStr;
+    
     return OVON_Utterance;
 }
 
 function buildWhisperOVON( speaker, whisperStr ){
     const name = speaker.name;
-    const OVON_Utterance = {
+    const OVON_Whisper = {
         "eventType": "whisper",
         "parameters": {
             "dialogEvent": {
-                "speakerId": "someSpeakerID",
+                "speakerId": name,
                 "span": { "startTime": "2023-06-14 02:06:07+00:00" },
                 "features": {
                     "text": {
                         "mimeType": "text/plain",
-                        "tokens": [ { "value": "something to say to assistant"  } ]
+                        "tokens": [ { "value": whisperStr  } ]
                     }
                 }
             }
         }
     }
     d = new Date();
-    OVON_Utterance.parameters.dialogEvent.span.startTime = d.toISOString();
-    OVON_Utterance.parameters.dialogEvent.features.text.tokens[0].value = whisperStr;
-    return OVON_Utterance;
+    OVON_Whisper.parameters.dialogEvent.span.startTime = d.toISOString();
+    OVON_Whisper.parameters.dialogEvent.features.text.tokens[0].value = whisperStr;
+    return OVON_Whisper;
 }
 
 function startBareInvite() {
@@ -141,10 +140,14 @@ function inviteWithUtterance() {
     }
 }
 
-function clearValue(OVONmsg, whisperMessage) {
-    if (localStorage.getItem("InviteWithWhisper") === "true") {
+function clearValue(OVONmsg) {
+    const isInviteWithWhisper = localStorage.getItem("InviteWithWhisper") === "true";
+    
+    if (isInviteWithWhisper) {
         const whisperMessage = localStorage.getItem("whisperMessage");
-        OVONmsg.ovon.events[1].parameters.dialogEvent.features.text.tokens[0].value = whisperMessage;
+        const ovonWhisper = buildWhisperOVON("someSpeakerID", whisperMessage);
+        OVONmsg.ovon.events.push(ovonWhisper);
+        
         localStorage.removeItem("InviteWithWhisper");
         localStorage.removeItem("whisperMessage");
     } else {
@@ -192,27 +195,50 @@ function displayMsgLOG( text, col ) {
     return;
   }
 
+  function checkEnterKey(event, callback) {
+    if (event.key === "Enter") {
+        callback();
+    }
+}
+
 //Present the Assistant msgLOG html innerHTML string
 function sendReply() {
-    const inputText = document.getElementById("reply");
-    const input = inputText.value;
+    const utteranceText = document.getElementById("utterance").value;
+    const whisperText = document.getElementById("whisper").value;
 
-    inputText.value = "";
-
-    //put the input in an utterance
-    const aIndex = localStorage.getItem( "currentAssistantIndex");
+    const aIndex = localStorage.getItem("currentAssistantIndex");
     const baseEnvelope = baseEnvelopeOVON(assistantTable[aIndex]);
-    
-    const ovonUtt = buildUtteranceOVON("someSpeakerID", input);
-  
-    // Add the utterance event to the base envelope
-    baseEnvelope.ovon.events.push(ovonUtt);
 
-    // Send the post to the assistant
+    // Add utterance event if utterance text is provided
+    if (utteranceText.trim() !== "") {
+        const ovonUtt = buildUtteranceOVON("someSpeakerID", utteranceText);
+        baseEnvelope.ovon.events.push(ovonUtt);
+    } else if (whisperText.trim() !== "") {
+        // Add empty utterance event if only whisper text is provided
+        const emptyUtt = buildUtteranceOVON("someSpeakerID", "");
+        baseEnvelope.ovon.events.push(emptyUtt);
+    }else{
+        alert("Please provide a whisper");
+        return;
+    }
+
+
+    // Add whisper event if whisper text is provided
+    if (whisperText.trim() !== "") {
+        const ovonWhisper = buildWhisperOVON("someSpeakerID", whisperText);
+        // Insert the whisper event at index 1
+        baseEnvelope.ovon.events.push(ovonWhisper);
+    }
+
+    // Set conversation ID and send to the assistant
+    setEvelopeConvoID(baseEnvelope);
     sbPostToAssistant(assistantTable[aIndex], baseEnvelope);
-    
-    return;
-  }
+
+    // Clear input fields
+    document.getElementById("utterance").value = "";
+    document.getElementById("whisper").value = "";
+}
+
 
   function addDateNumFixLeadZeros(number) {  
     if( number < 10){ 
