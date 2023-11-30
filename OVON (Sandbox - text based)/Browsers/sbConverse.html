@@ -8,7 +8,12 @@
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
     <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
-
+    <style>
+        .responseWrap {
+          width:400px;
+          word-wrap: break-word;
+        }
+    </style>        
 </head>
 <body onload="sbConversationStart();">
     <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h2>
@@ -16,24 +21,28 @@
     <button onclick="window.open('logs.html', '_blank')">Logs</button>
     <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
     <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
-<table>
-    <tr>
-        <td><h1><b>Input</b></h1></td>
-        <td width="50"><img src="../Media/img/Interoperability_Logo_icon_color.jpg" alt="clickMic" height="50" width="50"/></td>
-    </tr>
-    <tr>
-        <td><h3>Utterance:</h3></td>
-        <td><input type="text" id="utterance" placeholder="Type your UTTERANCE here" size="50" onkeyup="checkEnterKey(event, sendReply);"/></td>
-    </tr>
-    <tr>
-        <td><h3>Whisper:</h3></td>
-        <td>
-            <input type="text" id="whisper" placeholder="Type your WHISPER here" size="50"/><button onclick="sendReply();">Send Whisper</button>
-        </td>
-    </tr>
-<tr>
+    <table>
+        <tr>
+            <td><h1><b>Input</b></h1></td>
+            <td width="50">
+                <img src="../Media/img/Interoperability_Logo_icon_color.jpg" alt="clickMic" height="50" width="50"/>
+                <b>Assistant: </b>
+                <b><span id="AssistantName"></span></b>
+            </td>
+        </tr>
+        <tr>
+            <td><h3>Utterance:</h3></td>
+            <td><input type="text" id="utterance" placeholder="Type your UTTERANCE here" size="50" onkeyup="checkEnterKey(event, sendReply);"/></td>
+        </tr>
+        <tr>
+            <td><h3>Whisper:</h3></td>
+            <td>
+                <input type="text" id="whisper" placeholder="Type your WHISPER here" size="50"/><button onclick="sendReply();">Send Whisper</button>
+            </td>
+        </tr>
+        <tr>
             <td><h3 style="color:green;">Response:</h3></td>
-            <td><span id="response"></span></td>
+            <td><div id="response" class="responseWrap"></div></td>
         </tr>
         <tr>
             <td><h3 style="color:blue;">SENT:</h3></td>

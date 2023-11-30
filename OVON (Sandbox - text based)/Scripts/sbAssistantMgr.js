@@ -40,6 +40,7 @@ function handleAssistantSelectionChange() {
     var selectedAssistantIndex = document.getElementById("sbAssist").value;
     var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
     
+    localStorage.setItem('assistantName', selectedAssistant.name);
     localStorage.setItem('markerColor', selectedAssistant.markerColor);
     displayAssistantSettings();
   } else {
@@ -187,7 +188,7 @@ const assistantTable = [
       serviceName: "DaVinci_LLM",
       serviceAddress: "https://www.asteroute.com/ovontest",
       authCode: "69jjg45cf0",
-      contentType: "application/json"
+      contentType: "none"
     }
   },
   {
@@ -233,7 +234,7 @@ const assistantTable = [
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "Estonia",
-      serviceAddress: "https://dev.buerokratt.ee/ovonr/chat/rasa/ovon",
+      serviceAddress: "https://dev.buerokratt.ee/ovonr/conversation",
       authCode: "h229k00m8bv",
       contentType: "application/json"
     }

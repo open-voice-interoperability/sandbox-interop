@@ -25,30 +25,24 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   voiceIndex = assistantObject.assistant.voiceIndex;
   contentType = assistantObject.assistant.contentType;
   assistantName = assistantObject.assistant.name;
-  
+  localStorage.setItem('assistantName', assistantName);
+  document.getElementById("AssistantName").value = assistantName;
+ 
   //setTimeout( "sendRequest( remoteURL )", sbTimeout );
   if( sbOVON_CommObject != null ){  
     jsonSENT = JSON.stringify( OVONmsg, null, 2 );
-    sbOVON_CommObject.open( 'POST', remoteURL, true );
-          //sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
-    if( assistantName == "einstein"){ // hack for openAI
-      input = OVONmsg.ovon.events[0].eventType;
-      if( input == "utterance"){
-        input = OVONmsg.ovon.events[0].parameters.dialogEvent.features.text.tokens[0].value;
-        sbOVON_CommObject.setRequestHeader('Authorization', "Bearer YourAuthCodeHere" );
-        sbOVON_CommObject.setRequestHeader('Content-Type', "application/json" );
-        jsonSENT = '{"model": "gpt-3.5-turbo","messages": [{"role": "user", "content": "'
-        jsonSENT += input;
-        jsonSENT += '."}],"temperature": 0.7}'
-        sbOVON_CommObject.send( jsonSENT ); // send to server
-      }
-    }else{
-      sbOVON_CommObject.send(JSON.stringify( OVONmsg )); // send to server
-      var targ = document.getElementById("msgSENT");
-      targ.innerHTML = jsonSENT;
-      jsonLOG += jsonSENT;
-      localStorage.setItem( "jsonLOG", jsonLOG );
+    sbOVON_CommObject.open( 'POST', remoteURL, true ); // false makes it async
+
+    // UGLY HACK JUST TO MAKE "wizard" work
+    //if( assistantName != "wizard"){
+    if( contentType != "none"){
+        sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
     }
+    // END OF UGLY HACK!!!!!
+
+    sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
+    var targ = document.getElementById("msgSENT");
+    targ.innerHTML = jsonSENT;
 
     
     const sentMessage = {
@@ -65,7 +59,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
 function sbOVONstateChecker(){ // should something come in do this
 
   if( sbOVON_CommObject.readyState == 4 ){
-    if( sbOVON_CommObject.status == 200 ){
+    if( sbOVON_CommObject.status == 200 || sbOVON_CommObject.status == 201 ){
       sbData = sbOVON_CommObject.responseText;
       if( sbData.length ){
         var textColor = localStorage.getItem('markerColor');

@@ -8,6 +8,8 @@ function sbConversationStart() {
     var selectedColor = localStorage.getItem('markerColor');
     const baseEnvelope = baseEnvelopeOVON(assistantObject);
 
+    document.getElementById("AssistantName").value = localStorage.getItem('assistantName');
+
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected
         setEvelopeConvoID(baseEnvelope);
@@ -33,6 +35,10 @@ function baseEnvelopeOVON( someAssistant ){
         "ovon": {
             "conversation": {
                 "id": "someUniqueIdCreatedByTheFirstParticipant",
+            },
+            "schema": {
+                "version": "0.9.0",
+                "url": "not_published_yet"
             },
             "sender": {
                 "from": "https://someBotThatSentTheEnvelope.com",

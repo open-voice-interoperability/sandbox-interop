@@ -8,7 +8,13 @@
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
     <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
-
+    <script language="JavaScript" src= "../Scripts/sbLLM.js"></script>
+    <style>
+        .responseWrap {
+          width:400px;
+          word-wrap: break-word;
+        }
+    </style>        
 </head>
 <body onload="loadSettingsValues()">
     <a href="sbHome.html"><button>Back Home</button></a>
@@ -28,6 +34,30 @@
             <td>
                 <input type="text" id="OpenAI" placeholder="your secret key" onchange="setOpenAIKey();">
             </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Initialize</h3>
+                <input type="text" id="initPromptLLM" placeholder="Initial Instruction" onchange="sbInitialLLMPrompt( document.getElementById('initPromptLLM').value );">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Converse</h3>
+                <input type="text" id="promptLLM" placeholder="What human says" onchange="sbPostToLLM( document.getElementById('promptLLM').value );">
+            </td>
+        </tr>
+        <tr>
+            <td><h3 style="color:green;">Response:</h3></td>
+            <td><div id="response" class="responseWrap"></div></td>
+        </tr>
+        <tr>
+            <td><h3 style="color:blue;">SENT:</h3></td>
+            <td><span><pre style="color:blue;" id="msgSENT"></pre></span></td>
+        </tr>
+        <tr>
+            <td><h3 style="color:red;">RECEIVED:</h3></td>
+            <td><span><pre style="color:red;" id="msgRECEIVED"></pre></span></td>
         </tr>
     </table>
 
