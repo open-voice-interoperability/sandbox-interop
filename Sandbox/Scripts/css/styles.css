@@ -33,7 +33,7 @@
     background-color: rgb(218, 216, 216);
 }
 
-#assistantSettings button {
+#assistantSettings .update-settings {
     background-color: #ff944d;
     color: black; /* Adjust text color as needed */
     border: 2px solid #ff944d;
@@ -42,7 +42,18 @@
     margin-top: 10px;
 }
 
-#assistantSettings button:hover {
+#assistantSettings .update-settings:hover {
+    background-color: #ff7733; /* Adjust hover color as needed */
+    border: 2px solid #983301;
+}
+#assistantSettings .load-voices {
+    background-color: #ff944d;
+    color: black; /* Adjust text color as needed */
+    border: 2px solid #ff944d;
+    cursor: pointer;
+}
+
+#assistantSettings .load-voices:hover {
     background-color: #ff7733; /* Adjust hover color as needed */
     border: 2px solid #983301;
 }

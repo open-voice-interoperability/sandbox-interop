@@ -87,8 +87,8 @@ function displayAssistantSettings() {
         </div>
   <div>
       <label for="voiceIndex"><b>Voice Index:</b></label>
-      <strong><input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}"></strong>
-  </div>
+      <button id="voiceSelect" class="load-voices" onclick="loadVoiceSelect()">Load Voices</button>
+      </div>
   <div>
       <label for="lightColor"><b>Light Color:</b></label>
       <input type="text" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
@@ -115,7 +115,7 @@ function displayAssistantSettings() {
       <strong><input type="text" id="contentType" value="${selectedAssistant.assistant.contentType}"></strong>
 
       </div>
-  <button id="updateSettingsButton" onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
+  <button id="updateSettingsButton" class="update-settings" onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
 `;
 
   // Display settings and input fields in a single box

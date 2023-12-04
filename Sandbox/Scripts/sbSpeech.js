@@ -93,6 +93,7 @@ function cleanOutPunctuation( str ){
       
 //build the TTS Voice <select> html innerHTML string
 function loadVoiceSelect() {
+  window.open('sbVoices.html', '_blank');
   var ttsEngs = speechSynthesis.getVoices();
 
   var selCntl = '<label for="TTSVoices">Choose a TTS Voice:</label>';
