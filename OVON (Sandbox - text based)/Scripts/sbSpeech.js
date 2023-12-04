@@ -1,16 +1,19 @@
-// File: ejSpeech.js
+// File: sbSpeech.js
 var voices = speechSynthesis.getVoices();
 var recognition = new webkitSpeechRecognition(); // seems to only work on Chrome & Edge
 
-var using_ejTalkCM = true;
+//var using_ejTalkCM = true;
 var retASR = "";
 var startTime = "";
 var endTime = "";
 
-var uttOVON_XML = "";
+//var uttOVON_XML = "";
 var uttOVON_JSON = "";
+var usingASR = false;
+var usingTTS = true;
 
-function startASR(){
+function sbStartASR(){
+  usingASR = true;
   startTime = new Date().getTime();
   recognition.start();
 }
@@ -23,6 +26,7 @@ recognition.onresult = function(event) {
   var exdate=new Date();
   endTime = exdate.getTime();
 
+  usingASR = false; // so you can type for the next turn
   // Builds JSON object for utterance
   // Pass it to ejTalk Conversation Manager
 
@@ -31,6 +35,7 @@ recognition.onresult = function(event) {
   var finalAsrText = event.results[0][0].transcript;
   finalAsrText = cleanOutPunctuation( finalAsrText);
   localStorage.setItem( "sbLastInputUTT", finalAsrText );
+  document.getElementById("utterance").value = finalAsrText;
   var conf = event.results[0][0].confidence;
   conf += .01; // So "0" doesn't lead to disregarding it
   conf = conf.toFixed(3);
@@ -74,7 +79,16 @@ recognition.onresult = function(event) {
   //=============
   // build the msg here and then send it
   // sbPostToAssistant( assistantObject, OVONmsg )
+  sendReply();
   //=============
+}
+
+function cleanOutPunctuation( str ){
+  str = str.replace( "?", "" );
+  str = str.replace( ".", "" );
+  str = str.replace( ",", "" );
+  str = str.replace( "!", "" );
+  return str;
 }
       
 //build the TTS Voice <select> html innerHTML string
@@ -84,11 +98,13 @@ function loadVoiceSelect() {
   var selCntl = '<label for="TTSVoices">Choose a TTS Voice:</label>';
   selCntl += '<select name="TTSVoices" id="ejTTS" onchange="saveTTSVoiceIndex();">';
   for (var i = 0; i < ttsEngs.length; i++) {
-    selCntl += '<option value="';
-    selCntl += i;
-    selCntl += '">';
-    selCntl += i + ": " + ttsEngs[i].name;
-    selCntl += '</option>';
+    if( i != 115 ){
+      selCntl += '<option value="';
+      selCntl += i;
+      selCntl += '">';
+      selCntl += i + ": " + ttsEngs[i].name;
+      selCntl += '</option>';
+    }
   }
   selCntl += "</select>";
   document.getElementById( 'information' ).innerHTML = selCntl;
@@ -111,29 +127,26 @@ function saveTTS_TestText() { // allow setting a "test phrase" to be set
   localStorage.setItem( "sbTTSTestPhrase", test );
 }
 
-var thisSay;
 function sbSpeak( say, assistantObject ) {
-  var ejAgentName = ejGetCookie( "ejAgentName" );
-  thisSay = say;
-  vIndex = 2; // default to index=2 and gray if not "Edge" browser
+  v = 2; // default to index=2 and gray if not "Edge" browser
   aColor = "#555555";
-  if( ejBrowserType == "chromium based edge"){
+  if( sbBrowserType == "chromium based edge"){
     if( assistantObject ){
-      vIndex = assistantObject.agent.voiceIndex;
-      aColor = assistantObject.agent.lightColor;
+      v = assistantObject.assistant.voiceIndex;
+      v=(v==115)?116:v;
+      v=(v==4255)?115:v;
+      aColor = assistantObject.assistant.lightColor;
     }
   }
-
   var msg = new SpeechSynthesisUtterance(say);
   var voices = speechSynthesis.getVoices();
-  msg.voice = voices[vIndex];
+  msg.voice = voices[v];
   //msg.volume=0-1,msg.rate=0.1-10,msg.pitch=0-2,msg.text="stuff to say",msg.lang='en-US'
 
   msg.onend = function (event) {
     startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-    processCommands(); // not sure we need this here?????
+    // Do something at the end of the TTS speech?????
   };
-
   window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
   window.speechSynthesis.speak(msg);
 }

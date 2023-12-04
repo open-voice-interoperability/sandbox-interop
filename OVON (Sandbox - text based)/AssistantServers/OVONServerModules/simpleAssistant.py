@@ -2,19 +2,19 @@ import json
 from datetime import datetime
 import re
 
-conversationID = ""
 # Set your assistant's unique speakerID and service address
+conversationID = ""
 mySpeakerID = "Madison_1763IRQ"
-myServiceAddress = "https://ejtalk.pythonanywhere.com"
+myServiceAddress = "localhost:7002"
 
 def exchange(inputOVON):
     i = 0
-    eventSet = {"invite":False,"utterance":False,"whisper":False,"unKnown":False}
+    eventSet = {"invite":False,"utterance":False,"whisper":False,"bye":False,"unKnown":False}
     utteranceInput = ""
     whisperInput = ""
     conversationID = inputOVON["ovon"]["conversation"]["id"]
-    oneEvent = inputOVON["ovon"]["events"][i]
-    while oneEvent:
+    while i < len(inputOVON["ovon"]["events"]):
+        oneEvent = inputOVON["ovon"]["events"][i]
         eventType = oneEvent["eventType"]
         eventSet[eventType] = True
         if eventType == "invite":
@@ -30,36 +30,33 @@ def exchange(inputOVON):
             eventSet["unKnown"] = True
 
         i = i+1
-        oneEvent = inputOVON["ovon"]["events"][i]
 
-    if (eventSet("invite") and utteranceInput.len==0):
-        # set this to your greeting for a "naked invite"
-        utteranceInput = "Welcome to my world. How can I help."
-
-    if (eventSet("bye") and utteranceInput.len==0):
+    if (eventSet["bye"] and utteranceInput.len==0):
         # set this to your goodbye for a "naked bye"
         utteranceInput = "Nice talking to you. Goodbye."
 
-
-    outputOVON = modeResponse( utteranceInput, whisperInput, eventSet["invite"] )
-    ovon_response_json = json.dumps( outputOVON )
-    return ovon_response_json
+    return modeResponse( utteranceInput, whisperInput, eventSet["invite"] )
 
 def modeResponse( inputUtterance, inputWhisper, isInvite ):
     if isInvite:
-        if inputWhisper.len>0:
-            response_text = converse( "", inputWhisper )
+        if len(inputWhisper)>0:
+            responseObj = converse( "", inputWhisper )
+            response_text = responseObj.converse.say
         else:
             response_text = "Welcome to my world. How can I help."
     else:
-        response_text = converse( inputUtterance, inputWhisper )
+        responseObj = converse( inputUtterance, inputWhisper )
+        response_text = responseObj.converse.say
 
-    # currentTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     currentTime = datetime.now().isoformat()
     ovon_response = {
-    "ovon": {
-            "conversation": conversationID,
-            "sender": {"from": myServiceAddress},
+        "ovon": {
+            "conversation": {
+                "id": conversationID
+            },
+            "sender": {
+                "from": myServiceAddress
+            },
             "responseCode": 200,
             "events": [
                 {
@@ -73,7 +70,7 @@ def modeResponse( inputUtterance, inputWhisper, isInvite ):
                             "features": {
                                 "text": {
                                     "mimeType": "text/plain",
-                                    "tokens": [{"value": response_text}]
+                                    "tokens": [ { "value": response_text } ]
                                 }
                             }
                         }
@@ -82,23 +79,26 @@ def modeResponse( inputUtterance, inputWhisper, isInvite ):
             ]
         }
     }
-    ovon_response_json = json.dumps(ovon_response)
-    return ovon_response_json
+    return json.dumps(ovon_response)
 
 def converse( utt, whisp ):
     say = "I am sorry I don't understand."
-    if utt.len>0:
+    if len(whisp)>0:
+        # Do something with the whisper
+        w = whisp
+
+    if len(utt)>0:
+        # Do something with the utterance
         greetings=['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening']
         for greeting in greetings:
             if re.search(rf'\b{greeting}\b', utt, re.IGNORECASE):
                 say = "Hello, what do you need?"
-        return False
 
     conRespObject = {
         "converse": {
             "say": say,
-            "whisper": "textToWhisper",
-            "delegate": "invite|bye|utt"
+            "whisper": "textToWhisper",  # maybe set on an invite or utt
+            "delegate": "invite|bye|utt" # this may be set by the assistant
         }
     }
     return conRespObject

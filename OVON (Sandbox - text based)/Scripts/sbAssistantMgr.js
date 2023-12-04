@@ -182,7 +182,7 @@ const assistantTable = [
   {
     assistant: {
       name: "wizard",
-      voiceIndex: 133,
+      voiceIndex: 108,
       lightColor: "#99e6e6",
       markerColor: "#29a3a3",
       serviceName: "DaVinci_LLM",
@@ -194,7 +194,7 @@ const assistantTable = [
   {
     assistant: {
       name: "ovon_auto",
-      voiceIndex: 142,
+      voiceIndex: 114,
       lightColor: "#99e6e6",
       markerColor: "#29a3a3",
       serviceName: "Debbie_OVONAUTO",
@@ -206,7 +206,7 @@ const assistantTable = [
   {
     assistant: {
       name: "cassandra",
-      voiceIndex: 115,
+      voiceIndex: 4255,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -218,7 +218,7 @@ const assistantTable = [
   {
     assistant: {
       name: "Madison",
-      voiceIndex: 115,
+      voiceIndex: 4255,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -230,7 +230,7 @@ const assistantTable = [
   {
     assistant: {
       name: "Burokratt",
-      voiceIndex: 142,
+      voiceIndex: 120,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "Estonia",
@@ -242,7 +242,7 @@ const assistantTable = [
   {
     assistant: {
       name: "ejtalk",
-      voiceIndex: 115,
+      voiceIndex: 4255,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -254,7 +254,7 @@ const assistantTable = [
   {
     assistant: {
       name: "george",
-      voiceIndex: 115,
+      voiceIndex: 95,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -266,7 +266,7 @@ const assistantTable = [
   {
     assistant: {
       name: "mary",
-      voiceIndex: 115,
+      voiceIndex: 116,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -278,7 +278,7 @@ const assistantTable = [
   {
     assistant: {
       name: "einstein",
-      voiceIndex: 115,
+      voiceIndex: 144,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -290,7 +290,7 @@ const assistantTable = [
   {
     assistant: {
       name: "leah",
-      voiceIndex: 115,
+      voiceIndex: 80,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -302,13 +302,25 @@ const assistantTable = [
   {
     assistant: {
       name: "library",
-      voiceIndex: 115,
+      voiceIndex: 165,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
       serviceAddress: "https://ovon.xcally.com/smartlibrary",
       authCode: "AuZ9SYtXn",
       contentType: "application/json"
+    }
+  },
+  {
+    assistant: {
+      name: "peggy",
+      voiceIndex: 115,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "http://localhost:6002",
+      authCode: "AuZ9SYtXn",
+      contentType: ""
     }
   }
 ]

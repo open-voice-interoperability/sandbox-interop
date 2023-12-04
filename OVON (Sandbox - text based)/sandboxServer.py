@@ -4,10 +4,11 @@
 #     python sandboxServer.py
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import requests
+#import requests
 import os
 import mimetypes
-
+import json
+from AssistantServers.OVONServerModules.simpleAssistant import exchange
 port = 6002
 print ("Started Sandbox Browser Service: ", port, "\n")
 
@@ -39,9 +40,6 @@ class Serv(SimpleHTTPRequestHandler):
             file_to_open = "File not found"
             self.send_response(404)
         self.end_headers()
-        #self.wfile.write(bytes(file_to_open, 'utf-8'))
-
-        #print(os.listdir())
     def do_PUT(self):
         rootpath = os.path.realpath(os.path.dirname(__file__))
         rootpath = rootpath.replace("\\", "/" )
@@ -64,13 +62,25 @@ class Serv(SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'text/html')
         self.end_headers()
     def do_POST(self):
-        #for f in os.listdir("C:/ejDev/OVON/sandbox-interop/OVON (Sandbox - text based)"):
-        #    print(f)
-        res = []
-        for path in os.listdir(self.path):
-            if os.path.isfile(os.path.join(self.path, path)): # is it a file?
-                res.append(path) 
-        return res
+        # read the message and convert it into a python dictionary
+        length = int(self.headers.get('content-length'))
+        #length = int(self.headers.getheader('content-length'))
+        message = json.loads(self.rfile.read(length))
+        
+        # add a property to the object, just to mess with data
+        message['received'] = 'ok'
+
+        # Do assistant stuff
+        responseJSONStr = exchange( message)
+        
+        # send the message back
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(bytes(responseJSONStr, 'utf-8'))
+        #self.wfile.write(bytes(json.dumps(message, ensure_ascii=False), 'utf-8'))
 
 httpd = HTTPServer(('localhost', port), Serv)
 httpd.serve_forever()
+
+# python sandboxServer.py

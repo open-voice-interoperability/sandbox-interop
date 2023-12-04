@@ -177,7 +177,9 @@ function displayResponseUtterance( text, col ) {
     resp += '</b>';
     var responseDiv = document.getElementById("response");
     responseDiv.innerHTML = resp;
-    //document.getElementById( 'response' ).innerHTML = resp;
+    if( usingTTS){
+        sbSpeak( text, assistantObject );
+    }
     return;
   }
 
