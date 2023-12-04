@@ -8,7 +8,7 @@ function sbConversationStart() {
     var selectedColor = localStorage.getItem('markerColor');
     const baseEnvelope = baseEnvelopeOVON(assistantObject);
 
-    document.getElementById("AssistantName").value = localStorage.getItem('assistantName');
+    document.getElementById("AssistantName").innerText = localStorage.getItem('assistantName');
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected

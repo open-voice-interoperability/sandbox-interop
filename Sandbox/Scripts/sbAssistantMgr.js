@@ -322,6 +322,18 @@ const assistantTable = [
       authCode: "AuZ9SYtXn",
       contentType: ""
     }
+  },
+  {
+    assistant: {
+      name: "sam",
+      voiceIndex: 108,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "http://10.0.0.218:8242/",
+      authCode: "AuZ9SYtXn",
+      contentType: ""
+    }
   }
 ]
 //      serviceAddress: "http://localhost:15455/clientEvent",
