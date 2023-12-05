@@ -11,6 +11,7 @@ var endTime = "";
 var uttOVON_JSON = "";
 var usingASR = false;
 var usingTTS = true;
+var usingLMM = false;
 
 function sbStartASR(){
   usingASR = true;
@@ -79,7 +80,11 @@ recognition.onresult = function(event) {
   //=============
   // build the msg here and then send it
   // sbPostToAssistant( assistantObject, OVONmsg )
-  sendReply();
+  if( usingLMM ){
+    sbPostToLLM( finalAsrText );
+  }else{
+    sendReply();
+  }
   //=============
 }
 

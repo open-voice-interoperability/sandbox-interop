@@ -1,7 +1,14 @@
 var sbLLM_CommObject = null; // used to send http messages 
 var retLLMJSON;
 var sendLLMJSON;
+//var sbInitPrompt = "";
+var assObj;
 var convoTurnCount = 0;
+
+function sbLLMStartASR(){
+  usingLMM = true;
+  sbStartASR();
+}
 
 function sbInitialLLMPrompt( input ) {
     sendLLMJSON = {
@@ -11,14 +18,22 @@ function sbInitialLLMPrompt( input ) {
         "messages": []
     }
     convoTurnCount = 0;
-    sbPostToLLM( input );
+
+    // HACK for now
+    assistantName = "ejtalk";
+    assObj = ejGetAgentParams( assistantName );
+
+    sendLLMJSON.messages.push( sbBuildRoleContent( "user", input ) );
+    //sbInitPrompt = input;
+    //sbPostToLLM( input );
 }
 
-function sbBuildRoleContent( input ) {
+function sbBuildRoleContent( role, input ) {
     const roleContent = {
         "role": "user",
         "content": "some input"
     }
+    roleContent.role = role;
     roleContent.content = input;
     return roleContent;
 }
@@ -42,7 +57,7 @@ function sbPostToLLM( input ) { //send to LLM
     sbLLM_CommObject.setRequestHeader('Authorization', key );
     sbLLM_CommObject.setRequestHeader('Content-Type', "application/json" );
 
-    sendLLMJSON.messages.push( sbBuildRoleContent( input ) );
+    sendLLMJSON.messages.push( sbBuildRoleContent( "user", input ) );
     jsonSENT = JSON.stringify( sendLLMJSON );
 
     sbLLM_CommObject.send( jsonSENT ); // send to server
@@ -61,6 +76,7 @@ function sbPostToLLM( input ) { //send to LLM
     conversationLOG.push(sentMessage);
     localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
   }
+  usingLMM = false;
 }
 
 function sbLLMstateChecker(){ // should something come in do this
@@ -72,6 +88,8 @@ function sbLLMstateChecker(){ // should something come in do this
         retLLMJSON = JSON.parse(sbData);
 
         var text = retLLMJSON.choices[0].message.content;
+        sendLLMJSON.messages.push( sbBuildRoleContent( "assistant", text ) );
+        sbSpeak( text, assObj );
         var resp = `<span style='color:green;'>${text}</span>`;
         var responseDiv = document.getElementById("response");
         responseDiv.innerHTML = resp;

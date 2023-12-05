@@ -8,6 +8,8 @@
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
     <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbSpeech.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
     <script language="JavaScript" src= "../Scripts/sbLLM.js"></script>
     <style>
         .responseWrap {
@@ -44,7 +46,8 @@
         <tr>
             <td>
                 <h3>Converse</h3>
-                <input type="text" id="promptLLM" placeholder="What human says" onchange="sbPostToLLM( document.getElementById('promptLLM').value );">
+                <img src="../Media/img/Interoperability_Logo_icon_color.jpg" onclick="sbLLMStartASR();"title="Click Here to Speak" height="50" width="50"/>
+                <input type="text" id="utterance" placeholder="What human says" onchange="sbPostToLLM( document.getElementById('promptLLM').value );">
             </td>
         </tr>
         <tr>
