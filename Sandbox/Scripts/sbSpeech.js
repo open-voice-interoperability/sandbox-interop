@@ -129,27 +129,31 @@ function saveTTS_TestText() { // allow setting a "test phrase" to be set
 }
 
 function sbSpeak( say, assistantObject ) {
-  v = 2; // default to index=2 and gray if not "Edge" browser
-  aColor = "#555555";
-  if( sbBrowserType == "chromium based edge"){
-    if( assistantObject ){
+  var v = 2; // Default to index=2
+  var aColor = "#555555";
+ 
+  if (sbBrowserType === "chromium based edge" && assistantObject) {
+    setTimeout(function () {
+      var voices = speechSynthesis.getVoices();
       v = assistantObject.assistant.voiceIndex;
-      v=(v==115)?116:v;
-      v=(v==4255)?115:v;
+      v = (v === 115) ? 116 : v;
+      v = (v === 4255) ? 115 : v;
       aColor = assistantObject.assistant.lightColor;
-    }
-  }
-  var msg = new SpeechSynthesisUtterance(say);
-  var voices = speechSynthesis.getVoices();
-  msg.voice = voices[v];
-  //msg.volume=0-1,msg.rate=0.1-10,msg.pitch=0-2,msg.text="stuff to say",msg.lang='en-US'
 
-  msg.onend = function (event) {
-    startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-    // Do something at the end of the TTS speech?????
-  };
-  window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
-  window.speechSynthesis.speak(msg);
+      // Ensure the selected voice index is within bounds
+      v = Math.min(Math.max(0, v), voices.length - 1);
+
+      var msg = new SpeechSynthesisUtterance(say);
+      msg.voice = voices[v];
+      //msg.volume=0-1,msg.rate=0.1-10,msg.pitch=0-2,msg.text="stuff to say",msg.lang='en-US'
+      msg.onend = function (event) {
+        startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
+        // Do something at the end of the TTS speech?????
+      };
+      window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
+      window.speechSynthesis.speak(msg);
+    }, 100);
+  }
 }
 
 function processCommands(){

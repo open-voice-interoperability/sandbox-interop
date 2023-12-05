@@ -75,3 +75,15 @@
   .label {
     font-weight: bold;
   }
+
+#microphoneIcon {
+    /* Initial styles */
+    cursor: pointer !important;
+    filter: brightness(100%);
+    transition: filter 0.75s ease;
+    position: relative; 
+}
+
+#microphoneIcon:hover {
+    filter: brightness(135%);
+}

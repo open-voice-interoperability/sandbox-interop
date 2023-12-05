@@ -39,7 +39,6 @@ function handleAssistantSelectionChange() {
     document.getElementById('assistantSettings').style.display = 'block';
     var selectedAssistantIndex = document.getElementById("sbAssist").value;
     var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
-    
     localStorage.setItem('assistantName', selectedAssistant.name);
     localStorage.setItem('markerColor', selectedAssistant.markerColor);
     displayAssistantSettings();
@@ -86,9 +85,11 @@ function displayAssistantSettings() {
             <strong><input type="text" id="assistantID" value="${uniqueID}"></strong>
         </div>
   <div>
-      <label for="voiceIndex"><b>Voice Index:</b></label>
-      <button id="voiceSelect" class="load-voices" onclick="loadVoiceSelect()">Load Voices</button>
-      </div>
+  <label for="voiceIndex"><b>Voice Index:</b></label>
+  <strong><input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}"></strong>
+
+  <button id="voiceSelect" class="load-voices" onclick="loadVoiceSelect()">Load Voices</button>
+  </div>
   <div>
       <label for="lightColor"><b>Light Color:</b></label>
       <input type="text" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
@@ -124,7 +125,6 @@ function displayAssistantSettings() {
 var updateClicked = false;
 // Function to update the assistant settings based on user input
 function updateAssistantSettings() {
-  console.log("Update button clicked");
   updateClicked = true;
 
   var selectedAssistantIndex = document.getElementById("sbAssist").value;
@@ -140,7 +140,7 @@ function updateAssistantSettings() {
   selectedAssistant.contentType = document.getElementById("contentType").value;
   localStorage.setItem("markerColor", selectedAssistant.markerColor);
   localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
-  console.log("Marker Color: " + selectedAssistant.markerColor);
+  console.log("Update button clicked");
   displayAssistantSettings();
 }
 
@@ -326,13 +326,13 @@ const assistantTable = [
   {
     assistant: {
       name: "sam",
-      voiceIndex: 108,
+      voiceIndex: 80,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
       serviceAddress: "http://10.0.0.218:8242/",
       authCode: "AuZ9SYtXn",
-      contentType: ""
+      contentType: "application/json"
     }
   }
 ]
