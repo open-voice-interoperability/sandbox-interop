@@ -36,11 +36,12 @@ function handleAssistantSelectionChange() {
   var selectedAssistantIndex = document.getElementById("sbAssist").value;
   if (selectedAssistantIndex !== "") {
     // Assistant is selected, show the settings
-    document.getElementById('assistantSettings').style.display = 'block';
+    document.getElementById("assistantSettings").style.display = 'block';
     var selectedAssistantIndex = document.getElementById("sbAssist").value;
     var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
-    localStorage.setItem('assistantName', selectedAssistant.name);
-    localStorage.setItem('markerColor', selectedAssistant.markerColor);
+    localStorage.setItem("voiceIndex", selectedAssistant.voiceIndex);
+    localStorage.setItem("assistantName", selectedAssistant.name);
+    localStorage.setItem("markerColor", selectedAssistant.markerColor);
     displayAssistantSettings();
   } else {
     // No assistant selected, hide the settings
@@ -88,7 +89,7 @@ function displayAssistantSettings() {
   <label for="voiceIndex"><b>Voice Index:</b></label>
   <strong><input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}"></strong>
 
-  <button id="voiceSelect" class="load-voices" onclick="loadVoiceSelect()">Load Voices</button>
+  <button id="voiceSelect" class="load-voices" onclick="openVoiceWindow()">Load Voices</button>
   </div>
   <div>
       <label for="lightColor"><b>Light Color:</b></label>
@@ -140,6 +141,8 @@ function updateAssistantSettings() {
   selectedAssistant.contentType = document.getElementById("contentType").value;
   localStorage.setItem("markerColor", selectedAssistant.markerColor);
   localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
+  localStorage.setItem('voiceIndex', selectedAssistant.voiceIndex);
+
   console.log("Update button clicked");
   displayAssistantSettings();
 }

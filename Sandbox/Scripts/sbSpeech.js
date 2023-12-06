@@ -96,41 +96,53 @@ function cleanOutPunctuation( str ){
   return str;
 }
       
-//build the TTS Voice <select> html innerHTML string
+// build the TTS Voice <select> html innerHTML string
 function loadVoiceSelect() {
-  window.open('sbVoices.html', '_blank');
-  var ttsEngs = speechSynthesis.getVoices();
-
-  var selCntl = '<label for="TTSVoices">Choose a TTS Voice:</label>';
-  selCntl += '<select name="TTSVoices" id="ejTTS" onchange="saveTTSVoiceIndex();">';
-  for (var i = 0; i < ttsEngs.length; i++) {
-    if( i != 115 ){
-      selCntl += '<option value="';
-      selCntl += i;
-      selCntl += '">';
-      selCntl += i + ": " + ttsEngs[i].name;
       selCntl += '</option>';
+  speechSynthesis.onvoiceschanged = function () {
+    var ttsEngs = speechSynthesis.getVoices();
+    var selCntl = '<label for="TTSVoices">Choose a TTS Voice:</label>';
+    selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
+    for (var i = 0; i < ttsEngs.length; i++) {
+      if (i !== 115) {
+        var voiceName = ttsEngs[i].name.toLowerCase();
+        if (voiceName.includes("microsoft")) {
+          selCntl += '<option value="';
+          selCntl += i;
+          selCntl += '">';
+          selCntl += i + ": " + ttsEngs[i].name;
+          selCntl += '</option>';
+        }
+      }
     }
-  }
-  selCntl += "</select>";
-  document.getElementById( 'information' ).innerHTML = selCntl;
-  return;
+    selCntl += "</select>";
+    document.getElementById('information').innerHTML = selCntl;
+  };
+}
+
+function openVoiceWindow() {
+  window.open('sbVoices.html', '_blank');
 }
 
 function saveTTSVoiceIndex() {  
-  var vInd = document.getElementById("ejTTS").selectedIndex;
-  // maybe add the "name" and index to the spoken example?
-  var msg = new SpeechSynthesisUtterance("How is this voice?");
-  var voices = speechSynthesis.getVoices();
-  msg.voice = voices[vInd];
-  window.speechSynthesis.cancel(); // for some UNKNOWN reason this is needed on Win10 machines
-  window.speechSynthesis.speak(msg);
+  var vInd = document.getElementById("sbTTS").selectedIndex;
+  var voices = speechSynthesis.getVoices().filter(function(voice) {
+    return voice.name.toLowerCase().includes("microsoft");
+  });
+
+  if (vInd >= 0 && vInd < voices.length) {
+    var selectedVoice = voices[vInd];
+    localStorage.setItem("voiceIndex", vInd);
+  } else {
+    console.error("Invalid voice index:", vInd);
+  }
 }
 
 function saveTTS_TestText() { // allow setting a "test phrase" to be set
   var test =  document.getElementById("sbTTS_Text").value;
   test += " ";
   localStorage.setItem( "sbTTSTestPhrase", test );
+  sbSpeak(test, assistantObject);
 }
 
 function sbSpeak( say, assistantObject ) {
@@ -140,7 +152,7 @@ function sbSpeak( say, assistantObject ) {
   if (sbBrowserType === "chromium based edge" && assistantObject) {
     setTimeout(function () {
       var voices = speechSynthesis.getVoices();
-      v = assistantObject.assistant.voiceIndex;
+      v = localStorage.getItem("voiceIndex");
       v = (v === 115) ? 116 : v;
       v = (v === 4255) ? 115 : v;
       aColor = assistantObject.assistant.lightColor;

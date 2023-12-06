@@ -134,6 +134,7 @@ function buildWhisperOVON( speaker, whisperStr ){
 function startBareInvite() {
     localStorage.setItem("bareInviteSelected", "true");
     location.href = 'sbConverse.html';
+    updateAssistantSettings();
 }
 
 function inviteWithUtterance() {
@@ -177,6 +178,7 @@ function displayResponseUtterance( text, col ) {
     resp += '</b>';
     var responseDiv = document.getElementById("response");
     responseDiv.innerHTML = resp;
+
     if( usingTTS){
         sbSpeak( text, assistantObject );
     }
