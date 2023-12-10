@@ -88,3 +88,37 @@
     transition: filter 0.75s ease;
 }
 
+#lineSeparator {
+    border-top: 1px solid #777777;
+    margin: 10px 0;
+  }
+  #backgroundPickerLabel {
+    text-align: left;
+    margin-top: -5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  
+  #colorPickerLabel, #brightnessPickerLabel {
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 3.5px;
+    vertical-align: top;
+    margin-left: 5px;
+    margin-right: 3px;
+  }
+  #testBtn {
+    width: 100px;
+}
+  #sbTTS_Text {
+    margin-top: 12px;
+    width: 400px;
+    resize: vertical;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14px;
+    max-height: 200px;
+}
+#startBtn {
+    margin-top: 20px;
+}

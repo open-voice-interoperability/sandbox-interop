@@ -95,28 +95,91 @@ function cleanOutPunctuation( str ){
   str = str.replace( "!", "" );
   return str;
 }
-      
+var selectedVoiceInfo = null;
+function loadLangSelect(){
+    var ttsEngs = speechSynthesis.getVoices();
+    var selCntl = '<label for="langBtn">Select Language:</label>';
+    selCntl += '<select id="langSelect" onchange="loadVoiceSelect();">';
+    var uniqueLangs = new Set();
+    for (var j = 0; j < ttsEngs.length; j++) {
+        if (j !== 115) {
+            var voiceName = ttsEngs[j].name.toLowerCase();
+            if (voiceName.includes("microsoft")) {
+                var lang = ttsEngs[j].name.split('-')[1].trim().split(' ').shift();
+                uniqueLangs.add(lang);
+            }
+        }
+    }
+    var sortedLangs = Array.from(uniqueLangs).sort();
+    
+    // Iterate over the unique language codes and add them to the select element
+    sortedLangs.forEach(function (lang) {
+        selCntl += '<option value="' + lang + '">' + lang + '</option>';
+    });
+    selCntl += '</select>';
+    document.getElementById('langInfo').innerHTML = selCntl;
+}
 // build the TTS Voice <select> html innerHTML string
 function loadVoiceSelect() {
-  speechSynthesis.onvoiceschanged = function () {
-    var ttsEngs = speechSynthesis.getVoices();
-    var selCntl = '<label for="TTSVoices">Choose a TTS Voice:</label>';
-    selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
-    for (var i = 0; i < ttsEngs.length; i++) {
+  var langSelect = document.getElementById('langSelect');
+  var selectedLang = langSelect.value;
+  var ttsEngs = speechSynthesis.getVoices();
+  var selCntl = '<br><label for="TTSVoices">Choose a TTS Voice:</label>';
+  selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
+  for (var i = 0; i < ttsEngs.length; i++) {
       if (i !== 115) {
         var voiceName = ttsEngs[i].name.toLowerCase();
-        if (voiceName.includes("microsoft")) {
-          selCntl += '<option value="';
-          selCntl += i;
-          selCntl += '">';
-          selCntl += i + ": " + ttsEngs[i].name;
-          selCntl += '</option>';
+        if (voiceName.includes("microsoft") && ttsEngs[i].name.includes(selectedLang)) {
+          selCntl += '<option value="' + i + '">' + i + ": " + ttsEngs[i].name + '</option>';
+
         }
       }
     }
     selCntl += "</select>";
     document.getElementById('information').innerHTML = selCntl;
-  };
+}
+
+speechSynthesis.onvoiceschanged = function () {
+  var langInfoElement = document.getElementById('langInfo');
+  var voiceInfoElement = document.getElementById('information');
+  if (!langInfoElement && !voiceInfoElement) {
+    // The element with ID 'langInfo' does not exist on this page.
+    return;
+  }
+  loadLangSelect();
+  loadVoiceSelect();
+};
+
+var lastSelectedVoices = [];
+function updateSelectedVoiceInfo() {
+  var ttsEngs = speechSynthesis.getVoices();
+  var selectedIndex = document.getElementById('sbTTS').value;
+  var selectedVoiceName;
+  
+  for (var j = 0; j < ttsEngs.length; j++) {
+    if (j == selectedIndex && j !== 115) {
+      var voiceName = ttsEngs[j].name;
+      if (voiceName.toLowerCase().includes("microsoft")) {
+        selectedVoiceName = j + ': ' + voiceName;
+        console.log(selectedVoiceName);
+        break; // No need to continue the loop once the voice is found
+      }
+    }
+  }
+  var selectedVoiceInfoElement = document.getElementById('selectedVoiceInfo');
+  if (selectedVoiceName) {
+    // Push the selected voice name into the array
+    lastSelectedVoices.push(selectedVoiceName);
+    // Keep only the last two selected voices in the array
+    if (lastSelectedVoices.length > 3) {
+      lastSelectedVoices.shift(); // Remove the oldest voice name
+    }
+    // Display the last 2 selected voices along with the current voice
+    selectedVoiceInfoElement.innerHTML =
+    '<br><b>Last Selected Voices: <br></b>' + lastSelectedVoices.join('</br>') + '\n';
+  } else {
+    selectedVoiceInfoElement.innerHTML = 'No voice selected.';
+  }
 }
 
 function openVoiceWindow() {
@@ -135,6 +198,9 @@ function saveTTSVoiceIndex() {
   } else {
     console.error("Invalid voice index:", vInd);
   }
+  say = document.getElementById("sbTTS_Text").value;
+  updateSelectedVoiceInfo();
+  sbSpeak(say ,assistantObject);
 }
 
 function saveTTS_TestText() { // allow setting a "test phrase" to be set

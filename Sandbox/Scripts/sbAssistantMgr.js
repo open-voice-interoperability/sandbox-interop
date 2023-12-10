@@ -42,6 +42,7 @@ function handleAssistantSelectionChange() {
     localStorage.setItem("voiceIndex", selectedAssistant.voiceIndex);
     localStorage.setItem("assistantName", selectedAssistant.name);
     localStorage.setItem("markerColor", selectedAssistant.markerColor);
+    localStorage.setItem('lightColor', selectedAssistant.lightColor);
     displayAssistantSettings();
   } else {
     // No assistant selected, hide the settings
@@ -93,7 +94,7 @@ function displayAssistantSettings() {
   </div>
   <div>
       <label for="lightColor"><b>Light Color:</b></label>
-      <input type="text" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
+      <input type="color" id="lightColor" value="${selectedAssistant.assistant.lightColor}">
   </div>
   <div>
       <label for="markerColor"><b>Marker Color:</b></label>
@@ -142,6 +143,7 @@ function updateAssistantSettings() {
   localStorage.setItem("markerColor", selectedAssistant.markerColor);
   localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
   localStorage.setItem('voiceIndex', selectedAssistant.voiceIndex);
+  localStorage.setItem('lightColor', selectedAssistant.lightColor);
 
   console.log("Update button clicked");
   displayAssistantSettings();

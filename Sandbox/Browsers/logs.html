@@ -11,12 +11,24 @@
   <link rel="stylesheet" href="../Scripts/css/styles.css">
 </head>
 <body>
-  <h1>Logs</h1>
+  <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><br><b> OVON Sandbox - Logs</b></h2>
+  <div id="conversationId"><b>Conversation ID: </b><span id="displayedConversationId"></span> </div>
+  <div id="conversationDate"><b>Conversation Date: </b><span id="displayedDate"></span></div>
+  <div id="lineSeparator"></div>
+  <div id="backgroundPickerLabel">Pick the background you want:</div>
+  <label id="colorPickerLabel" for="backgroundColorPicker">Color:</label>
+  <input type="color" id="backgroundColorPicker" onchange="changeBackgroundColor()">
+  <label id="brightnessPickerLabel" for="backgroundColorSlider">Brightness:</label>
+  <input type="range" id="brightnessSlider" min="0" max="100" onchange="changeBackgroundColor()">
+  <span id="brightnessPercentage">50%</span>
+  <br>
+  <div id="lineSeparator"></div>
   <button type="button" onclick="applyFilter('all')">Show All</button>
   <button type="button" onclick="applyFilter('sent')">OVON Sent</button>
   <button type="button" onclick="applyFilter('received')">OVON Received</button>
   <button type="button" onclick="showFullDialog()">Full Dialog</button>
   <button type="button" onclick="goBack()">Back</button>
+  <div id="lineSeparator"></div>
   <div id="logContainer"></div>
 </body>
 </html>

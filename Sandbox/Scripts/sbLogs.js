@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     displayLogs(logs);
+    document.getElementById('backgroundColorPicker').value ;
+    document.getElementById('brightnessSlider').value = '65';
+    // Trigger the changeBackgroundColor function with default values
+    changeBackgroundColor();
 });
 
 const logs = JSON.parse(localStorage.getItem('conversationLog')) || [];
@@ -17,44 +21,34 @@ function applyFilter(filter) {
     displayLogs(filteredLogs);
 }
 
-function showFullDialog() {
-    const fullDialog = logs.map(log => {
-    try {
+function showFullDialog(lightColor) {
+    const dialogContainer = document.getElementById('logContainer');
+    dialogContainer.innerHTML = ''; // Clear previous logs
+    logs.forEach(log => {
+        const logElement = document.createElement('div');
+        logElement.className = `log ${log.direction ? log.direction.toLowerCase() : ''}`;
+
         const contentObject = JSON.parse(log.content);
-        const sender = contentObject?.ovon?.sender?.from || 'Unknown';
-        let token;
 
-        if (log.direction && log.direction.toLowerCase() === 'sent') {
-        // Check if it's an "invite" event type
-            if (contentObject?.ovon?.events[0]?.eventType === 'invite') {
-          
-            const url = contentObject?.ovon?.events[0]?.parameters?.to?.url || 'URL not found';
-            const whisperMessageEvent = contentObject?.ovon?.events.find(event => event.eventType === 'whisper');
-            const whisperMessage = whisperMessageEvent?.parameters?.dialogEvent?.features?.text?.tokens[0]?.value || '';
-
-            if (whisperMessage) {
-                return `${sender} - Invite w/ whisper: ${whisperMessage}`;
+        const ovon = contentObject?.ovon || {};
+        const user = ovon.sender?.from 
+        const assistantName = localStorage.getItem('assistantName');
+        const eventType = ovon.events[0]?.eventType || '';
+        const parameters = ovon.events[0]?.parameters || {};
+        if (log.direction === 'sent') {
+            if (eventType === 'invite') {
+                logElement.textContent = `${user} - Bare Invite to: ${localStorage.getItem("assistantName")} at ${parameters.to.url || 'unknown'}`;
             } else {
-                return `${sender} - Bare Invite to: ${url}`;
+                logElement.textContent = `${user} - ${parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
             }
-            } else {
-            const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
-            token = tokens ? tokens[0]?.value : 'Token not found';
-            return `${sender} - ${token}`;
-            }
-        } else if (log.direction && log.direction.toLowerCase() === 'received') {
-            const tokens = contentObject?.ovon?.events.find(event => event.eventType === 'utterance')?.parameters?.dialogEvent?.features?.text?.tokens;
-            token = tokens ? tokens[0]?.value : 'Token not found';
-            return `${sender} - ${token}`;
+        } else if (log.direction === 'received') {
+            logElement.textContent = `${assistantName} - ${parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
+            logElement.style.backgroundColor = lightColor; 
         }else{
             return 'Invalid log direction';
         }
-    } catch (error) {
-      console.error('Error parsing log content:', error);
-      return 'Error parsing log content';
-    }
-  });
-    displayLogs(fullDialog); // Display full dialog
+        dialogContainer.appendChild(logElement);
+     }); // Display full dialog
 }
   
   
@@ -62,7 +56,7 @@ function showFullDialog() {
 function displayLogs(logsToDisplay) {
     const logContainer = document.getElementById('logContainer');
     logContainer.innerHTML = ''; // Clear previous logs
-
+    const lightColor = localStorage.getItem("lightColor");
     logsToDisplay.forEach(log => {
         const logElement = document.createElement('div');
         logElement.className = `log ${log.direction ? log.direction.toLowerCase() : ''}`;
@@ -77,7 +71,16 @@ function displayLogs(logsToDisplay) {
 
             const contentObject = JSON.parse(log.content);
             const ovon = contentObject?.ovon || {};
-        
+
+            if (logDirection === 'received') {
+                // Set background color for received messages
+                logElement.style.backgroundColor = lightColor;
+                const conversationId = ovon.conversation?.id || 'Unknown Conversation ID';
+                const convoDate = ovon.events[0].parameters.dialogEvent.span.startTime
+                const datePart = convoDate.split(' ')[0];
+                document.getElementById('displayedConversationId').textContent = conversationId;
+                document.getElementById('displayedDate').textContent = datePart;
+              }
             for (const [key, value] of Object.entries(ovon)) {
                 if (key !== 'events') {
                 const elementDiv = document.createElement('div');
@@ -116,3 +119,36 @@ function saveTimeStampedLogFile(){
     writeSBFile( fileName, JSON.stringify(conversationLOG, null, 2 ) );
 }
 */
+
+
+function changeBackgroundColor() {
+    const colorPicker = document.getElementById("backgroundColorPicker");
+    const brightnessSlider = document.getElementById("brightnessSlider");
+    const brightnessPercentage = document.getElementById('brightnessPercentage');
+    brightnessPercentage.textContent = `${brightnessSlider.value}%`;
+    // Get the selected color and brightness
+    const selectedColor = colorPicker.value;
+    const brightness = brightnessSlider.value;
+    // Adjust brightness using a helper function
+    const adjustedColor = adjustBrightness(selectedColor, brightness);
+    // Update the CSS for sent messages
+    document.styleSheets[0].addRule('.log.sent', `background-color: ${adjustedColor} !important`);
+    const lightColor = localStorage.getItem("lightColor");
+    document.styleSheets[0].addRule('.log.received', `background-color: ${lightColor} !important`);
+}
+// Helper function to adjust brightness
+function adjustBrightness(hex, percent) {
+  // Convert hex to RGB
+  hex = hex.replace(/^#/, '');
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  // Adjust brightness
+  const adjustedR = Math.min(255, r + (percent * 2.55));
+  const adjustedG = Math.min(255, g + (percent * 2.55));
+  const adjustedB = Math.min(255, b + (percent * 2.55));
+  // Convert back to hex
+  const adjustedHex = `#${(1 << 24 | adjustedR << 16 | adjustedG << 8 | adjustedB).toString(16).slice(1)}`;
+  return adjustedHex;
+}

@@ -1,8 +1,6 @@
 import json
 import logging
 from datetime import datetime
-#from dotenv import load_dotenv
-
 
 server_info = ""
 greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]
@@ -51,6 +49,10 @@ def generate_response(inputOVON):
     ovon_response = {
         "ovon": {
             "conversation": inputOVON["ovon"]["conversation"],
+            "schema": {
+                "version": "0.9.0",
+                "url": "not_published_yet"
+            },
             "sender": {"from": sender_from},
             "responseCode": 200,
             "events": [

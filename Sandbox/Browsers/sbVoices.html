@@ -15,36 +15,40 @@
 
 <body>
   <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox - Voice Selection</b></h2>
-
+  <div id="lineSeparator"></div>
   <table class="sbTable">
-    <tr><td colspan="4"><span id="information"></span></td></tr>
     <tr>
-      <td >Human's Name:  <input id="human" value="" onchange="ejSetCookie('humanName', document.getElementById('human').value)" width="60"></input></td>
-
+      <td colspan="4">
+        <div id="langInfo"></div>
+      </td>
     </tr>
     <tr>
-      <td>
-        <button onclick="saveTTS_TestText();">Test Voice</button>
-        <input id="sbTTS_Text" value="Hello. How do you like this voice?"></input>
+      <td colspan="4">
+        <div id="information"></div>
       </td>
     </tr>
     <tr>
       <td>
-        <button type='button' id='useTTS' onclick="sbToggleButton('sbTTS_ON', 'useTTS', 'ttsON', 'ttsOFF');">ttsON</button>
+        <br>
+        <div style="display: inline-block;">
+          <h7>Input you want to test: </h7>
+        </div>
+        <br>
+        <textarea id="sbTTS_Text">Hello. How do you like this voice?</textarea>
+        <br>
+        <div style="display: inline-block;">
+          <button id="testBtn" onclick="saveTTS_TestText();" style="margin-top: 5px;">Test Voice</button>
+        </div>
+        <div id="selectedVoiceInfo"></div>
       </td>
+      </td>
+    </tr>
+    <tr>
       <td align="left" colspan="2">
         <h5><button onclick="startBareInvite()"><b class="ejRed">Sandbox CONVERSATION</b></button></h5>
       </td>
     </tr>
-    <tr>
-      <td>ServerURL:port:</td>
-      <td><input id="servURL" value="localhost:15455" onchange="ejSetCookie('ejServerIP',document.getElementById('servURL').value,365)"></input></td>
-    </tr>
   </table>
   <br/>
-  <script>
-    loadVoiceSelect();
-    
-  </script>
 </body>
 </html>
