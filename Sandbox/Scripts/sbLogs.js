@@ -105,3 +105,14 @@ function displayLogs(logsToDisplay) {
 function goBack() {
     window.location.href = 'sbConverse.html'; // Adjust the URL as needed
 }
+
+/*
+// Leah: I tried to put this here but when I add the sbLogs.js to sbConverse.html is keeps trying
+//      to fill in the log container which does not exist.
+function saveTimeStampedLogFile(){
+    var fileName = "OVON";
+    fileName += cleanDateTimeString();
+    fileName += ".log.txt";
+    writeSBFile( fileName, JSON.stringify(conversationLOG, null, 2 ) );
+}
+*/

@@ -11,7 +11,7 @@ var endTime = "";
 var uttOVON_JSON = "";
 var usingASR = false;
 var usingTTS = true;
-var usingLMM = false;
+var useLLM = false;
 
 function sbStartASR(){
   usingASR = true;
@@ -80,7 +80,7 @@ recognition.onresult = function(event) {
   //=============
   // build the msg here and then send it
   // sbPostToAssistant( assistantObject, OVONmsg )
-  if( usingLMM ){
+  if( useLLM ){
     sbPostToLLM( finalAsrText );
   }else{
     sendReply();
@@ -152,8 +152,8 @@ function sbSpeak( say, assistantObject ) {
     setTimeout(function () {
       var voices = speechSynthesis.getVoices();
       v = localStorage.getItem("voiceIndex");
-      v = (v === 115) ? 116 : v;
-      v = (v === 4255) ? 115 : v;
+      v = (v == 115) ? 116 : v;
+      v = (v == 4255) ? 115 : v;
       aColor = assistantObject.assistant.lightColor;
 
       // Ensure the selected voice index is within bounds

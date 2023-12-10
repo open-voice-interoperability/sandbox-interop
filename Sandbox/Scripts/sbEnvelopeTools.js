@@ -53,7 +53,9 @@ function baseEnvelopeOVON( someAssistant ){
         localStorage.setItem( "currentConversationID", conversationID );
     }
     OVON_Base.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_Base.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
+    OVON_Base.ovon.sender.from = someAssistant.assistant.serviceAddress;
+
+    //OVON_Base.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
     return OVON_Base;
 }
 
@@ -153,7 +155,7 @@ function clearValue(OVONmsg) {
     
     if (isInviteWithWhisper) {
         const whisperMessage = localStorage.getItem("whisperMessage");
-        const ovonWhisper = buildWhisperOVON("someSpeakerID", whisperMessage);
+        const ovonWhisper = buildWhisperOVON(localStorage.getItem( "humanFirstName" ), whisperMessage);
         OVONmsg.ovon.events.push(ovonWhisper);
         
         localStorage.removeItem("InviteWithWhisper");
@@ -168,10 +170,10 @@ function clearValue(OVONmsg) {
 
 //Present the Assistant response html innerHTML string
 function displayResponseUtterance( text, col ) {
-    var resp = "<b>";
-    //resp += ' style="color:';
-    //resp += col;
-    //resp += ';>';
+    var resp = "<b style='color:";
+    resp += ' style="color:';
+    resp += assistantObject.assistant.markerColor;
+    resp += "';>";
     resp += assistantObject.assistant.name;
     resp += ': '
     resp += text;
@@ -217,32 +219,31 @@ function sendReply() {
     const utteranceText = document.getElementById("utterance").value;
     const whisperText = document.getElementById("whisper").value;
 
-    const aIndex = localStorage.getItem("currentAssistantIndex");
-    const baseEnvelope = baseEnvelopeOVON(assistantTable[aIndex]);
+    browser = ejGetAgentParams( "assistantBrowser" );
+    const baseEnvelope = baseEnvelopeOVON(browser);
 
     // Add utterance event if utterance text is provided
     if (utteranceText.trim() !== "") {
-        const ovonUtt = buildUtteranceOVON("someSpeakerID", utteranceText);
+        const ovonUtt = buildUtteranceOVON(localStorage.getItem( "humanFirstName" ), utteranceText);
         baseEnvelope.ovon.events.push(ovonUtt);
     } else if (whisperText.trim() !== "") {
         // Add empty utterance event if only whisper text is provided
-        const emptyUtt = buildUtteranceOVON("someSpeakerID", "");
+        const emptyUtt = buildUtteranceOVON(localStorage.getItem( "humanFirstName" ), "");
         baseEnvelope.ovon.events.push(emptyUtt);
     }else{
         alert("Please provide a whisper");
         return;
     }
 
-
     // Add whisper event if whisper text is provided
     if (whisperText.trim() !== "") {
-        const ovonWhisper = buildWhisperOVON("someSpeakerID", whisperText);
-        // Insert the whisper event at index 1
+        const ovonWhisper = buildWhisperOVON(localStorage.getItem( "humanFirstName" ), whisperText);
         baseEnvelope.ovon.events.push(ovonWhisper);
     }
 
     // Set conversation ID and send to the assistant
     setEvelopeConvoID(baseEnvelope);
+    const aIndex = localStorage.getItem("currentAssistantIndex");
     sbPostToAssistant(assistantTable[aIndex], baseEnvelope);
 
     // Clear input fields
@@ -250,44 +251,43 @@ function sendReply() {
     document.getElementById("whisper").value = "";
 }
 
+function addFixZero(number) {  
+if( number < 10){ 
+    number='0' + number;
+};
+return ('_' + number);
+}
 
-  function addDateNumFixLeadZeros(number) {  
-    if( number < 10){ 
-      number='0' + number;
-    };
-    return ('_' + number);
-  }
+function cleanDateTimeString() {  
+var d=new Date();
+var dateStr = addFixZero( d.getFullYear() );
+dateStr += addFixZero( d.getMonth() + 1 );
+dateStr += addFixZero( d.getDate() );
+dateStr += addFixZero( d.getHours() + 1 );
+dateStr += addFixZero( d.getMinutes() + 1 );
+dateStr += addFixZero( d.getSeconds() + 1 );
+return dateStr;
+}
 
-  function cleanDateTimeString() {  
-    var d=new Date();
-    var dateStr = addDateNumFixLeadZeros( d.getFullYear() );
-    dateStr += addDateNumFixLeadZeros( d.getMonth() + 1 );
-    dateStr += addDateNumFixLeadZeros( d.getDate() );
-    dateStr += addDateNumFixLeadZeros( d.getHours() + 1 );
-    dateStr += addDateNumFixLeadZeros( d.getMinutes() + 1 );
-    dateStr += addDateNumFixLeadZeros( d.getSeconds() + 1 );
-    return dateStr;
-  }
+// settings stuff here
+function loadSettingsValues(){
+    document.getElementById("firstName").value = localStorage.getItem( "humanFirstName" );
+    document.getElementById("OpenAI").value = localStorage.getItem( "OpenAIKey" );
+    document.getElementById("AITemp").value = localStorage.getItem( "AITemp" );
+}
 
-  // settings stuff here
-    function loadSettingsValues(){
-        document.getElementById("firstName").value = localStorage.getItem( "humanFirstName" );
- //       document.getElementById("dataPath").value = localStorage.getItem( "dataPath" );
-        document.getElementById("OpenAI").value = localStorage.getItem( "OpenAIKey" );
-    }
+function setFirstName(){
+    localStorage.setItem( "humanFirstName", document.getElementById("firstName").value );
+}
 
-    function setFirstName(){
-        localStorage.setItem( "humanFirstName", document.getElementById("firstName").value );
-    }
+function setOpenAIKey(){
+    localStorage.setItem( "OpenAIKey", document.getElementById("OpenAI").value );
+}
 
-    //function setDataPath(){
-    //    localStorage.setItem( "dataPath", document.getElementById("dataPath").value );
-    //}
+function setAITemp(){
+    localStorage.setItem( "AITemp", document.getElementById("AITemp").value );
+}
 
-    function setOpenAIKey(){
-        localStorage.setItem( "OpenAIKey", document.getElementById("OpenAI").value );
-    }
-  
 function setEvelopeConvoID( OVONmsg ){
     conversationID = localStorage.getItem( "currentConversationID" );
     if( conversationID == "" ){
@@ -296,4 +296,21 @@ function setEvelopeConvoID( OVONmsg ){
         localStorage.setItem( "currentConversationID", conversationID );
     }
     OVONmsg.ovon.conversation.id = conversationID; //once set is retained until SB restart
+}
+
+/*
+// now in sbLogs.js with correct log file
+// Leah: BUT it fails there
+function saveTimeStampedLogFile( logData ){
+    var fileName = "OVON";
+    fileName += cleanDateTimeString();
+    fileName += ".log.txt";
+    writeSBFile( fileName, logData );
+}
+*/
+function saveTimeStampedLogFile(){
+    var fileName = "OVON";
+    fileName += cleanDateTimeString();
+    fileName += ".log.txt";
+    writeSBFile( fileName, JSON.stringify(conversationLOG, null, 2 ) );
 }

@@ -1,31 +1,29 @@
 var sbLLM_CommObject = null; // used to send http messages 
 var retLLMJSON;
 var sendLLMJSON;
-//var sbInitPrompt = "";
 var assObj;
 var convoTurnCount = 0;
+var aiCallType = "https://api.openai.com/v1/chat/completions";
+var aiModel = "gpt-3.5-turbo";
+var logLLMJSON;
+
 
 function sbLLMStartASR(){
-  usingLMM = true;
+  useLLM = true;
   sbStartASR();
 }
 
 function sbInitialLLMPrompt( input ) {
     sendLLMJSON = {
-        "model": "gpt-3.5-turbo",
-//        "model": "gpt-4-1106-preview",
+      "model": aiModel,
+      //"model": "gpt-3.5-turbo",
+      //        "model": "gpt-4-1106-preview",
         "temperature": 0.3,
         "messages": []
     }
     convoTurnCount = 0;
-
-    // HACK for now
-    assistantName = "ejtalk";
-    assObj = ejGetAgentParams( assistantName );
-
+    assObj = assistantTable[localStorage.getItem( "currentAssistantIndex" )];
     sendLLMJSON.messages.push( sbBuildRoleContent( "user", input ) );
-    //sbInitPrompt = input;
-    //sbPostToLLM( input );
 }
 
 function sbBuildRoleContent( role, input ) {
@@ -51,7 +49,8 @@ function sbPostToLLM( input ) { //send to LLM
   }
 
   if( sbLLM_CommObject != null ){  
-    sbLLM_CommObject.open( 'POST', "https://api.openai.com/v1/chat/completions", true ); // false = async
+    //sbLLM_CommObject.open( 'POST', "https://api.openai.com/v1/chat/completions", true ); // false = async
+    sbLLM_CommObject.open( 'POST', aiCallType, true ); // false = async
 
     key = "Bearer " + localStorage.getItem( "OpenAIKey");
     sbLLM_CommObject.setRequestHeader('Authorization', key );
@@ -76,7 +75,7 @@ function sbPostToLLM( input ) { //send to LLM
     conversationLOG.push(sentMessage);
     localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
   }
-  usingLMM = false;
+  useLLM = false;
 }
 
 function sbLLMstateChecker(){ // should something come in do this

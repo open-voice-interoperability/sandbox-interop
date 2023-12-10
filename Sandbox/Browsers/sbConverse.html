@@ -10,6 +10,7 @@
     <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
     <script language="JavaScript" src= "../Scripts/sbSpeech.js"></script>
     <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
+    <script language="JavaScript" src= "../AssistantServers/InternalServer/internalServer.js"></script>
     <style>
         .responseWrap {
           width:400px;
@@ -51,7 +52,7 @@
     <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h2>
     <a href="sbHome.html"><button>Back Home</button></a>
     <button onclick="window.open('logs.html', '_blank')">Logs</button>
-    <button id="writeJSON" onclick="writeSBFile('testJSON.log.txt', jsonLOG);">Write JSON Log</button>
+    <button id="writeJSON" onclick="saveTimeStampedLogFile(jsonLOG);">Write JSON Log</button>
     <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
     <table>
         <tr>
@@ -84,11 +85,11 @@
         </tr>
         <tr>
             <td><h3 style="color:blue;">SENT:</h3></td>
-            <td><span><pre style="color:blue;" id="msgSENT"></pre></span></td>
+            <td><span><pre style="color:blue;" id="msgSENT" class="responseWrap"></pre></span></td>
         </tr>
         <tr>
             <td><h3 style="color:red;">RECEIVED:</h3></td>
-            <td><span><pre style="color:red;" id="msgRECEIVED"></pre></span></td>
+            <td><span><pre style="color:red;" id="msgRECEIVED" class="responseWrap"></pre></span></td>
         </tr>
     </table>
 </body>

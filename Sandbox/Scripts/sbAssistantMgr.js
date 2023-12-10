@@ -162,7 +162,7 @@ function updateAssistantSettings() {
 const assistantTable = [
     {
       assistant: {
-        name: "myHuman",
+        name: "human",
         voiceIndex: 666,
         lightColor: "#ff6666",
         markerColor: "#b30000",
@@ -178,7 +178,7 @@ const assistantTable = [
       lightColor: "#b3b3cc",
       markerColor: "#000000",
       serviceName: "AssistantCommunications",
-      serviceAddress: "localhost:15445",
+      serviceAddress: "localhost:6002",
       authCode: "456398nns"
     }
   },
@@ -333,8 +333,20 @@ const assistantTable = [
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
-      serviceAddress: "http://10.0.0.218:8242/",
+      serviceAddress: "http://localhost:8242/",
       authCode: "AuZ9SYtXn",
+      contentType: "application/json"
+    }
+  },
+  {
+    assistant: {
+      name: "discovery",
+      voiceIndex: 4255,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "internal:discovery",
+      authCode: "zz8h00ji",
       contentType: "application/json"
     }
   }

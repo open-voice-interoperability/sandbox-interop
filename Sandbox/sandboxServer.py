@@ -42,8 +42,9 @@ class Serv(SimpleHTTPRequestHandler):
         self.end_headers()
     def do_PUT(self):
         rootpath = os.path.realpath(os.path.dirname(__file__))
-        rootpath = rootpath.replace("\\", "/" )
+        rootpath = rootpath.replace("\\", "/" ) + "/"
         print( "Directory of the Sandbox: ", rootpath)
+        print( "self.path", self.path )
         length = int(self.headers['Content-Length'])
         path = self.translate_path(self.path)
         (srcpath, srcfile) = os.path.split(path)

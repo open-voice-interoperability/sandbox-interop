@@ -38,6 +38,12 @@
             </td>
         </tr>
         <tr>
+            <td><h3>OpenAI:</h3></td>
+            <td>
+                <input type="text" id="AITemp" placeholder="0.3" onchange="setAITemp();">
+            </td>
+        </tr>
+        <tr>
             <td>
                 <h3>Initialize</h3>
                 <input type="text" id="initPromptLLM" placeholder="Initial Instruction" onchange="sbInitialLLMPrompt( document.getElementById('initPromptLLM').value );">

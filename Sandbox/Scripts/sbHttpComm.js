@@ -9,88 +9,89 @@ var jsonLOG;
 var conversationLOG = [];
 
 function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
-  if( sbOVON_CommObject == null ){
-    try{
-      sbOVON_CommObject = new XMLHttpRequest();
-    }catch(e){
-      sbOVON_CommObject = null;
-      alert( 'Failed to make sandbox communication object' );
-      return false;
-    }
-    sbOVON_CommObject.onreadystatechange=sbOVONstateChecker;
-  }
-
   remoteURL = assistantObject.assistant.serviceAddress;
+  assistType = remoteURL.split(':');
   textColor = assistantObject.assistant.markerColor;
+  localStorage.setItem('markerColor', textColor); // This may be right BUT review this
   voiceIndex = assistantObject.assistant.voiceIndex;
   contentType = assistantObject.assistant.contentType;
   assistantName = assistantObject.assistant.name;
   localStorage.setItem('assistantName', assistantName);
   document.getElementById("AssistantName").value = assistantName;
- 
-  //setTimeout( "sendRequest( remoteURL )", sbTimeout );
-  if( sbOVON_CommObject != null ){  
-    jsonSENT = JSON.stringify( OVONmsg, null, 2 );
-    sbOVON_CommObject.open( 'POST', remoteURL, true ); // false makes it async
+  jsonSENT = JSON.stringify( OVONmsg, null, 2 );
 
-    // UGLY HACK JUST TO MAKE "wizard" work
-    //if( assistantName != "wizard"){
-    if( contentType != "none"){
-        sbOVON_CommObject.setRequestHeader('Content-Type', contentType );
+  if( assistType[0] == "internal" ){
+    callInternalAssistant( assistType[1], assistantObject, OVONmsg );
+    //retOVONJSON = callInternalAssistant( assistType[1], assistantObject, OVONmsg );
+    //handleReturnedOVON( retOVONJSON )
+  }else{
+    if( sbOVON_CommObject == null ){
+      try{
+        sbOVON_CommObject = new XMLHttpRequest();
+      }catch(e){
+        sbOVON_CommObject = null;
+        alert( 'Failed to make sandbox communication object' );
+        return false;
+      }
+      sbOVON_CommObject.onreadystatechange=sbOVONstateChecker;
     }
-    // END OF UGLY HACK!!!!!
-
-    sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
-    var targ = document.getElementById("msgSENT");
-    targ.innerHTML = jsonSENT;
-
-    
-    const sentMessage = {
-      direction: 'sent',
-      timestamp: new Date().toISOString(),
-      content: jsonSENT,
-    };
-    
-    conversationLOG.push(sentMessage);
-    localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
+    //setTimeout( "sendRequest( remoteURL )", sbTimeout );
+    if( sbOVON_CommObject != null ){  
+      sbOVON_CommObject.open( 'POST', remoteURL, true ); // false makes it async
+              if( contentType != "none"){  // UGLY HACK JUST TO MAKE "wizard" work
+                sbOVON_CommObject.setRequestHeader('Content-Type', contentType ); }
+              // END OF UGLY HACK!!!!!
+      sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
+    }
   }
+
+  var targ = document.getElementById("msgSENT");
+  targ.innerHTML = jsonSENT; 
+  const sentMessage = {
+    direction: 'sent',
+    timestamp: new Date().toISOString(),
+    content: jsonSENT,
+  };
+  conversationLOG.push(sentMessage);
+  localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
 }
 
-function sbOVONstateChecker(){ // should something come in do this
-
+function sbOVONstateChecker(){ // when POST response appears do this
   if( sbOVON_CommObject.readyState == 4 ){
     if( sbOVON_CommObject.status == 200 || sbOVON_CommObject.status == 201 ){
       sbData = sbOVON_CommObject.responseText;
       if( sbData.length ){
-        var textColor = localStorage.getItem('markerColor');
         retOVONJSON = JSON.parse(sbData);
-        jsonRECEIVED = JSON.stringify( retOVONJSON, null, 2 );
-        var targ = document.getElementById("msgRECEIVED");
-        targ.innerHTML = jsonRECEIVED;
-        displayMsgRECEIVED(jsonRECEIVED, textColor); //
-        jsonLOG += jsonRECEIVED;
-        localStorage.setItem( "jsonLOG", jsonLOG );
-        const receivedMessage = {
-          direction: 'received',
-          timestamp: new Date().toISOString(),
-          content: jsonRECEIVED,
-        };
-        conversationLOG.push(receivedMessage);
-        localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
-        serviceEventsOVON( retOVONJSON );
+        handleReturnedOVON( retOVONJSON );
       }
     }
   }
 }
 
+function handleReturnedOVON( OVON_msg ){
+  jsonRECEIVED = JSON.stringify( OVON_msg, null, 2 );
+  var targ = document.getElementById("msgRECEIVED");
+  targ.innerHTML = jsonRECEIVED;
+  displayMsgRECEIVED(jsonRECEIVED, localStorage.getItem('markerColor'));
+  const receivedMessage = {
+    direction: 'received',
+    timestamp: new Date().toISOString(),
+    content: jsonRECEIVED,
+  };
+  conversationLOG.push(receivedMessage);
+  localStorage.setItem('conversationLog', JSON.stringify(conversationLOG));
+  serviceEventsOVON( OVON_msg );
+}
+
 function RenderResponseOVON( oneEvent, indx, arr ){
+  // set some global values to process in different order if needed
+  //   in the serviceEventsOVON calling function
   const type = oneEvent.eventType;
   if( type == "utterance" ){
-    say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;  
-    displayResponseUtterance( say, textColor);
-    //OvonSpeak( say, voiceIndex );
+    say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;
+    displayResponseUtterance( say, textColor); // NOTE: This speaks too!
 //}else if( type == "bye"){
-//  Do "invite" to the PREVIOUS Assistant
+//  Do "invite" to the PREVIOUS Assistant???
 //}else if( type == "invite"){
 //  Do "invite" to a NEW Assistant
   }

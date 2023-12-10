@@ -1,7 +1,8 @@
 import json
 import logging
 from datetime import datetime
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
+
 
 server_info = ""
 greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]
