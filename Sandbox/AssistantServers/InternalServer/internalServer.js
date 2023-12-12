@@ -108,19 +108,17 @@ function sbLLMPost( input ) { //send to LLM
       sbLLM_CommObject.setRequestHeader('Content-Type', "application/json" );
   
       sendDiscoveryJSON.messages.push( sbAddMsg( "user", input ) );
-      jsonSENT = JSON.stringify( sendDiscoveryJSON );
-      sbLLM_CommObject.send( jsonSENT ); // send to server (compressed string)
+      jsonDiscoverySENT = JSON.stringify( sendDiscoveryJSON );
+      sbLLM_CommObject.send( jsonDiscoverySENT ); // send to server (compressed string)
 
-      jsonSENT = JSON.stringify( sendDiscoveryJSON, null, 2 ); //make it pretty for display
-      var targ = document.getElementById("msgSENT");
-      targ.innerHTML = jsonSENT;
-  
-      jsonLOG += jsonSENT;
-      localStorage.setItem( "jsonLOG", jsonLOG );
+      jsonDiscoverySENT = JSON.stringify( sendDiscoveryJSON, null, 2 ); //make it pretty for display
+      var targ = document.getElementById("llmSENT");
+      targ.innerHTML = jsonDiscoverySENT;
+
       const sentMessage = {
         direction: 'sent',
         timestamp: new Date().toISOString(),
-        content: jsonSENT,
+        content: jsonDiscoverySENT,
       };
   
       LLMLog.push(sentMessage);

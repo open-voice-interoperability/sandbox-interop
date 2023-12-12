@@ -49,26 +49,6 @@
                 <input type="text" id="initPromptLLM" placeholder="Initial Instruction" onchange="sbInitialLLMPrompt( document.getElementById('initPromptLLM').value );">
             </td>
         </tr>
-        <tr>
-            <td>
-                <h3>Converse</h3>
-                <img src="../Media/img/Interoperability_Logo_icon_color.jpg" onclick="sbLLMStartASR();"title="Click Here to Speak" height="50" width="50"/>
-                <input type="text" id="utterance" placeholder="What human says" onchange="sbPostToLLM( document.getElementById('promptLLM').value );">
-            </td>
-        </tr>
-        <tr>
-            <td><h3 style="color:green;">Response:</h3></td>
-            <td><div id="response" class="responseWrap"></div></td>
-        </tr>
-        <tr>
-            <td><h3 style="color:blue;">SENT:</h3></td>
-            <td><span><pre style="color:blue;" id="msgSENT"></pre></span></td>
-        </tr>
-        <tr>
-            <td><h3 style="color:red;">RECEIVED:</h3></td>
-            <td><span><pre style="color:red;" id="msgRECEIVED"></pre></span></td>
-        </tr>
     </table>
-
 </body>
 </html>

@@ -16,6 +16,8 @@ var useLLM = false;
 function sbStartASR(){
   usingASR = true;
   startTime = new Date().getTime();
+  var img = document.getElementById('microphoneIcon');
+  img.src = "../Media/img/micListening.jpg";
   recognition.start();
 }
 
@@ -26,6 +28,9 @@ recognition.onresult = function(event) {
 
   var exdate=new Date();
   endTime = exdate.getTime();
+
+  var img = document.getElementById('microphoneIcon');
+  img.src = "../Media/img/Interoperability_Logo_icon_color.jpg";
 
   usingASR = false; // so you can type for the next turn
   // Builds JSON object for utterance

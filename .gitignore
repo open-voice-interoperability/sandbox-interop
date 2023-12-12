@@ -1,2 +1,5 @@
 AssistantServers\OVONServerModules\__pycache__
+*.pyc
+Report/Logs/*.*
+
 
