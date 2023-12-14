@@ -43,7 +43,10 @@ function baseEnvelopeOVON( someAssistant ){
             "sender": {
                 "from": "https://someBotThatSentTheEnvelope.com",
             },
-            "responseCode" : 200,
+            "responseCode" : {
+                "code": 200,
+                "description": "OK"
+              },
             "events": [],
         },
     };

@@ -307,7 +307,7 @@ const assistantTable = [
   {
     assistant: {
       name: "library",
-      voiceIndex: 165,
+      voiceIndex: 80,
       lightColor: "#ffb3d9",
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
@@ -348,6 +348,18 @@ const assistantTable = [
       markerColor: "#cc0088",
       serviceName: "PrimaryAssistant",
       serviceAddress: "internal:discovery",
+      authCode: "zz8h00ji",
+      contentType: "application/json"
+    }
+  },
+  {
+    assistant: {
+      name: "betty",
+      voiceIndex: 4255,
+      lightColor: "#ffb3d9",
+      markerColor: "#cc0088",
+      serviceName: "PrimaryAssistant",
+      serviceAddress: "http://localhost:7005/",
       authCode: "zz8h00ji",
       contentType: "application/json"
     }

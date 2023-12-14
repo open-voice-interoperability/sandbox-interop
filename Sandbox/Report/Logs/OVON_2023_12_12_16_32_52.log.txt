@@ -1,0 +1,22 @@
+[
+  {
+    "direction": "sent",
+    "timestamp": "2023-12-12T20:30:55.944Z",
+    "content": "{\n  \"ovon\": {\n    \"conversation\": {\n      \"id\": \"convoID8403984\"\n    },\n    \"schema\": {\n      \"version\": \"0.9.0\",\n      \"url\": \"not_published_yet\"\n    },\n    \"sender\": {\n      \"from\": \"http://localhost:8242/\"\n    },\n    \"responseCode\": 200,\n    \"events\": [\n      {\n        \"eventType\": \"invite\",\n        \"parameters\": {\n          \"to\": {\n            \"url\": \"http://localhost:8242/\"\n          }\n        }\n      }\n    ]\n  }\n}"
+  },
+  {
+    "direction": "received",
+    "timestamp": "2023-12-12T20:30:56.682Z",
+    "content": "{\n  \"ovon\": {\n    \"conversation\": {\n      \"id\": \"convoID8403984\"\n    },\n    \"schema\": {\n      \"version\": \"0.9.0\",\n      \"url\": \"not_published_yet\"\n    },\n    \"sender\": {\n      \"from\": \"http://localhost:8242/\"\n    },\n    \"responseCode\": 200,\n    \"events\": [\n      {\n        \"eventType\": \"utterance\",\n        \"parameters\": {\n          \"dialogEvent\": {\n            \"speakerId\": \"assistant\",\n            \"span\": {\n              \"startTime\": \"2023-12-12 15:30:56\"\n            },\n            \"features\": {\n              \"text\": {\n                \"mimeType\": \"text/plain\",\n                \"tokens\": [\n                  {\n                    \"value\": \"Thanks for the invitation, I am ready to assist.\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+  },
+  {
+    "direction": "sent",
+    "timestamp": "2023-12-12T20:31:09.009Z",
+    "content": "{\n  \"ovon\": {\n    \"conversation\": {\n      \"id\": \"convoID8403984\"\n    },\n    \"schema\": {\n      \"version\": \"0.9.0\",\n      \"url\": \"not_published_yet\"\n    },\n    \"sender\": {\n      \"from\": \"localhost:6002\"\n    },\n    \"responseCode\": 200,\n    \"events\": [\n      {\n        \"eventType\": \"utterance\",\n        \"parameters\": {\n          \"dialogEvent\": {\n            \"speakerId\": \"Emmett\",\n            \"span\": {\n              \"startTime\": \"2023-12-12T20:31:09.009Z\"\n            },\n            \"features\": {\n              \"text\": {\n                \"mimeType\": \"text/plain\",\n                \"tokens\": [\n                  {\n                    \"value\": \"Goodbye\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+  },
+  {
+    "direction": "received",
+    "timestamp": "2023-12-12T20:31:09.322Z",
+    "content": "{\n  \"ovon\": {\n    \"conversation\": {\n      \"id\": \"convoID8403984\"\n    },\n    \"schema\": {\n      \"version\": \"0.9.0\",\n      \"url\": \"not_published_yet\"\n    },\n    \"sender\": {\n      \"from\": \"http://10.0.0.218:8242/\"\n    },\n    \"responseCode\": 200,\n    \"events\": [\n      {\n        \"eventType\": \"utterance\",\n        \"parameters\": {\n          \"dialogEvent\": {\n            \"speakerId\": \"assistant\",\n            \"span\": {\n              \"startTime\": \"2023-12-12 15:31:09\"\n            },\n            \"features\": {\n              \"text\": {\n                \"mimeType\": \"text/plain\",\n                \"tokens\": [\n                  {\n                    \"value\": \"I'm not sure how to respond.\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+  }
+]

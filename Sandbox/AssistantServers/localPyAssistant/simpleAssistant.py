@@ -41,12 +41,12 @@ def modeResponse( inputUtterance, inputWhisper, isInvite ):
     if isInvite:
         if len(inputWhisper)>0:
             responseObj = converse( "", inputWhisper )
-            response_text = responseObj.converse.say
+            response_text = responseObj["data"]["say"]
         else:
             response_text = "Welcome to my world. How can I help."
     else:
         responseObj = converse( inputUtterance, inputWhisper )
-        response_text = responseObj.converse.say
+        response_text = responseObj["data"]["say"]
 
     currentTime = datetime.now().isoformat()
     ovon_response = {
@@ -61,7 +61,10 @@ def modeResponse( inputUtterance, inputWhisper, isInvite ):
             "sender": {
                 "from": myServiceAddress
             },
-            "responseCode": 200,
+            "responseCode" : {
+                "code": 200,
+                "description": "OK"
+              },
             "events": [
                 {
                     "eventType": "utterance",
@@ -112,7 +115,7 @@ def converse( utt, whisp ):
                 action = "return"
 
     conRespObject = {
-        "converse": {
+        "data": {
             "say": say,
             "whisper": "textToWhisper",  # maybe set on an invite or utt
             "delegate": action   # "invite|bye|utt"  this may be set by the assistant

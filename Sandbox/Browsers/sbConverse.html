@@ -57,17 +57,17 @@
     <table>
         <tr>
             <td><h1><b>Input</b></h1></td>
+            <td class="tooltip"> 
+                <img id="microphoneIcon" src="../Media/img/Interoperability_Logo_icon_color.jpg" onclick="sbStartASR();" height="60" width="60"/>
+                <span class="tooltiptext" id="tooltipText">Click Mic to Speak</span>
+            </td>
+            <td class = "AssistantName">
+                <b>Assistant: <span id="AssistantName"></span></b>
+            </td>
             <td class="tooltip">
-                
-                    <img id="microphoneIcon" src="../Media/img/Interoperability_Logo_icon_color.jpg" onclick="sbStartASR();" height="50" width="50"/>
-                    <span class="tooltiptext" id="tooltipText">Click Mic to Speak</span>
-               
-                </td>
-                <td class = "AssistantName">
-                    <b>Assistant: <span id="AssistantName"></span></b>
-                </td>
-                
-            
+                <img id="stopTTSIcon" src="../Media/img/stopTTS.jpg" onclick="window.speechSynthesis.cancel();" height="50" width="90"/>
+                <span class="tooltiptext" id="tooltipText">Click to STOP TTS</span>
+            </td>
         </tr>
         <tr>
             <td><h3>Utterance:</h3></td>
@@ -84,8 +84,8 @@
             <td><div id="response" style="color:green;" class="responseWrap"></div></td>
         </tr>
         <tr>
-            <td><h3 style="color:rgb(208, 153, 35);">LLM:</h3></td>
-            <td><span><pre style="color:rgb(208, 153, 35);" id="llmSENT" class="responseWrap"></pre></span></td>
+            <td><h3 style="color:rgb(128, 96, 27);">LLM:</h3></td>
+            <td><span><pre style="color:rgb(128, 96, 27);" id="llmSENT"></pre></span></td>
         </tr>
         <tr>
             <td><h3 style="color:blue;">SENT:</h3></td>
