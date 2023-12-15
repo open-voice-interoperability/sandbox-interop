@@ -9,6 +9,7 @@ function sbConversationStart() {
     const baseEnvelope = baseEnvelopeOVON(assistantObject);
 
     document.getElementById("AssistantName").innerText = localStorage.getItem('assistantName');
+    document.getElementById("BrowserType").innerText = sbBrowserType;
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected

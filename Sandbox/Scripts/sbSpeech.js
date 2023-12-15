@@ -218,10 +218,11 @@ function saveTTS_TestText() { // allow setting a "test phrase" to be set
 function sbSpeak( say, assistantObject ) {
   var v = 2; // Default to index=2
   var aColor = "#555555";
+  var voices = speechSynthesis.getVoices();
  
   if (sbBrowserType === "chromium based edge" && assistantObject) {
     setTimeout(function () {
-      var voices = speechSynthesis.getVoices();
+      //var voices = speechSynthesis.getVoices();
       v = localStorage.getItem("voiceIndex");
       v = (v == 115) ? 116 : v;
       v = (v == 4255) ? 115 : v;
@@ -240,6 +241,18 @@ function sbSpeak( say, assistantObject ) {
       window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
       window.speechSynthesis.speak(msg);
     }, 100);
+  }else if(sbBrowserType === "chrome" && assistantObject){
+    aColor = assistantObject.assistant.lightColor;
+    v = localStorage.getItem("voiceIndex");
+    v = Math.min(Math.max(0, v), voices.length - 1); // Ensure voice index in bounds
+
+    var msg = new SpeechSynthesisUtterance(say);
+    msg.voice = voices[v];
+    msg.onend = function (event) {
+      startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
+    };
+    window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
+    window.speechSynthesis.speak(msg);
   }
 }
 

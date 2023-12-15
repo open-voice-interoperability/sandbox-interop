@@ -16,9 +16,10 @@ const sbBrowserType =
     : agent.indexOf('firefox') > -1 ? 'firefox'
     : agent.indexOf('safari') > -1 ? 'safari'
     : 'other';
-
+localStorage.setItem( "sbBrowserType", sbBrowserType );
 
 function sbStart(){
-    localStorage.setItem( "currentConversationID", "" );
-    loadAssistantSelect();
+  document.getElementById("BrowserType").innerText = sbBrowserType;
+  localStorage.setItem( "currentConversationID", "" );
+  loadAssistantSelect();
 }
