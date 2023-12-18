@@ -14,11 +14,11 @@ from simpleAssistant import *
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-portNum = 7005
+portNum = 7005  # Set the port number you want
 print( "Localhost Python Assistant Port: ", portNum )
 
-# ========= INSTANCE your assistant code
-# myUniqueAssistant = MyAssistant()
+srvAdd = "localhost:" + str(portNum)
+setServAddressAndSpeakerID( srvAdd, "Betty_1763IRQ" )
 
 @app.route('/', methods=['POST'])
 def home():

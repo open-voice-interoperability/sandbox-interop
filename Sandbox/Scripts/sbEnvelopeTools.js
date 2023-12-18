@@ -10,6 +10,7 @@ function sbConversationStart() {
 
     document.getElementById("AssistantName").innerText = localStorage.getItem('assistantName');
     document.getElementById("BrowserType").innerText = sbBrowserType;
+    document.getElementById("OSType").innerText = sbOSType;
 
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected

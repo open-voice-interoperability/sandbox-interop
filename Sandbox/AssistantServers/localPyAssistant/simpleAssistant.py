@@ -4,8 +4,12 @@ import re
 
 # Set your assistant's unique speakerID and service address
 conversationID = ""
-mySpeakerID = "Madison_1763IRQ"
-myServiceAddress = "localhost:7002"
+mySpeakerID = ""
+myServiceAddress = ""
+
+def setServAddressAndSpeakerID( srvAdd, speakerID ):
+    myServiceAddress = srvAdd
+    mySpeakerID = speakerID
 
 def exchange(inputOVON):
     i = 0

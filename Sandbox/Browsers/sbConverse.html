@@ -50,11 +50,12 @@
 </head>
 <body onload="sbConversationStart();">
     <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h2>
+    <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
+    <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
     <a href="sbHome.html"><button>Back Home</button></a>
     <button onclick="window.open('logs.html', '_blank')">Logs</button>
     <button id="writeJSON" onclick="saveTimeStampedLogFile(jsonLOG);">Write JSON Log</button>
     <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
-    <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
     <table>
         <tr>
             <td><h1><b>Input</b></h1></td>

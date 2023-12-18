@@ -60,7 +60,6 @@ function generateRandomID() {
   return randomID;
 }
 
-
 function getAssistantID(assistantName) {
   // Retrieve the ID from localStorage, or generate a new one if it doesn't exist
   let assistantID = localStorage.getItem(`${assistantName}_assistantID`);

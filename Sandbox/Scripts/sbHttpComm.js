@@ -70,6 +70,8 @@ function sbOVONstateChecker(){ // when POST response appears do this
 
 function handleReturnedOVON( OVON_msg ){
   jsonRECEIVED = JSON.stringify( OVON_msg, null, 2 );
+  const myArray = jsonRECEIVED.split("\n");
+  
   var targ = document.getElementById("msgRECEIVED");
   targ.innerHTML = jsonRECEIVED;
   displayMsgRECEIVED(jsonRECEIVED, localStorage.getItem('markerColor'));
