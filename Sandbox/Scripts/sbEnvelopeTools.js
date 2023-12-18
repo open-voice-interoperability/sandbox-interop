@@ -33,6 +33,7 @@ function sbConversationStart() {
 
 
 function baseEnvelopeOVON( someAssistant ){
+    const humanFirstName = localStorage.getItem("humanFirstName");
     const OVON_Base = {
         "ovon": {
             "conversation": {
@@ -43,7 +44,7 @@ function baseEnvelopeOVON( someAssistant ){
                 "url": "not_published_yet"
             },
             "sender": {
-                "from": "https://someBotThatSentTheEnvelope.com",
+                "from": humanFirstName || "Human", // Use human's name or default to "Human"            
             },
             "responseCode" : {
                 "code": 200,

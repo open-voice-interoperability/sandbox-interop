@@ -82,6 +82,10 @@ function displayAssistantSettings() {
 
   <h2>${selectedAssistant.assistant.name}'s Settings</h2>
   <div>
+            <label for="assistantName"><b>Assistant Name:</b></label>
+            <strong><input type="text" id="assistantName" value="${selectedAssistant.assistant.name}"></strong>
+  </div>
+  <div>
             <label for="assistantID"><b>Assistant ID:</b></label>
             <strong><input type="text" id="assistantID" value="${uniqueID}"></strong>
         </div>

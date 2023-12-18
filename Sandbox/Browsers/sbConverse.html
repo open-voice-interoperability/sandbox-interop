@@ -54,7 +54,7 @@
     <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
     <a href="sbHome.html"><button>Back Home</button></a>
     <button onclick="window.open('logs.html', '_blank')">Logs</button>
-    <button id="writeJSON" onclick="saveTimeStampedLogFile(jsonLOG);">Write JSON Log</button>
+    <!-- <button id="writeJSON" onclick="saveTimeStampedLogFile(jsonLOG);">Write JSON Log</button> -->
     <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
     <table>
         <tr>
@@ -83,8 +83,7 @@
         </tr>
         <tr>
             <td><h3 style="color:green;">Response:</h3></td>
-            <td><div id="response" style="color:green;" class="responseWrap"></div></td>
-        </tr>
+            <td><div id="response" class="responseWrap"></div></td>        </tr>
         <tr>
             <td><h3 style="color:rgb(128, 96, 27);">LLM:</h3></td>
             <td><span><pre style="color:rgb(128, 96, 27);" id="llmSENT"></pre></span></td>

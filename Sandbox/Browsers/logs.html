@@ -7,7 +7,6 @@
   <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
   <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
   <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
-  <script language="JavaScript" src= "../Scripts/sbLogs.js"></script>
   <link rel="stylesheet" href="../Scripts/css/styles.css">
 </head>
 <body>
@@ -15,20 +14,17 @@
   <div id="conversationId"><b>Conversation ID: </b><span id="displayedConversationId"></span> </div>
   <div id="conversationDate"><b>Conversation Date: </b><span id="displayedDate"></span></div>
   <div id="lineSeparator"></div>
-  <div id="backgroundPickerLabel">Pick the background you want:</div>
-  <label id="colorPickerLabel" for="backgroundColorPicker">Color:</label>
-  <input type="color" id="backgroundColorPicker" onchange="changeBackgroundColor()">
-  <label id="brightnessPickerLabel" for="backgroundColorSlider">Brightness:</label>
-  <input type="range" id="brightnessSlider" min="0" max="100" onchange="changeBackgroundColor()">
-  <span id="brightnessPercentage">50%</span>
-  <br>
-  <div id="lineSeparator"></div>
-  <button type="button" onclick="applyFilter('all')">Show All</button>
-  <button type="button" onclick="applyFilter('sent')">OVON Sent</button>
-  <button type="button" onclick="applyFilter('received')">OVON Received</button>
-  <button type="button" onclick="showFullDialog()">Full Dialog</button>
-  <button type="button" onclick="goBack()">Back</button>
+  <button id="showAllButton" type="button" name="filter" value="all" onclick="applyFilter('all')">Show All</button>
+  <button id="ovonSentButton" type="button" name="filter" value="sent" onclick="applyFilter('sent')">OVON Sent</button>
+  <button id="ovonReceivedButton" type="button" name="filter" value="received" onclick="applyFilter('received')">OVON Received</button>
+  <button id="ovonFullDialogButton" type="button" name="filter" value="full" onclick="showFullDialog()">Full Dialog</button>
+  <button type="button" name="filter" value="save" onclick="saveFullDialogToFile()">Save Dialog</button>
+  <br>  
+  <label for="logFileDropdown">Select a Log File:</label>
+  <select id="logFileDropdown"></select>
   <div id="lineSeparator"></div>
   <div id="logContainer"></div>
+  <script language="JavaScript" src= "../Scripts/sbLogs.js"></script>
+
 </body>
 </html>

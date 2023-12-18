@@ -58,7 +58,12 @@
     border: 2px solid #983301;
 }
 
-
+.log.sent{
+    background-color: lightcoral !important;
+}
+.log.received{
+    background-color: var(--received-color, #ffb3d9) !important;
+}
 
 .log {
     margin-top: 10px;
@@ -108,11 +113,16 @@
     margin-left: 5px;
     margin-right: 3px;
   }
+
+  #testInput{
+    margin-top: 8px;
+  }
+
   #testBtn {
     width: 100px;
 }
   #sbTTS_Text {
-    margin-top: 12px;
+    margin-top: -9px;
     width: 400px;
     resize: vertical;
     font-family: 'Times New Roman', Times, serif;
@@ -121,4 +131,11 @@
 }
 #startBtn {
     margin-top: 20px;
+}
+
+.sbTable {
+    width: 75%;
+}
+#voiceSettings {
+    margin-top: 10px;
 }
