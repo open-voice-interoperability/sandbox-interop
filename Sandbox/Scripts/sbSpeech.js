@@ -125,9 +125,12 @@ function loadLangSelect(){
 function loadVoiceSelect() {
   var langSelect = document.getElementById('langSelect');
   var selectedLang = langSelect.value;
-  var selCntl = '<br><label for="TTSVoices">Choose a TTS Voice:</label>';
-  selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
-  for (var i = 0; i < ttsEngs.length; i++) {
+  var voices = speechSynthesis.getVoices();
+  console.log(voices);
+    var selCntl = '<br><label for="TTSVoices">Choose a TTS Voice:</label>';
+    selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
+    
+    for (var i = 0; i < voices.length; i++) {
       if (i !== 115) {
         var voiceName = voices[i].name;
         selCntl += '<option value="' + i + '">' + i + ": " + voices[i].name + '</option>';
