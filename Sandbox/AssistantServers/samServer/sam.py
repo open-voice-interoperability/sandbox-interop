@@ -15,7 +15,10 @@ import OvonIOparser
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+portNum = 8242
 
+
+srvAdd = "localhost:" + str(portNum)
 
 # ========= INSTANCE your assistant code
 # myUniqueAssistant = MyAssistant()
@@ -29,5 +32,5 @@ def home():
     return ovon_response
 
 if __name__ == '__main__':
-    app.run(host="localhost",port=8242, debug=True)
+    app.run(host="localhost",port=portNum, debug=True)
 # =================================================

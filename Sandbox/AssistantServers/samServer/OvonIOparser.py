@@ -39,7 +39,7 @@ def generate_response(inputOVON):
 
     currentTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    sender_from = "http://10.0.0.218:8242/"
+    sender_from = "http://localhost:8242/"
     if "to" in inputOVON["ovon"]["events"][0]["parameters"]:
         to_url = inputOVON["ovon"]["events"][0]["parameters"]["to"]["url"]
         sender_from = to_url

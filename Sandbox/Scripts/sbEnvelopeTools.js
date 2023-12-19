@@ -59,7 +59,7 @@ function baseEnvelopeOVON( someAssistant ){
         localStorage.setItem( "currentConversationID", conversationID );
     }
     OVON_Base.ovon.conversation.id = conversationID; // once set it is retained until SB restart
-    OVON_Base.ovon.sender.from = someAssistant.assistant.serviceAddress;
+    // OVON_Base.ovon.sender.from = someAssistant.assistant.serviceAddress;
 
     //OVON_Base.ovon.sender.from = "browser"; // in reality it is extracted from any invite browser sees
     return OVON_Base;

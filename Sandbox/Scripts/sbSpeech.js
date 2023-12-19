@@ -1,6 +1,6 @@
 // File: sbSpeech.js
 var voices = speechSynthesis.getVoices();
-var recognition = new webkitSpeechRecognition(); // seems to only work on Chrome & Edge
+var recognition = window.SpeechRecognition || window.webkitSpeechRecognition ? new (window.SpeechRecognition || window.webkitSpeechRecognition)() : null;
 
 //var using_ejTalkCM = true;
 var retASR = "";
@@ -100,7 +100,7 @@ function cleanOutPunctuation( str ){
   str = str.replace( "!", "" );
   return str;
 }
-var selectedVoiceInfo = null;
+
 function loadLangSelect(){
     var ttsEngs = speechSynthesis.getVoices();
     var selCntl = '<label for="langBtn">Select Language:</label>';
@@ -108,11 +108,8 @@ function loadLangSelect(){
     var uniqueLangs = new Set();
     for (var j = 0; j < ttsEngs.length; j++) {
         if (j !== 115) {
-            var voiceName = ttsEngs[j].name.toLowerCase();
-            if (voiceName.includes("microsoft")) {
-                var lang = ttsEngs[j].name.split('-')[1].trim().split(' ').shift();
-                uniqueLangs.add(lang);
-            }
+          var lang = ttsEngs[j].lang; // Get the language code
+          uniqueLangs.add(lang);
         }
     }
     var sortedLangs = Array.from(uniqueLangs).sort();
@@ -128,32 +125,22 @@ function loadLangSelect(){
 function loadVoiceSelect() {
   var langSelect = document.getElementById('langSelect');
   var selectedLang = langSelect.value;
-  var ttsEngs = speechSynthesis.getVoices();
   var selCntl = '<br><label for="TTSVoices">Choose a TTS Voice:</label>';
   selCntl += '<select name="TTSVoices" id="sbTTS" onchange="saveTTSVoiceIndex();">';
   for (var i = 0; i < ttsEngs.length; i++) {
       if (i !== 115) {
-        var voiceName = ttsEngs[i].name.toLowerCase();
-        if (voiceName.includes("microsoft") && ttsEngs[i].name.includes(selectedLang)) {
-          selCntl += '<option value="' + i + '">' + i + ": " + ttsEngs[i].name + '</option>';
-
-        }
+        var voiceName = voices[i].name;
+        selCntl += '<option value="' + i + '">' + i + ": " + voices[i].name + '</option>';
       }
     }
+    
     selCntl += "</select>";
     document.getElementById('information').innerHTML = selCntl;
+    // Set the default selected index
+    var firstOptionValue = document.getElementById('sbTTS').options[0].value;
+    localStorage.setItem('voiceIndex', firstOptionValue);
+  
 }
-
-speechSynthesis.onvoiceschanged = function () {
-  var langInfoElement = document.getElementById('langInfo');
-  var voiceInfoElement = document.getElementById('information');
-  if (!langInfoElement && !voiceInfoElement) {
-    // The element with ID 'langInfo' does not exist on this page.
-    return;
-  }
-  loadLangSelect();
-  loadVoiceSelect();
-};
 
 var lastSelectedVoices = [];
 function updateSelectedVoiceInfo() {
@@ -164,11 +151,8 @@ function updateSelectedVoiceInfo() {
   for (var j = 0; j < ttsEngs.length; j++) {
     if (j == selectedIndex && j !== 115) {
       var voiceName = ttsEngs[j].name;
-      if (voiceName.toLowerCase().includes("microsoft")) {
         selectedVoiceName = j + ': ' + voiceName;
-        console.log(selectedVoiceName);
         break; // No need to continue the loop once the voice is found
-      }
     }
   }
   var selectedVoiceInfoElement = document.getElementById('selectedVoiceInfo');
@@ -176,7 +160,7 @@ function updateSelectedVoiceInfo() {
     // Push the selected voice name into the array
     lastSelectedVoices.push(selectedVoiceName);
     // Keep only the last two selected voices in the array
-    if (lastSelectedVoices.length > 3) {
+    if (lastSelectedVoices.length > 10) {
       lastSelectedVoices.shift(); // Remove the oldest voice name
     }
     // Display the last 2 selected voices along with the current voice
@@ -187,14 +171,49 @@ function updateSelectedVoiceInfo() {
   }
 }
 
+function updateSpeechParams() {
+  var volume = parseFloat(document.getElementById("volume").value);
+  var rate = parseFloat(document.getElementById("rate").value);
+  var pitch = parseFloat(document.getElementById("pitch").value);
+  console.log("Volume:", volume, "Rate:", rate, "Pitch:", pitch);
+  var msg = new SpeechSynthesisUtterance();
+  msg.volume = volume;  // 0 to 1
+  msg.rate = rate;      // 0.1 to 10
+  msg.pitch = pitch;    // 0 to 2
+
+  // Get the selected voice index
+  var selectedIndex = document.getElementById('sbTTS').value;
+
+  // Ensure voices are available
+  var voices = speechSynthesis.getVoices();
+  if (voices.length > 0) {
+    // Ensure the selected voice index is within bounds
+    selectedIndex = Math.min(Math.max(0, selectedIndex), voices.length - 1);
+
+    // Set the selected voice for the utterance
+    msg.voice = voices[selectedIndex];
+  } else {
+    console.error("No voices available.");
+  }
+
+  // Test the updated voice settings
+  msg.text = document.getElementById('sbTTS_Text').value;
+
+  // Cancel any ongoing speech synthesis
+  window.speechSynthesis.cancel();
+
+  // Speak the new utterance with updated parameters
+  window.speechSynthesis.speak(msg);
+}
+
 function openVoiceWindow() {
   window.open('sbVoices.html', '_blank');
 }
 
 function saveTTSVoiceIndex() {  
-  var vInd = document.getElementById("sbTTS").selectedIndex;
+  var vInd = document.getElementById("sbTTS").value;
   var voices = speechSynthesis.getVoices().filter(function(voice) {
-    return voice.name.toLowerCase().includes("microsoft");
+    return voice.name;
   });
 
   if (vInd >= 0 && vInd < voices.length) {
@@ -212,6 +231,7 @@ function saveTTS_TestText() { // allow setting a "test phrase" to be set
   var test =  document.getElementById("sbTTS_Text").value;
   test += " ";
   localStorage.setItem( "sbTTSTestPhrase", test );
+  updateSelectedVoiceInfo();
   sbSpeak(test, assistantObject);
 }
 
@@ -254,6 +274,23 @@ function sbSpeak( say, assistantObject ) {
     window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
     window.speechSynthesis.speak(msg);
   }
+  else if (sbBrowserType === "safari" && assistantObject) {
+  aColor = assistantObject.assistant.lightColor;
+  var voices = speechSynthesis.getVoices();
+  var v = localStorage.getItem("voiceIndex");
+  v = Math.min(Math.max(0, v), voices.length - 1); // Ensure voice index in bounds
+
+  var msg = new SpeechSynthesisUtterance(say);
+  msg.voice = voices[v];
+  msg.onend = function (event) {
+    startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
+  };
+  window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
+  window.speechSynthesis.speak(msg);
+} else {
+  // Handle other browsers or provide a fallback
+  console.error("Browser not supported");
+}
 }
 
 function processCommands(){

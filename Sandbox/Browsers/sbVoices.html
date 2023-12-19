@@ -18,7 +18,7 @@
   <div id="lineSeparator"></div>
   <table class="sbTable">
     <tr>
-      <td colspan="4">
+      <td>
         <div id="langInfo"></div>
       </td>
     </tr>
@@ -63,5 +63,21 @@
     </tr>
   </table>
   <br/>
+  <script>
+  var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (isSafari) {
+    // For Safari, use a setTimeout to delay loading voices
+    loadLangSelect();
+    loadVoiceSelect();
+    // You can adjust the delay based on your needs
+  } else {
+    // For Chrome and Edge, use the onvoiceschanged event
+    window.speechSynthesis.onvoiceschanged = function () {
+      loadLangSelect();
+      loadVoiceSelect();
+    };
+  }
+
+  </script>
 </body>
 </html>

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
             // Fetch and display the full dialog for the selected log file
-            showFullDialog('all');
+            fetchLogFileContent(selectedFileName);
         }
     });
 });
@@ -62,8 +62,22 @@ function showFullDialog(lightColor) {
         const logElement = document.createElement('div');
         logElement.className = `log ${log.direction ? log.direction.toLowerCase() : ''}`;
 
-        const contentObject = JSON.parse(log.content);
+        if (!log.content) {
+            // Handle the case where log.content is undefined or null
+            logElement.textContent = 'Invalid log content';
+            dialogContainer.appendChild(logElement);
+            return;
+        }
 
+        let contentObject;
+        try {
+            contentObject = JSON.parse(log.content);
+        } catch (error) {
+            // If parsing as JSON fails, treat the content as plain text
+            contentObject = { textContent: log.content };
+        }
+
+        
         const ovon = contentObject?.ovon || {};
         const user = ovon.sender?.from;
         const assistantName = localStorage.getItem('assistantName');
