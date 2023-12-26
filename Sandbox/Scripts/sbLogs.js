@@ -8,51 +8,67 @@ document.addEventListener('DOMContentLoaded', function () {
     logDropdown.addEventListener('change', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            fetchLogFileContent(selectedFileName);
+            fetchLogFileContent(selectedFileName, 'all');
+        }else{
+            showFullDialog();
         }
     });
     showAllButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            fetchLogFileContent(selectedFileName);
-        }
+            fetchLogFileContent(selectedFileName, 'all');
+        }else[
+            applyFilter('all')
+        ]
     });
     ovonSentButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            // Fetch and display sent messages
             fetchOvonLogs(selectedFileName, 'sent');
+        }
+        else{
+            applyFilter('sent')
         }
     });
     ovonReceivedButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            // Fetch and display received messages
             fetchOvonLogs(selectedFileName, 'received');
+        }else{
+            applyFilter('received')
         }
     });
     ovonFullDialogButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            // Fetch and display the full dialog for the selected log file
-            fetchLogFileContent(selectedFileName);
+            fetchLogFileContent(selectedFileName, 'all');
+        } else {
+            showFullDialog();
         }
     });
 });
 
 let logs = JSON.parse(localStorage.getItem('conversationLog')) || [];
 const logContainer = document.getElementById('logContainer');
-    // Function to display logs based on the selected filter
+
+// Function to display logs based on the selected filter
 function applyFilter(filter) {
-    let filteredLogs = [];
-    if (filter === 'sent') {
-        filteredLogs = logs.filter(log => log.direction === 'sent');
-    } else if (filter === 'received') {
-        filteredLogs = logs.filter(log => log.direction === 'received');
+    const logDropdown = document.getElementById('logFileDropdown');
+    const selectedFileName = logDropdown.value;
+    // Check if a log file is selected and it has a .txt extension
+    if (!selectedFileName && !selectedFileName.endsWith('.txt')) {
+        let filteredLogs = [];
+        if (filter === 'sent') {
+            filteredLogs = logs.filter(log => log.direction === 'sent');
+        } else if (filter === 'received') {
+            filteredLogs = logs.filter(log => log.direction === 'received');
+        } else {
+            filteredLogs = logs;
+        }
+        displayLogs(filteredLogs);
     } else {
-        filteredLogs = logs;
+        console.log('No valid log file selected');
     }
-    displayLogs(filteredLogs);
 }
 
 function showFullDialog(lightColor) {
@@ -68,7 +84,6 @@ function showFullDialog(lightColor) {
             dialogContainer.appendChild(logElement);
             return;
         }
-
         let contentObject;
         try {
             contentObject = JSON.parse(log.content);
@@ -76,8 +91,6 @@ function showFullDialog(lightColor) {
             // If parsing as JSON fails, treat the content as plain text
             contentObject = { textContent: log.content };
         }
-
-        
         const ovon = contentObject?.ovon || {};
         const user = ovon.sender?.from;
         const assistantName = localStorage.getItem('assistantName');
@@ -85,7 +98,6 @@ function showFullDialog(lightColor) {
         
         // Check if there's an "invite" event
         const inviteEvent = events.find(event => event.eventType === 'invite');
-
         if (log.direction === 'sent') {
             if (inviteEvent) {
                 // Check if there's also a "whisper" event
@@ -96,7 +108,8 @@ function showFullDialog(lightColor) {
                     logElement.textContent = `${user} - Bare Invite to: ${localStorage.getItem("assistantName")} at ${inviteEvent.parameters.to.url || 'unknown'}`;
                 }
             }else {
-                logElement.textContent = `${user} - ${events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;                        }
+                logElement.textContent = `${user} - ${events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;                        
+            }
         } else if (log.direction === 'received') {
             logElement.textContent = `${assistantName} - ${events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
             logElement.style.backgroundColor = lightColor; 
@@ -104,11 +117,10 @@ function showFullDialog(lightColor) {
             return 'Invalid log direction';
         }
         dialogContainer.appendChild(logElement);
-     }); // Display full dialog
+     }); 
 }
   
-  
-    // Function to display logs
+//function to display log from converse.html
 function displayLogs(logsToDisplay) {
     const logContainer = document.getElementById('logContainer');
     logContainer.innerHTML = ''; // Clear previous logs
@@ -155,13 +167,11 @@ function displayLogs(logsToDisplay) {
         } else {
             logElement.textContent = `${log}`;
         }
-
         logContainer.appendChild(logElement);
     });
 }
 
 function changeBackgroundColor() {
-    const adjustedColor = 'lightcoral';
     document.documentElement.style.setProperty('--received-color', localStorage.getItem("lightColor"));
 }
 
@@ -169,52 +179,12 @@ function saveFullDialogToFile() {
     const dateStr = cleanDateTimeString();    
     const assistantName = localStorage.getItem('assistantName');
     const fileName = `OVON_${assistantName}_${dateStr}.log.txt`;
-    const logContent = generateFullDialogContent(logs, assistantName);
+    const logContent = logs.map(log => log.content).join('\n\n');
     writeSBFile(fileName, logContent, function () {
-        console.log('File written successfully');
-        readLogFile(fileName);
+        readSBFile(fileName);
     });
-}
-
-function generateFullDialogContent(logsToDisplay, assistantName) {
-    let content = '';
-    logsToDisplay.forEach(log => {
-        const timestamp = new Date(log.timestamp).toLocaleString(); // Convert timestamp to a human-readable format
-        const logDirection = log.direction ? log.direction.toLowerCase() : '';
-        if (logDirection === 'sent' || logDirection === 'received') {
-            content += `${timestamp} - ${logDirection === 'sent' ? 'Sent' : 'Received'} Message\n`;
-            // Extract relevant information and format it
-            const contentObject = JSON.parse(log.content);
-            const ovon = contentObject?.ovon || {};
-            if (logDirection === 'received') {
-                content += `Assistant Name: ${assistantName}\n`;
-            } else if (logDirection === 'sent') {
-                const humanName = localStorage.getItem('humanFirstName') || 'Human';
-                content += `Human Name: ${humanName}\n`;
-            }
-            content += `Conversation ID: ${ovon.conversation?.id || 'Unknown Conversation ID'}\n`;
-            const events = ovon.events || [];
-            events.forEach((event, index) => {
-                content += `Event ${index + 1}: ${event.eventType}\n`;
-                // Display tokens/values for 'utterance' events
-                if (event.eventType === 'utterance') {
-                    const tokens = event.parameters.dialogEvent.features.text.tokens || [];
-                    tokens.forEach((token, tokenIndex) => {
-                        content += `Token ${tokenIndex + 1}: ${token.value}\n`;
-                    });
-                } else if (event.eventType === 'whisper') {
-                    // Include the token value for "whisper" events
-                    const whisperToken = event.parameters.dialogEvent.features.text.tokens[0].value;
-                    content += `Whisper Token: ${whisperToken}\n`;
-                }
-            });
-        } else {
-            // If log direction is neither 'sent' nor 'received', just append the log content
-            content += `${timestamp} - ${log.content}\n`;
-        }
-        content += '\n'; // Add a newline to separate log entries
-    });
-    return content;
+    const successMessage = 'File written successfully';
+    alert(successMessage);
 }
 
 function fetchLogsAndPopulateDropdown() {
@@ -230,7 +200,7 @@ function fetchLogsAndPopulateDropdown() {
             if (!response.ok) {
                 throw new Error(`Failed to fetch log files`);
             }
-            return response.text(); // Parse the response as JSON here
+            return response.text(); 
         })
         .then(data => {
             const lines = data.trim().split('\n');
@@ -244,8 +214,6 @@ function fetchLogsAndPopulateDropdown() {
                     logDropdown.add(option);
                 }
             });
-            // Debugging: Log the number of options in the dropdown
-            console.log('Number of options:', logDropdown.length);
         })
         .catch(error => {
             console.error('Error fetching log files:', error);
@@ -263,68 +231,90 @@ function fetchLogFileContent(fileName) {
         })
         .then(content => {
             // Split the content into lines
-            const lines = content.split('\n');
-            
-            // Filter out empty lines
-            const nonEmptyLines = lines.filter(line => line.trim() !== '');
-            // Find the index where the log content begins
-            const startIndex = nonEmptyLines.findIndex(line => line.includes('12/'));
-            // Use the content from the identified index onwards
-            const logsContent = nonEmptyLines.slice(startIndex).join('\n');
-            // Split the log content into lines
-            logs = logsContent.split('\n');
-            // Display the updated logs
-            console.log('Updated logs:', logs);
-            displayLogFileContent(logs, 'all');
+            displayLogFileContent(content, 'all');
         })
         .catch(error => {
             console.error(`Error fetching content for file ${fileName}:`, error);
         });
 }
-
 function displayLogFileContent(content, filter) {
-    // Clear previous logs in the container
     const logContainer = document.getElementById('logContainer');
     logContainer.innerHTML = ''; // Clear previous logs
-    // Get the light color from local storage
-    const lightColor = localStorage.getItem("lightColor");
-    let currentLogElement = null; // Track the current log element
-    content.forEach(logLine => {
-        if (logLine.trim() === '') {
+    const lightColor = localStorage.getItem('lightColor');
+
+    const lines = content.split('\n');
+    const filteredLines = lines.filter(
+        line =>
+            !line.includes('.log.txt') &&
+            !line.startsWith('HTTP/') &&
+            !line.startsWith('Server:') &&
+            !line.startsWith('Date:')
+    );
+    const filteredContent = filteredLines.join('\n');
+    const logEntries = filteredContent.split('\n\n');
+    logEntries.forEach(logEntry => {
+        if (logEntry.trim() === '') {
             return;
         }
-        // Check if the log line indicates a new message
-        if (logLine.includes('Sent Message')) {
-            // If there's an existing log element, append it to the log container
-            if (currentLogElement) {
-                logContainer.appendChild(currentLogElement);
-            }
-            // Create a new log element for the sent message
-            currentLogElement = document.createElement('div');
-            currentLogElement.className = 'log sent';
-        } else if (logLine.includes('Received Message')) {
-            // If there's an existing log element, append it to the log container
-            if (currentLogElement) {
-                logContainer.appendChild(currentLogElement);
-            }
-            // Create a new log element for the received message
-            currentLogElement = document.createElement('div');
-            currentLogElement.className = 'log received';
-            currentLogElement.style.backgroundColor = lightColor; // Set the background color for received messages
+        let logLine;
+        try {
+            logLine = JSON.parse(logEntry);
+        } catch (error) {
+            console.error('Error parsing log entry as JSON:', error);
+            return;
         }
-        // Concatenate the log line to the current log element's content
-        if (currentLogElement) {
-            // Add a newline character between lines of the same message
-            if (currentLogElement.innerHTML !== '') {
-                currentLogElement.innerHTML += '<br>';
+        // Determine the direction based on the sender
+        const direction =
+        logLine.ovon?.sender?.from === 'Human' ||
+        logLine.ovon.sender?.from === localStorage.getItem('humanFirstName')
+            ? 'sent'
+            : 'received';
+        // Apply the filter based on the specified direction
+        if (filter === 'all' || direction === filter) {
+            if (logLine.ovon?.sender?.from) {
+                // Create a new log element based on the sender
+                const currentLogElement = document.createElement('div');
+                currentLogElement.className = `log ${direction}`;
+                currentLogElement.style.backgroundColor = direction === 'received' ? lightColor : '';
+
+                // Create a header for each log entry
+                const logHeader = document.createElement('div');
+                logHeader.className = 'accordion-log-header log-tooltip';
+                logHeader.textContent = `${direction.charAt(0).toUpperCase() + direction.slice(1)} Message`;
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'log-tooltip-text';
+                tooltip.textContent = 'Click to expand';
+
+                // Create a <pre> element for each log entry
+                const logContentContainer = document.createElement('div');
+                logContentContainer.className = 'log-content';
+                const logContent = document.createElement('pre');
+                logContent.className = 'log-content'
+                logContent.textContent = JSON.stringify(logLine, null, 2);
+
+                logContentContainer.style.display = 'none';
+
+                // Add event listener to toggle accordion on header click
+                logHeader.addEventListener('click', () => {
+                    logContentContainer.style.display =
+                        logContentContainer.style.display === 'none' ? 'block' : 'none';
+                });
+                logHeader.appendChild(tooltip);
+                // Add the header and log content to the current log element
+                logContentContainer.appendChild(logContent);
+                currentLogElement.appendChild(logHeader);
+                currentLogElement.appendChild(logContentContainer);
+
+                // Append the log element to the log container
+                logContainer.appendChild(currentLogElement);
+                logHeader.addEventListener('mousemove', event => {
+                    tooltip.style.left = `${event.clientX + 5}px`;
+                    tooltip.style.top = `${event.clientY + 5}px`;
+                });
             }
-            currentLogElement.innerHTML += logLine;
         }
     });
-    // If there's an existing log element at the end, append it to the log container
-    if (currentLogElement) {
-        logContainer.appendChild(currentLogElement);
-    }
 }
 
 function fetchOvonLogs(fileName, direction) {
@@ -333,40 +323,10 @@ function fetchOvonLogs(fileName, direction) {
             if (!response.ok) {
                 throw new Error(`Failed to fetch log file content for ${fileName}. HTTP status ${response.status}`);
             }
-            // Read the response as text
             return response.text();
         })
         .then(content => {
-            // Split the content into lines
-            const lines = content.split('\n');
-            // Filter out empty lines
-            const nonEmptyLines = lines.filter(line => line.trim() !== '');
-            // Find the index where the log content begins
-            const startIndex = nonEmptyLines.findIndex(line => line.includes('12/'));
-            // Use the content from the identified index onwards
-            const logsContent = nonEmptyLines.slice(startIndex).join('\n');
-            // Split the log content into lines
-            logs = logsContent.split('\n');
-            // Extract the content of sent or received messages based on the specified direction
-            const messageContent = [];
-            let isMessage = false;
-
-            logs.forEach(logLine => {
-                if ((direction === 'sent' && logLine.includes('Sent Message')) ||
-                    (direction === 'received' && logLine.includes('Received Message'))) {
-                    // Start capturing content when a sent or received message is encountered
-                    isMessage = true;
-                    messageContent.push(logLine);
-                } else if (logLine.includes('Sent Message') || logLine.includes('Received Message')) {
-                    // Stop capturing content when the next message (sent or received) is encountered
-                    isMessage = false;
-                } else if (isMessage) {
-                    // Capture content of the sent or received message
-                    messageContent.push(logLine);
-                }
-            });
-            // Display the filtered logs
-            displayLogFileContent(messageContent, direction);
+            displayLogFileContent(content, direction);
         })
         .catch(error => {
             console.error(`Error fetching content for file ${fileName}:`, error);

@@ -11,8 +11,8 @@ var conversationLOG = [];
 function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   remoteURL = assistantObject.assistant.serviceAddress;
   assistType = remoteURL.split(':');
-  textColor = assistantObject.assistant.markerColor;
-  localStorage.setItem('markerColor', textColor); // This may be right BUT review this
+  // textColor = assistantObject.assistant.markerColor;
+  textColor = localStorage.getItem('markerColor'); // This may be right BUT review this
   voiceIndex = assistantObject.assistant.voiceIndex;
   contentType = assistantObject.assistant.contentType;
   assistantName = assistantObject.assistant.name;

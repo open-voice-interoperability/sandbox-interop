@@ -70,6 +70,7 @@
     margin-bottom: 10px;
     border: 1.5px solid #000000;
     padding: 10px;
+    position: relative;
   }
 
   .element {
@@ -93,8 +94,20 @@
     transition: filter 0.75s ease;
 }
 
+#stopTTSIcon {
+    /* Initial styles */
+    cursor: pointer !important;
+    filter: brightness(100%);
+    position: relative; 
+}
+
+#stopTTSIcon:hover {
+    filter: brightness(135%);
+    transition: filter 0.75s ease;
+}
+
 #lineSeparator {
-    border-top: 1px solid #777777;
+    border-top: 1.5px solid #646464;
     margin: 10px 0;
   }
   #backgroundPickerLabel {
@@ -138,4 +151,165 @@
 }
 #voiceSettings {
     margin-top: 10px;
+}
+
+.homeBtn , .converseBtn , .logBtn, .settingBtn {
+    border-radius: 8px;
+    border: 1.5px solid #016384;
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    background-color: #00bfff;
+    font-size: 16px;
+}
+.homeBtn:hover, .converseBtn:hover, .logBtn:hover, .settingBtn:hover{
+    background-color: #5dd2f9;
+    transform: scale(1.015);
+    transition: .35s;
+    cursor: pointer;
+}
+.assistantSelectDiv{
+    margin-bottom: -25px;
+}
+#sbAssist{
+    margin-left: 5px;
+    padding: 1.85px;
+    padding-left: 1.85px;
+    padding-right: 1.85px;
+    border-radius: 8px;
+}
+
+#sbAssist:hover, #logFileDropdown:hover{
+    background-color: rgb(214, 214, 214);
+    transition: .35s;
+    cursor: pointer;
+}
+
+.browserAndOs{
+    margin-bottom: 6px;
+}
+
+#logFileDropdown{
+    margin-top: 10px;
+    padding: 1.85px;
+    padding-left: 1.85px;
+    padding-right: 1.85px;
+    border-radius: 8px;
+    border-color: #484747;
+}
+
+#titleHead{
+    margin-top: -10px;
+}
+
+img {
+    max-width: 100%; /* Make sure the image doesn't exceed its container */
+    height: auto;
+}
+
+@media (max-width: 600px) {
+    img {
+        height: auto;
+    }
+}
+
+#whisperMessage, #rf {
+    border-radius: 5px;
+    border-color: #797979;
+    border-style: solid;
+}
+#whisperMessage::placeholder , #rf::placeholder{ 
+    color: rgb(56, 55, 55);
+    text-align: center;
+}
+
+#whisperMessage{
+    margin-top: 2px;
+    margin-left: 10px;
+    width: 215px;
+    resize: vertical;
+    font-family: 'Arial';
+    font-size: 14px;
+    max-height: 200px;
+}
+
+.whisper{
+    display: flex;
+    align-items: center;
+    margin-bottom: -10px;
+}
+
+.accordion-log-header {
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Add smooth transition for color and transform */
+    transform-origin: left; /* Set the transformation origin to the left */
+
+}
+
+.accordion-log-header:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+.log-tooltip .log-tooltip-text {
+    display: block;
+    visibility: hidden;
+    max-width: 100px;
+    background-color: rgb(22, 0, 131);
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 13.5px;
+    position: fixed;
+    margin-left: 8px;
+    margin-top: 1px;
+    z-index: 1;
+}
+
+.log-tooltip:hover .log-tooltip-text {
+    visibility: visible;
+}
+
+.responseWrap {
+    width:400px;
+    word-wrap: break-word;
+  }
+  .tooltip {
+      margin-top: 16px;
+      position: relative;
+      display: inline-block;
+  }
+  .tooltip .tooltiptext {
+      display: block;
+      visibility: hidden;
+      max-width: 200px; /* Set the maximum width */
+      background-color: rgb(22, 0, 131);
+      color: #fff;
+      text-align: center;
+      border-radius: 10px;
+      padding: 8px; /* Adjust the padding */
+      font-size: 13.5px; /* Adjust the font size */
+      position: absolute;
+      margin-left: 8px;
+      margin-top: -3px;
+      z-index: 1;
+  }
+  .tooltip:hover .tooltiptext {
+  visibility: visible;
+
+  }
+  .AssistantName {
+      display: inline-block; /* Display inline */
+      margin-left: 15px; /* Add some margin to separate from the tooltip */
+      margin-top: 13px;
+  }
+
+  
+.log-content{
+    white-space: pre-wrap;
+    line-height: 1.15;
 }

@@ -10,7 +10,7 @@ function ejGetAgentParams( someAgentName ){ //return object for this agent
 
 //build the Assistant <select> html innerHTML string
 function loadAssistantSelect() {
-  var selCntl = '<label for="AssistantList">Choose an Assistant:</label>';
+  var selCntl = '<label style="font-size: 18px;" for="AssistantList">Choose an Assistant:</label>';
   selCntl += '<select name="startAssistant" id="sbAssist" onchange="saveAssistantIndex();">';
   selCntl += '<option value="" disabled selected>Select an Assistant</option>';
 

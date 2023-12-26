@@ -49,13 +49,18 @@
     </style>        
 </head>
 <body onload="sbConversationStart();">
-    <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/><b> OVON Sandbox</b></h2>
-    <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
-    <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-    <a href="sbHome.html"><button>Back Home</button></a>
-    <button onclick="window.open('logs.html', '_blank')">Logs</button>
+    <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
+    <h2 id="titleHead"><b> OVON Sandbox</b> </h2>
+    <div class="browserAndOs">
+        <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
+        <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
+    </div>
+     <a href="sbHome.html"><button class="converseBtn">Back Home</button></a>
+    <button class="converseBtn" onclick="window.open('logs.html', '_blank')">Logs</button>
     <!-- <button id="writeJSON" onclick="saveTimeStampedLogFile(jsonLOG);">Write JSON Log</button> -->
-    <button onclick="window.open('sbSettings.html', '_blank')">Settings</button>
+    <button class="converseBtn" onclick="window.open('sbSettings.html', '_blank')">Settings</button>
+    <div id="lineSeparator"></div>
+
     <table>
         <tr>
             <td><h1><b>Input</b></h1></td>
@@ -78,7 +83,7 @@
         <tr>
             <td><h3>Whisper:</h3></td>
             <td>
-                <input type="text" id="whisper" placeholder="Type your WHISPER here" size="50"/><button onclick="sendReply();">Send Whisper</button>
+                <input style="margin-right: 5px" type="text" id="whisper" placeholder="Type your WHISPER here" size="50"/><button class="converseBtn" onclick="sendReply();">Send Whisper</button>
             </td>
         </tr>
         <tr>
