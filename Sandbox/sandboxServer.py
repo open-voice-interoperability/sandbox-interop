@@ -22,6 +22,26 @@ class Serv(SimpleHTTPRequestHandler):
         if self.path == '/':
             self.path = '/sbStartup.html'
         try:
+            print("Requested path:", self.path)
+            if self.path.startswith('/Report/Logs/'):
+                logs_directory = os.path.join(os.getcwd(), "Report", "Logs")
+                if os.path.isdir(logs_directory):
+                    log_files = [f for f in os.listdir(logs_directory) if f.endswith(".log.txt")]
+                    print("Response data:", log_files)
+
+                    # Join the list of log files into a string with each file on a new line
+                    response_data = '\n'.join(log_files) + '\n'
+
+                    # Send the response as plain text
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(response_data.encode('utf-8'))
+            
+                else:
+                    self.send_error(500, "Logs directory not found.")
+                
+                
             if self.path.__contains__(".png") or self.path.__contains__(".jpg"):
                 file_to_open = self.path
                 file_to_open = file_to_open[1:]
@@ -42,9 +62,8 @@ class Serv(SimpleHTTPRequestHandler):
         self.end_headers()
     def do_PUT(self):
         rootpath = os.path.realpath(os.path.dirname(__file__))
-        rootpath = rootpath.replace("\\", "/" ) + "/"
+        rootpath = rootpath.replace("\\", "/" )
         print( "Directory of the Sandbox: ", rootpath)
-        print( "self.path", self.path )
         length = int(self.headers['Content-Length'])
         path = self.translate_path(self.path)
         (srcpath, srcfile) = os.path.split(path)

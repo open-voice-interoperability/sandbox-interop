@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../Scripts/css/styles.css">
+    <title >Create Assistant</title>
+    <script language="JavaScript" src= "../Scripts/sbAssistantTable.js"></script>
+    <script language="JavaScript" defer src= "../Scripts/sbAssistantMgr.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbSpeech.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbLLM.js"></script>       
+</head>
+<body>
+    <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
+    <h2 id="titleHead"> <b> Create New Assistant</b> </h2>
+    <a href="sbHome.html"><button class="homeBtn">Back Home</button></a>
+    <form id="createAssistantForm" onsubmit="return createAssistant();">
+       <div>
+            <label for="assistantName"><b>Assistant Name:</b></label>
+            <input type="text" id="assistantName" required>
+       </div> 
+        <div>
+            <label for="assistantID"><b>Assistant ID:</b></label>
+            <input type="text" id="assistantID">
+        </div>
+        <div>
+            <!-- MAKE A VOICE SELECT DROPDOWN WITH THE VOICES WE END UP PICKING -->
+            <label for="voiceIndex"><b>Voice Index:</b></label>
+            <input type="text" id="voiceIndex">
+            <button id="voiceSelect" class="load-voices" onclick="openVoiceWindow()">Load Voices</button>
+        </div>
+        <div>
+            <label for="lightColor"><b>Light Color:</b></label>
+            <input type="color" id="lightColor">
+        </div>
+        <div>
+            <label for="markerColor"><b>Marker Color:</b></label>
+            <input type="color" id="markerColor">
+        </div>
+        <div>
+            <label for="serviceName"><b>Service Name:</b></label>
+            <input type="text" id="serviceName" placeholder="ex: PrimaryAssistant">
+        </div>
+        <div>
+            <label for="serviceAddress"><b>Service Address:</b></label>
+            <input type="text" id="serviceAddress" placeholder="ex: http://localhost:port/">
+        </div>
+        <div>
+            <label for="authCode"><b>Auth Code:</b></label>
+            <input type="text" id="authCode">
+        </div>
+        <div>
+            <label for="contentType"><b>Content Type:</b></label>
+            <input type="text" id="contentType" value="application/json">
+        </div>
+    </form>
+    <br>
+    <button id="createAssistant" type="submit" class="homeBtn" onclick="createAssistant()">Create</button>
+
+</body>
+</html>

@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
             fetchLogFileContent(selectedFileName, 'all');
-        }else[
+        }else{
             applyFilter('all')
-        ]
+        }
     });
     ovonSentButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
@@ -180,9 +180,7 @@ function saveFullDialogToFile() {
     const assistantName = localStorage.getItem('assistantName');
     const fileName = `OVON_${assistantName}_${dateStr}.log.txt`;
     const logContent = logs.map(log => log.content).join('\n\n');
-    writeSBFile(fileName, logContent, function () {
-        readSBFile(fileName);
-    });
+    writeSBFile(fileName, logContent);
     const successMessage = 'File written successfully';
     alert(successMessage);
 }
@@ -265,10 +263,11 @@ function displayLogFileContent(content, filter) {
         }
         // Determine the direction based on the sender
         const direction =
-        logLine.ovon?.sender?.from === 'Human' ||
-        logLine.ovon.sender?.from === localStorage.getItem('humanFirstName')
-            ? 'sent'
-            : 'received';
+            logLine.ovon?.sender?.from === 'Human' ||
+            logLine.ovon.sender?.from === localStorage.getItem('humanFirstName')
+                ? 'sent'
+                : 'received';
+
         // Apply the filter based on the specified direction
         if (filter === 'all' || direction === filter) {
             if (logLine.ovon?.sender?.from) {
@@ -280,7 +279,25 @@ function displayLogFileContent(content, filter) {
                 // Create a header for each log entry
                 const logHeader = document.createElement('div');
                 logHeader.className = 'accordion-log-header log-tooltip';
-                logHeader.textContent = `${direction.charAt(0).toUpperCase() + direction.slice(1)} Message`;
+                const logHeaderText = direction === 'sent' ? 'Sent Message' : 'Received Message';
+
+                // Check for different message types and modify the header text accordingly
+                if (direction === 'sent') {
+                    const inviteEvent = logLine.ovon?.events?.find(event => event.eventType === 'invite');
+                    const whisperEvent = logLine.ovon?.events?.find(event => event.eventType === 'whisper');
+
+                    if (inviteEvent) {
+                        if (whisperEvent) {
+                            logHeader.textContent = `Sent: Invite with Whisper: ${whisperEvent.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
+                        } else {
+                            logHeader.textContent = `Sent: Bare Invite to: ${inviteEvent.parameters.to.url || 'unknown'}`;
+                        }
+                    } else {
+                        logHeader.textContent = `Sent: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
+                    }
+                } else if (direction === 'received') {
+                    logHeader.textContent = `Received: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
+                }
 
                 const tooltip = document.createElement('div');
                 tooltip.className = 'log-tooltip-text';
@@ -290,7 +307,7 @@ function displayLogFileContent(content, filter) {
                 const logContentContainer = document.createElement('div');
                 logContentContainer.className = 'log-content';
                 const logContent = document.createElement('pre');
-                logContent.className = 'log-content'
+                logContent.className = 'log-content';
                 logContent.textContent = JSON.stringify(logLine, null, 2);
 
                 logContentContainer.style.display = 'none';

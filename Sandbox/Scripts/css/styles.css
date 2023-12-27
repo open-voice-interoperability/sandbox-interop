@@ -313,3 +313,7 @@ img {
     white-space: pre-wrap;
     line-height: 1.15;
 }
+
+#createAssistantForm div{
+    margin-top: 15px;
+}

@@ -1,5 +1,3 @@
-// Utility functions for the Sandbox
-
 function sbConversationStart() {
     msgLogDiv = document.getElementById("msgLOG");
     localStorage.setItem("currentConversationID", "");
@@ -269,8 +267,8 @@ var d=new Date();
 var dateStr = addFixZero( d.getFullYear() );
 dateStr += addFixZero( d.getMonth() + 1 );
 dateStr += addFixZero( d.getDate() );
-dateStr += addFixZero( d.getHours() + 1 );
-dateStr += addFixZero( d.getMinutes() + 1 );
+dateStr += addFixZero( d.getHours() );
+dateStr += addFixZero( d.getMinutes() );
 dateStr += addFixZero( d.getSeconds() + 1 );
 return dateStr;
 }
