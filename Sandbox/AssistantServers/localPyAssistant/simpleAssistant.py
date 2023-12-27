@@ -1,11 +1,39 @@
 import json
 from datetime import datetime
 import re
+import os
+#from openai import OpenAI
+import openai
 
 # Set your assistant's unique speakerID and service address
 conversationID = ""
 mySpeakerID = ""
 myServiceAddress = ""
+f = open( "C:/ejDev/3rdParty/OAIK/amphibian.txt")
+amphibCode = f.read()
+print( "theKey: ", amphibCode )
+openai.api_key = amphibCode
+#client = OpenAI(api_key=amphibCode)
+
+def promptLLM( inputStr):
+    response = openai.ChatCompletion.create(
+    #response = client.chat.completions.create(
+        #response_format={ "type": "json_object" },
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+            {"role": "user", "content": inputStr}
+        ],
+        temperature=0.3,
+        model="gpt-3.5-turbo-1106",
+    )
+    print("Raw LLM response: ", response )
+    #print(dir(response))
+    #respJSON = json.loads( response )
+    #response = respJSON["ChatCompletion"]
+    resptext = response.choices[0].message['content'].strip()
+    return resptext
+    #return respJSON['choices'][0]['message']['content']
+    #return response.choices[0].message.content
 
 def setServAddressAndSpeakerID( srvAdd, speakerID ):
     myServiceAddress = srvAdd
@@ -39,9 +67,10 @@ def exchange(inputOVON):
         # set this to your goodbye for a "naked bye"
         utteranceInput = "Nice talking to you. Goodbye."
 
-    return modeResponse( utteranceInput, whisperInput, eventSet["invite"] )
+    return modeResponse( utteranceInput, whisperInput, eventSet["invite"], eventSet["bye"] )
 
-def modeResponse( inputUtterance, inputWhisper, isInvite ):
+def modeResponse( inputUtterance, inputWhisper, isInvite, isBye ):
+    print(promptLLM("describe how to drive a car using 20 words or less."))
     if isInvite:
         if len(inputWhisper)>0:
             responseObj = converse( "", inputWhisper )
@@ -126,3 +155,4 @@ def converse( utt, whisp ):
         }
     }
     return conRespObject
+
