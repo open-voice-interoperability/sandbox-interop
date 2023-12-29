@@ -14,8 +14,6 @@ function sbConversationStart() {
     document.getElementById("BrowserType").innerText = sbBrowserType;
     document.getElementById("OSType").innerText = sbOSType;
     if (!assistantObject) {
-        // You can handle this case or return, depending on your requirements
-        console.error('AssistantObject is not defined.');
         return;
       }
     if (localStorage.getItem("bareInviteSelected") === "true") {
