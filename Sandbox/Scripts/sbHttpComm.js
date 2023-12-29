@@ -9,7 +9,8 @@ var jsonLOG;
 var conversationLOG = [];
 
 function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
-  remoteURL = assistantObject.assistant.serviceAddress;
+  remoteURL = localStorage.getItem('serviceAddress');
+  console.log(remoteURL);
   assistType = remoteURL.split(':');
   // textColor = assistantObject.assistant.markerColor;
   textColor = localStorage.getItem('markerColor'); // This may be right BUT review this

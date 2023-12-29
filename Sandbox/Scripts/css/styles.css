@@ -275,7 +275,7 @@ img {
 }
 
 .responseWrap {
-    width:400px;
+    overflow-x: auto;
     word-wrap: break-word;
   }
   .tooltip {

@@ -5,11 +5,19 @@ function sbConversationStart() {
     localStorage.setItem( "uttCount", 0 );
     var selectedColor = localStorage.getItem('markerColor');
     const baseEnvelope = baseEnvelopeOVON(assistantObject);
+    var assistantNameElement = document.getElementById("AssistantName");
 
-    document.getElementById("AssistantName").innerText = localStorage.getItem('assistantName');
+    if (assistantNameElement) {
+        // The element exists, set its innerText
+        assistantNameElement.innerText = localStorage.getItem('assistantName');
+    }
     document.getElementById("BrowserType").innerText = sbBrowserType;
     document.getElementById("OSType").innerText = sbOSType;
-
+    if (!assistantObject) {
+        // You can handle this case or return, depending on your requirements
+        console.error('AssistantObject is not defined.');
+        return;
+      }
     if (localStorage.getItem("bareInviteSelected") === "true") {
         // The Bare Invite button was selected
         setEvelopeConvoID(baseEnvelope);
@@ -29,6 +37,7 @@ function sbConversationStart() {
     }
 }
 
+initializeAssistantData().then(sbConversationStart);
 
 function baseEnvelopeOVON( someAssistant ){
     const humanFirstName = localStorage.getItem("humanFirstName");
@@ -115,7 +124,7 @@ function buildUtteranceOVON( speaker, utteranceStr ){
 }
 
 function buildWhisperOVON( speaker, whisperStr ){
-    const name = speaker.name;
+    const name = speaker;
     const OVON_Whisper = {
         "eventType": "whisper",
         "parameters": {

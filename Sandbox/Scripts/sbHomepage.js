@@ -1,13 +1,17 @@
 // Core-Basic functions for the Sandbox
+var assistantTable; 
 var conversationID;
 var msgLogDiv;
-var selectedAssistantIndex= localStorage.getItem( "currentAssistantIndex" );
-var assistantObject = assistantTable[selectedAssistantIndex];
+var assistantObject;
+var selectedAssistantIndex;
+
+// var assistantObject = assistantTable[selectedAssistantIndex];
 var bareInviteSelected = false;
 var InviteWithWhisper = false;
 
+var sbBrowserType;
 const agent = window.navigator.userAgent.toLowerCase();
-const sbBrowserType =
+sbBrowserType =
   agent.indexOf('edge') > -1 ? 'edge'
     : agent.indexOf('edg') > -1 ? 'chromium based edge'
     : agent.indexOf('opr') > -1 && window.opr ? 'opera'
@@ -18,7 +22,8 @@ const sbBrowserType =
     : 'other';
 localStorage.setItem( "sbBrowserType", sbBrowserType );
 
-const sbOSType = getOS();
+var sbOSType;
+sbOSType = getOS();
 
 function getOS() {
   const userAgent = window.navigator.userAgent,
@@ -42,9 +47,8 @@ function getOS() {
   return os;
 }
 
-function sbStart(){
+function sbStart(){      
   document.getElementById("BrowserType").innerText = sbBrowserType;
   document.getElementById("OSType").innerText = sbOSType;
   localStorage.setItem( "currentConversationID", "" );
-  loadAssistantSelect();
 }

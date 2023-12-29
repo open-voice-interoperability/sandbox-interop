@@ -86,18 +86,38 @@ class Serv(SimpleHTTPRequestHandler):
         length = int(self.headers.get('content-length'))
         #length = int(self.headers.getheader('content-length'))
         message = json.loads(self.rfile.read(length))
-        
-        # add a property to the object, just to mess with data
-        message['received'] = 'ok'
+        if self.path == '/Support/ActiveAssistantList.json':
+            # Assuming 'ActiveAssistantList.json' is in the same directory as the server script
+            path = os.path.join(os.path.dirname(__file__), 'Support','ActiveAssistantList.json')
 
-        # Do assistant stuff
-        responseJSONStr = exchange( message)
-        
-        # send the message back
-        self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        self.wfile.write(bytes(responseJSONStr, 'utf-8'))
+            # Check if the file exists, if not, create an empty list
+            if not os.path.exists(path):
+                with open(path, 'w') as json_file:
+                    json.dump([], json_file)
+
+            # Read the existing content of the file
+            with open(path, 'r') as json_file:
+                try:
+                    existing_data = json.load(json_file)
+                except json.JSONDecodeError:
+                    # If the file is empty or not a valid JSON, start with an empty list
+                    existing_data = []
+
+            # Append the new data to the existing content
+            existing_data.append({"assistant": message})
+
+            # Write the updated JSON data back to the file
+            with open(path, 'w') as json_file:
+                json.dump(existing_data, json_file, indent=2)
+
+            # Respond with a success message
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"message": "Assistant created successfully!"}')
+        else:
+            # Handle other POST requests as needed
+            pass
         #self.wfile.write(bytes(json.dumps(message, ensure_ascii=False), 'utf-8'))
 
 httpd = HTTPServer(('localhost', port), Serv)

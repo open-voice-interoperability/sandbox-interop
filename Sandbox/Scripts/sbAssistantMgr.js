@@ -7,23 +7,52 @@ function ejGetAgentParams( someAgentName ){ //return object for this agent
     }
   }
 }
+async function fetchAssistantData() {
+  try {
+    const response = await fetch('../Support/ActiveAssistantList.json');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
+async function initializeAssistantData() {
+  try {
+    const data = await fetchAssistantData();
+    assistantTable = data;
+    selectedAssistantIndex = localStorage.getItem("currentAssistantIndex");
+    assistantObject = assistantTable[selectedAssistantIndex];
+    loadAssistantSelect();
+  } catch (error) {
+    console.error('Error fetching assistant data:', error);
+  }
+}
+
+// Call the initialization function
+initializeAssistantData();
 //build the Assistant <select> html innerHTML string
 function loadAssistantSelect() {
-  var selCntl = '<label style="font-size: 18px;" for="AssistantList">Choose an Assistant:</label>';
-  selCntl += '<select name="startAssistant" id="sbAssist" onchange="saveAssistantIndex();">';
-  selCntl += '<option value="" disabled selected>Select an Assistant</option>';
+  var assistantSelect = document.getElementById('assistantSelect');
 
-  for (var i = 2; i < assistantTable.length; i++) { // note avoid the first two
-    selCntl += '<option value="';
-    selCntl += i;
-    selCntl += '">';
-    selCntl += i + ": " + assistantTable[i].assistant.name;
-    selCntl += '</option>';
-  }
-  selCntl += "</select>";
-  document.getElementById( 'assistantSelect' ).innerHTML = selCntl;
-  return;
+  if (assistantSelect) {
+    var selCntl = '<label style="font-size: 18px;" for="AssistantList">Choose an Assistant:</label>';
+    selCntl += '<select name="startAssistant" id="sbAssist" onchange="saveAssistantIndex();">';
+    selCntl += '<option value="" disabled selected>Select an Assistant</option>';
+
+    for (var i = 2; i < assistantTable.length; i++) { // note avoid the first two
+      selCntl += '<option value="';
+      selCntl += i;
+      selCntl += '">';
+      selCntl += i + ": " + assistantTable[i].assistant.name;
+      selCntl += '</option>';
+    }
+    selCntl += "</select>";
+
+    assistantSelect.innerHTML = selCntl;
+  } else {
+      return;
+      }
 }
 
 function saveAssistantIndex() {  
@@ -43,6 +72,9 @@ function handleAssistantSelectionChange() {
     localStorage.setItem("assistantName", selectedAssistant.name);
     localStorage.setItem("markerColor", selectedAssistant.markerColor);
     localStorage.setItem('lightColor', selectedAssistant.lightColor);
+    localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
+
+    // assistantObject = ejGetAgentParams(selectedAssistant.name);
     displayAssistantSettings();
   } else {
     // No assistant selected, hide the settings
@@ -147,11 +179,53 @@ function updateAssistantSettings() {
   localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
   localStorage.setItem('voiceIndex', selectedAssistant.voiceIndex);
   localStorage.setItem('lightColor', selectedAssistant.lightColor);
+  localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
 
   console.log("Update button clicked");
   displayAssistantSettings();
 }
 
+function createAssistant() {
+  // Get form values
+  var assistantName = document.getElementById("assistantName").value;
+  var assistantID = document.getElementById("assistantID").value;
+  var voiceIndex = document.getElementById("voiceIndex").value;
+  var lightColor = document.getElementById("lightColor").value;
+  var markerColor = document.getElementById("markerColor").value;
+  var serviceName = document.getElementById("serviceName").value;
+  var serviceAddress = document.getElementById("serviceAddress").value;
+  var authCode = document.getElementById("authCode").value;
+  var contentType = document.getElementById("contentType").value;
+
+  // Create assistant object
+  var newAssistant = {
+      "name": assistantName,
+      "id": assistantID,
+      "voiceIndex": voiceIndex,
+      "lightColor": lightColor,
+      "markerColor": markerColor,
+      "serviceName": serviceName,
+      "serviceAddress": serviceAddress,
+      "authCode": authCode,
+      "contentType": contentType
+  };
+
+  fetch('../Support/ActiveAssistantList.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newAssistant),
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+  })
+  .catch(error => {
+    console.error('Error creating assistant:', error);
+    alert('Failed to create assistant. Please try again.');
+  });
+}
 
 // Use this to get colors, urls, (eventually TTS voice index, etc)
 // Get Assistant Info in your Browser JS like this:
@@ -161,211 +235,211 @@ function updateAssistantSettings() {
           vIndex = thisAgent.assistant.voiceIndex;
           aColor = thisAgent.assistant.lightColor;
         }
+
 */
 // ...
-
-const assistantTable = [
-    {
-      assistant: {
-        name: "human",
-        voiceIndex: 666,
-        lightColor: "#ff6666",
-        markerColor: "#b30000",
-        serviceName: "HumanUser",
-        serviceAddress: "OriginationPoint",
-        authCode: "hugi666ikjjerg"
-      }
-    },
-    {
-      assistant: {
-      name: "assistantBrowser",
-      voiceIndex: 999,
-      lightColor: "#b3b3cc",
-      markerColor: "#000000",
-      serviceName: "AssistantCommunications",
-      serviceAddress: "localhost:6002",
-      authCode: "456398nns"
-    }
-  },
-  {
-    assistant: {
-      name: "wizard",
-      voiceIndex: 108,
-      lightColor: "#99e6e6",
-      markerColor: "#29a3a3",
-      serviceName: "DaVinci_LLM",
-      serviceAddress: "https://www.asteroute.com/ovontest",
-      authCode: "69jjg45cf0",
-      contentType: "none"
-    }
-  },
-  {
-    assistant: {
-      name: "ovon_auto",
-      voiceIndex: 114,
-      lightColor: "#99e6e6",
-      markerColor: "#29a3a3",
-      serviceName: "Debbie_OVONAUTO",
-      serviceAddress: "https://secondAssistant.pythonanywhere.com",
-      authCode: "69jjg45cf0",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "cassandra",
-      voiceIndex: 4255,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:15455/ejCassandra",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "Madison",
-      voiceIndex: 4255,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:8887",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "Burokratt",
-      voiceIndex: 120,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "Estonia",
-      serviceAddress: "https://dev.buerokratt.ee/ovonr/conversation",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "ejtalk",
-      voiceIndex: 4255,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "https://ejtalk.pythonanywhere.com",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "george",
-      voiceIndex: 95,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http:localhost:7001",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "mary",
-      voiceIndex: 116,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "https://codeMom.pythonanywhere.com",
-      authCode: "h229k00m8bv",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "einstein",
-      voiceIndex: 144,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "https://api.openai.com/v1/chat/completions",
-      authCode: "AuZ9SYtXn",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "leah",
-      voiceIndex: 80,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "https://lrb24.pythonanywhere.com",
-      authCode: "AuZ9SYtXn",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "library",
-      voiceIndex: 80,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "https://ovon.xcally.com/smartlibrary",
-      authCode: "AuZ9SYtXn",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "peggy",
-      voiceIndex: 115,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:6002",
-      authCode: "AuZ9SYtXn",
-      contentType: ""
-    }
-  },
-  {
-    assistant: {
-      name: "sam",
-      voiceIndex: 80,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:8242/",
-      authCode: "AuZ9SYtXn",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "discovery",
-      voiceIndex: 4255,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "internal:discovery",
-      authCode: "zz8h00ji",
-      contentType: "application/json"
-    }
-  },
-  {
-    assistant: {
-      name: "betty",
-      voiceIndex: 4255,
-      lightColor: "#ffb3d9",
-      markerColor: "#cc0088",
-      serviceName: "PrimaryAssistant",
-      serviceAddress: "http://localhost:7005/",
-      authCode: "zz8h00ji",
-      contentType: "application/json"
-    }
-  }
-]
+// const assistantTable = [
+//   {
+//     assistant: {
+//       name: "human",
+//       voiceIndex: 666,
+//       lightColor: "#ff6666",
+//       markerColor: "#b30000",
+//       serviceName: "HumanUser",
+//       serviceAddress: "OriginationPoint",
+//       authCode: "hugi666ikjjerg"
+//     }
+//   },
+//   {
+//     assistant: {
+//     name: "assistantBrowser",
+//     voiceIndex: 999,
+//     lightColor: "#b3b3cc",
+//     markerColor: "#000000",
+//     serviceName: "AssistantCommunications",
+//     serviceAddress: "localhost:6002",
+//     authCode: "456398nns"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "wizard",
+//     voiceIndex: 108,
+//     lightColor: "#99e6e6",
+//     markerColor: "#29a3a3",
+//     serviceName: "DaVinci_LLM",
+//     serviceAddress: "https://www.asteroute.com/ovontest",
+//     authCode: "69jjg45cf0",
+//     contentType: "none"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "ovon_auto",
+//     voiceIndex: 114,
+//     lightColor: "#99e6e6",
+//     markerColor: "#29a3a3",
+//     serviceName: "Debbie_OVONAUTO",
+//     serviceAddress: "https://secondAssistant.pythonanywhere.com",
+//     authCode: "69jjg45cf0",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "cassandra",
+//     voiceIndex: 4255,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http://localhost:15455/ejCassandra",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "Madison",
+//     voiceIndex: 4255,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http://localhost:8887",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "Burokratt",
+//     voiceIndex: 120,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "Estonia",
+//     serviceAddress: "https://dev.buerokratt.ee/ovonr/conversation",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "ejtalk",
+//     voiceIndex: 4255,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "https://ejtalk.pythonanywhere.com",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "george",
+//     voiceIndex: 95,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http:localhost:7001",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "mary",
+//     voiceIndex: 116,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "https://codeMom.pythonanywhere.com",
+//     authCode: "h229k00m8bv",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "einstein",
+//     voiceIndex: 144,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "https://api.openai.com/v1/chat/completions",
+//     authCode: "AuZ9SYtXn",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "leah",
+//     voiceIndex: 80,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "https://lrb24.pythonanywhere.com",
+//     authCode: "AuZ9SYtXn",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "library",
+//     voiceIndex: 80,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "https://ovon.xcally.com/smartlibrary",
+//     authCode: "AuZ9SYtXn",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "peggy",
+//     voiceIndex: 115,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http://localhost:6002",
+//     authCode: "AuZ9SYtXn",
+//     contentType: ""
+//   }
+// },
+// {
+//   assistant: {
+//     name: "sam",
+//     voiceIndex: 80,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http://localhost:8242/",
+//     authCode: "AuZ9SYtXn",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "discovery",
+//     voiceIndex: 4255,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "internal:discovery",
+//     authCode: "zz8h00ji",
+//     contentType: "application/json"
+//   }
+// },
+// {
+//   assistant: {
+//     name: "betty",
+//     voiceIndex: 4255,
+//     lightColor: "#ffb3d9",
+//     markerColor: "#cc0088",
+//     serviceName: "PrimaryAssistant",
+//     serviceAddress: "http://localhost:7005/",
+//     authCode: "zz8h00ji",
+//     contentType: "application/json"
+//   }
+// },
+// ]
 //      serviceAddress: "http://localhost:15455/clientEvent",

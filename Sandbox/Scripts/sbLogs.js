@@ -178,7 +178,7 @@ function changeBackgroundColor() {
 function saveFullDialogToFile() {
     const dateStr = cleanDateTimeString();    
     const assistantName = localStorage.getItem('assistantName');
-    const fileName = `OVON_${assistantName}_${dateStr}.log.txt`;
+    const fileName = `OVON_${assistantName}${dateStr}.log.txt`;
     const logContent = logs.map(log => log.content).join('\n\n');
     writeSBFile(fileName, logContent);
     const successMessage = 'File written successfully';
@@ -188,34 +188,34 @@ function saveFullDialogToFile() {
 function fetchLogsAndPopulateDropdown() {
     const logDropdown = document.getElementById('logFileDropdown');
     const logFileNameRegex = /^OVON_\w+_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}\.log\.txt$/;
-    // Add a default option at index 1
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.text = 'Select';
-    logDropdown.add(defaultOption);
+
     fetch('/Report/Logs/')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Failed to fetch log files`);
+                throw new Error(`Failed to fetch log files. HTTP status ${response.status}`);
             }
-            return response.text(); 
+            return response.text();
         })
         .then(data => {
             const lines = data.trim().split('\n');
-            // Iterate over each line to find valid log file names
+            let dropdownHTML = '<br><label for="logFiles">Select a log file:</label>';
+            dropdownHTML += '<select name="logFiles" id="logFiles">';
+            dropdownHTML += '<option value="" selected>Select</option>';
+
             lines.forEach(logFileName => {
                 logFileName = logFileName.trim();
                 if (logFileNameRegex.test(logFileName)) {
-                    const option = document.createElement('option');
-                    option.value = logFileName;
-                    option.text = logFileName;
-                    logDropdown.add(option);
+                    dropdownHTML += `<option value="${logFileName}">${logFileName}</option>`;
                 }
             });
+
+            dropdownHTML += '</select>';
+            logDropdown.innerHTML = dropdownHTML;
         })
         .catch(error => {
             console.error('Error fetching log files:', error);
         });
+    return true;
 }
 
 function fetchLogFileContent(fileName) {
@@ -279,7 +279,6 @@ function displayLogFileContent(content, filter) {
                 // Create a header for each log entry
                 const logHeader = document.createElement('div');
                 logHeader.className = 'accordion-log-header log-tooltip';
-                const logHeaderText = direction === 'sent' ? 'Sent Message' : 'Received Message';
 
                 // Check for different message types and modify the header text accordingly
                 if (direction === 'sent') {
@@ -287,18 +286,17 @@ function displayLogFileContent(content, filter) {
                     const whisperEvent = logLine.ovon?.events?.find(event => event.eventType === 'whisper');
 
                     if (inviteEvent) {
-                        if (whisperEvent) {
-                            logHeader.textContent = `Sent: Invite with Whisper: ${whisperEvent.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
-                        } else {
-                            logHeader.textContent = `Sent: Bare Invite to: ${inviteEvent.parameters.to.url || 'unknown'}`;
-                        }
+                        logHeader.textContent = `Sent: ${
+                            whisperEvent
+                                ? `Invite with Whisper: ${whisperEvent.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`
+                                : `Bare Invite to: ${inviteEvent.parameters.to.url || 'unknown'}`
+                        }`;
                     } else {
                         logHeader.textContent = `Sent: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
                     }
                 } else if (direction === 'received') {
                     logHeader.textContent = `Received: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
                 }
-
                 const tooltip = document.createElement('div');
                 tooltip.className = 'log-tooltip-text';
                 tooltip.textContent = 'Click to expand';

@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../Scripts/css/styles.css">
     <title>Conversation</title>
-    <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>
+    <script type="JSON" src="../Support/ActiveAssistantList.json"></script>
     <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
+    <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>    
     <script language="JavaScript" src= "../Scripts/sbHttpComm.js"></script>
     <script language="JavaScript" src= "../Scripts/sbEnvelopeTools.js"></script>
+    <link rel="stylesheet" href="../Scripts/css/styles.css">
     <script language="JavaScript" src= "../Scripts/sbSpeech.js"></script>
-    <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
-    <script language="JavaScript" src= "../AssistantServers/InternalServer/internalServer.js"></script>
-    <style>
-    
-
-    </style>        
+    <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>     
 </head>
-<body onload="sbConversationStart();">
+<body onload="sbConversationStart();" >
     <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
     <h2 id="titleHead"><b> OVON Sandbox</b> </h2>
     <div class="browserAndOs">
@@ -63,11 +60,11 @@
         </tr>
         <tr>
             <td><h3 style="color:blue;">SENT:</h3></td>
-            <td><span><pre style="color:blue;" id="msgSENT" class="responseWrap"></pre></span></td>
+            <td><span><pre style="color:blue; white-space: pre-wrap; word-wrap: break-word;" id="msgSENT" class="responseWrap"></pre></span></td>
         </tr>
         <tr>
             <td><h3 style="color:red;">RECEIVED:</h3></td>
-            <td><span><pre style="color:red;" id="msgRECEIVED" class="responseWrap"></pre></span></td>
+            <td><span><pre style="color:red; white-space: pre-wrap; word-wrap: break-word;" id="msgRECEIVED" class="responseWrap"></pre></span></td>
         </tr>
     </table>
 </body>

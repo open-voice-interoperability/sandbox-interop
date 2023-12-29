@@ -1,7 +1,7 @@
 [
   {
     "assistant": {
-      "name": "myHuman",
+      "name": "human",
       "voiceIndex": 666,
       "lightColor": "#ff6666",
       "markerColor": "#b30000",
@@ -17,50 +17,26 @@
       "lightColor": "#b3b3cc",
       "markerColor": "#000000",
       "serviceName": "AssistantCommunications",
-      "serviceAddress": "localhost:15445",
+      "serviceAddress": "localhost:6002",
       "authCode": "456398nns"
     }
   },
   {
     "assistant": {
-      "name": "Eva",
-      "voiceIndex": 142,
-      "lightColor": "#ffb3d9",
-      "markerColor": "#cc0088",
-      "serviceName": "PrimaryAssistant",
-      "serviceAddress": "localhost:8889",
-      "authCode": "h229k00m8bv",
-      "contentType": "application/json"
-    }
-  },
-  {
-    "assistant": {
-      "name": "Jake",
-      "voiceIndex": 141,
-      "lightColor": "#ffb3d9",
-      "markerColor": "#cc0088",
-      "serviceName": "WeatherAssistant",
-      "serviceAddress": "localhost:8890",
-      "authCode": "lekg99k9e",
-      "contentType": "application/json"
-    }
-  },
-  {
-    "assistant": {
       "name": "wizard",
-      "voiceIndex": 133,
+      "voiceIndex": 108,
       "lightColor": "#99e6e6",
       "markerColor": "#29a3a3",
       "serviceName": "DaVinci_LLM",
       "serviceAddress": "https://www.asteroute.com/ovontest",
       "authCode": "69jjg45cf0",
-      "contentType": "application/json"
+      "contentType": "none"
     }
   },
   {
     "assistant": {
       "name": "ovon_auto",
-      "voiceIndex": 142,
+      "voiceIndex": 114,
       "lightColor": "#99e6e6",
       "markerColor": "#29a3a3",
       "serviceName": "Debbie_OVONAUTO",
@@ -72,7 +48,7 @@
   {
     "assistant": {
       "name": "cassandra",
-      "voiceIndex": 115,
+      "voiceIndex": 4255,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -84,7 +60,7 @@
   {
     "assistant": {
       "name": "Madison",
-      "voiceIndex": 115,
+      "voiceIndex": 4255,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -96,11 +72,11 @@
   {
     "assistant": {
       "name": "Burokratt",
-      "voiceIndex": 142,
+      "voiceIndex": 120,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "Estonia",
-      "serviceAddress": "https://dev.buerokratt.ee/ovonr/chat/rasa/ovon",
+      "serviceAddress": "https://dev.buerokratt.ee/ovonr/conversation",
       "authCode": "h229k00m8bv",
       "contentType": "application/json"
     }
@@ -108,7 +84,7 @@
   {
     "assistant": {
       "name": "ejtalk",
-      "voiceIndex": 115,
+      "voiceIndex": 4255,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -120,7 +96,7 @@
   {
     "assistant": {
       "name": "george",
-      "voiceIndex": 115,
+      "voiceIndex": 95,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -132,7 +108,7 @@
   {
     "assistant": {
       "name": "mary",
-      "voiceIndex": 115,
+      "voiceIndex": 116,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -144,7 +120,7 @@
   {
     "assistant": {
       "name": "einstein",
-      "voiceIndex": 115,
+      "voiceIndex": 144,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -156,7 +132,7 @@
   {
     "assistant": {
       "name": "leah",
-      "voiceIndex": 115,
+      "voiceIndex": 80,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
@@ -168,12 +144,60 @@
   {
     "assistant": {
       "name": "library",
-      "voiceIndex": 115,
+      "voiceIndex": 80,
       "lightColor": "#ffb3d9",
       "markerColor": "#cc0088",
       "serviceName": "PrimaryAssistant",
       "serviceAddress": "https://ovon.xcally.com/smartlibrary",
       "authCode": "AuZ9SYtXn",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "peggy",
+      "voiceIndex": 115,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http://localhost:6002",
+      "authCode": "AuZ9SYtXn",
+      "contentType": ""
+    }
+  },
+  {
+    "assistant": {
+      "name": "sam",
+      "voiceIndex": 80,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http://localhost:8242/",
+      "authCode": "AuZ9SYtXn",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "discovery",
+      "voiceIndex": 4255,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "internal:discovery",
+      "authCode": "zz8h00ji",
+      "contentType": "application/json"
+    }
+  },
+  {
+    "assistant": {
+      "name": "betty",
+      "voiceIndex": 4255,
+      "lightColor": "#ffb3d9",
+      "markerColor": "#cc0088",
+      "serviceName": "PrimaryAssistant",
+      "serviceAddress": "http://localhost:7005/",
+      "authCode": "zz8h00ji",
       "contentType": "application/json"
     }
   }
