@@ -10,11 +10,55 @@ var respEnvelope;
 var sbLLM_CommObject;
 var LLMLog = [];
 var sendDiscoveryJSON;
-var discoverTurns = 0;
 var aiCallType = "https://api.openai.com/v1/chat/completions";
-//var aiModel = "gpt-3.5-turbo";
 var aiModel = "gpt-3.5-turbo-1106";
 var startPrompt = "You are an assistant that will help the human user discover the domain expertise required by the human to complete their task. You will accept a phrase or sentence as a starting point and ask questions that help focus on the general expertise that is needed to help the human. Your responses will be friendly and conversational. You will try to keep your responses to less than 40 words .Your questions for clarification can and should be leading and suggestive enough to prompt the user to give clearer answers. The result of this conversation will be a single word or short phrase that identifies the domain expertise for the assistant they require.  This conversation should be no longer than two or three turns. You will return the resulting domain in the form *Domain = [the domain that you discovered with this conversation]";
+var turnLLM = 0;
+var aiAssistantPool = [];
+var veronicaPrompt = "You are a serious expert on the superman comic book and movie genre. You will limit your comments to 5o words or less.";
+
+//localStorage.setItem( "internalLLM_veronica", veronicaPrompt);
+
+function callInternalLLM( assistName, assistantObject, OVONmsg ){
+    var aPoolMember = null;
+    temp = parseFloat( localStorage.getItem( "AITemp" ) );
+    respEnvelope = baseEnvelopeOVON( assistantObject );
+    for (const x in aiAssistantPool) {
+        if( x.name === assistName ){ // find the assistant data
+            aPoolMember = x;
+        }
+    }
+    if( aPoolMember === null ){ // not found so build it
+        aPoolMember = initialLLM( assistName, aiModel, veronicaPrompt, 0.5 );
+        aiAssistantPool.push( aPoolMember );
+    }
+    findEvents( OVONmsg.ovon.events );
+    if( !aPoolMember.invited && invite ){
+        aPoolMember.invited = true;
+        if( utterance ){
+            aPoolMember.aiLLM.messages.push( sbAddMsg( "user", utteranceText ) );
+        }else{
+            aPoolMember.aiLLM.messages.push( sbAddMsg( "user", "Hello" ) );
+        }
+    }else{
+        if( utterance ){
+            aPoolMember.aiLLM.messages.push( sbAddMsg( "user", utteranceText ) );
+        }else if( whisper ){
+            aPoolMember.aiLLM.messages.push( sbAddMsg( "user", whisperText ) );
+        }else{
+            console.log("You must send an utterance or a whisper.");
+        }
+    }
+    sbLLMPost( aPoolMember.aiLLM );
+    /*
+    tempName = "internalLLM_" + assistName ;
+    contextLLMStr = localStorage.getItem( tempName );
+    if ( contextLLMStr === "" ){
+        assistDirFile = "../AssistantServers/InternalServer/" + assistantObject.name;
+        readSBFile( assistDirFile, finishIntLLM );
+*/
+    return;
+}
 
 function callInternalAssistant( assistName, assistantObject, OVONmsg ){
     respEnvelope = baseEnvelopeOVON( assistantObject );
@@ -22,17 +66,24 @@ function callInternalAssistant( assistName, assistantObject, OVONmsg ){
         findEvents( OVONmsg.ovon.events );
         if( invite ){
             temp = parseFloat( localStorage.getItem( "AITemp" ) );
+            sendDiscoveryJSON = {
+                "model": aiModel, // e.g. "model": "gpt-3.5-turbo",
+                  "temperature": temp, //0.0 - 2.0
+                  "messages": []
+              }
             if( whisperText != ""){
-                discoverLLMPrep( aiModel, whisperText, temp );
+                sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", whisperText ) );
             }else{
-                discoverLLMPrep( aiModel, startPrompt, temp );
+                sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", startPrompt ) );
             }
             if( utterance ){
-                sbLLMPost( utteranceText );
+                sendDiscoveryJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+                sbLLMPost( sendDiscoveryJSON );
             }
         }else{
-            if( utterance && (discoverTurns == 0)){
-                sbLLMPost( utteranceText );
+            if( utterance ){
+                sendDiscoveryJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+                sbLLMPost( sendDiscoveryJSON );
             }else{
                 ovonUtt = buildUtteranceOVON( assistName, "You must invite the assistant first." );
                 respEnvelope.ovon.events.push(ovonUtt);        
@@ -45,15 +96,18 @@ function callInternalAssistant( assistName, assistantObject, OVONmsg ){
     return;
 }
 
-function discoverLLMPrep( model, prompt, temp ) {
-    sendDiscoveryJSON = {
-      "model": model,
-      // e.g. "model": "gpt-3.5-turbo",
-        "temperature": temp, //0.0 - 2.0
-        "messages": []
+function initialLLM( name, model, prompt, temp ) {
+    theJSON = {"name": name,
+        "invited": false,
+        "aiLLM": {
+            "model": model,  // e.g. "model": "gpt-3.5-turbo",
+            "temperature": temp,  //0.0 - 2.0
+            "messages": []
+        }
     }
     discoverTurns = 0;
-    sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", prompt ) );
+    theJSON.aiLLM.messages.push( sbAddMsg( "assistant", prompt ) );
+    return theJSON;
 }
 
 function sbAddMsg( role, input ) {
@@ -89,7 +143,7 @@ function findEvents( eventArray ){
     }           
 }
 
-function sbLLMPost( input ) { //send to LLM
+function sbLLMPost( someJSON) { //send to LLM
     if( sbLLM_CommObject == null ){
       try{
         sbLLM_CommObject = new XMLHttpRequest();
@@ -98,7 +152,10 @@ function sbLLMPost( input ) { //send to LLM
         alert( 'Failed to make LLM communication object' );
         return false;
       }
-      sbLLM_CommObject.onreadystatechange=sbLLMPostResp;
+      //sbLLM_CommObject.onreadystatechange=sbLLMPostResp;
+      sbLLM_CommObject.onreadystatechange= function(){
+        sbLLMPostResp( someJSON );
+      }
     }
   
     if( sbLLM_CommObject != null ){  
@@ -108,18 +165,17 @@ function sbLLMPost( input ) { //send to LLM
       sbLLM_CommObject.setRequestHeader('Authorization', key );
       sbLLM_CommObject.setRequestHeader('Content-Type', "application/json" );
   
-      sendDiscoveryJSON.messages.push( sbAddMsg( "user", input ) );
-      jsonDiscoverySENT = JSON.stringify( sendDiscoveryJSON );
-      sbLLM_CommObject.send( jsonDiscoverySENT ); // send to server (compressed string)
+      jsonSENT = JSON.stringify( someJSON );
+      sbLLM_CommObject.send( jsonSENT ); // send to server (compressed string)
 
-      jsonDiscoverySENT = JSON.stringify( sendDiscoveryJSON, null, 2 ); //make it pretty for display
+      jsonSENT = JSON.stringify( someJSON, null, 2 ); //make it pretty for display
       var targ = document.getElementById("llmSENT");
-      targ.innerHTML = jsonDiscoverySENT;
+      targ.innerHTML = jsonSENT;
 
       const sentMessage = {
         direction: 'sent',
         timestamp: new Date().toISOString(),
-        content: jsonDiscoverySENT,
+        content: jsonSENT,
       };
   
       LLMLog.push(sentMessage);
@@ -127,14 +183,16 @@ function sbLLMPost( input ) { //send to LLM
     }
 }
   
-function sbLLMPostResp(){ // should something come in do this
-    if( sbLLM_CommObject.readyState == 4 ){
+function sbLLMPostResp( aiJSON ){ // should something come in do this
+//function sbLLMPostResp(){ // should something come in do this
+        if( sbLLM_CommObject.readyState == 4 ){
         if( sbLLM_CommObject.status == 200 ){
             sbData = sbLLM_CommObject.responseText;
             if( sbData.length ){
                 retLLMJSON = JSON.parse(sbData);  
                 var text = retLLMJSON.choices[0].message.content; // what LLM "says"
-                sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
+                //sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
+                aiJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
 
                 jsonRECEIVED = JSON.stringify( retLLMJSON, null, 2 );
                 const receivedMessage = {

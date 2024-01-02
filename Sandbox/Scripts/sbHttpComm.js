@@ -12,8 +12,8 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   remoteURL = localStorage.getItem('serviceAddress');
   console.log(remoteURL);
   assistType = remoteURL.split(':');
-  // textColor = assistantObject.assistant.markerColor;
-  textColor = localStorage.getItem('markerColor'); // This may be right BUT review this
+  textColor = assistantObject.assistant.markerColor;
+  localStorage.setItem('markerColor', textColor); // This may be right BUT review this
   voiceIndex = assistantObject.assistant.voiceIndex;
   contentType = assistantObject.assistant.contentType;
   assistantName = assistantObject.assistant.name;
@@ -23,8 +23,9 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
 
   if( assistType[0] == "internal" ){
     callInternalAssistant( assistType[1], assistantObject, OVONmsg );
-    //retOVONJSON = callInternalAssistant( assistType[1], assistantObject, OVONmsg );
-    //handleReturnedOVON( retOVONJSON )
+    //handleReturnedOVON( retOVONJSON ) // Note: Done in the LLM call above
+  }else if( assistType[0] == "internalLLM" ){
+    callInternalLLM( assistType[1], assistantObject, OVONmsg );
   }else{
     if( sbOVON_CommObject == null ){
       try{
@@ -72,7 +73,7 @@ function sbOVONstateChecker(){ // when POST response appears do this
 function handleReturnedOVON( OVON_msg ){
   jsonRECEIVED = JSON.stringify( OVON_msg, null, 2 );
   const myArray = jsonRECEIVED.split("\n");
-  
+
   var targ = document.getElementById("msgRECEIVED");
   targ.innerHTML = jsonRECEIVED;
   displayMsgRECEIVED(jsonRECEIVED, localStorage.getItem('markerColor'));
@@ -93,7 +94,7 @@ function RenderResponseOVON( oneEvent, indx, arr ){
   if( type == "utterance" ){
     say = oneEvent.parameters.dialogEvent.features.text.tokens[0].value;
     displayResponseUtterance( say, textColor); // NOTE: This speaks too!
-//}else if( type == "bye"){
+  }else if( type == "bye"){
 //  Do "invite" to the PREVIOUS Assistant???
 //}else if( type == "invite"){
 //  Do "invite" to a NEW Assistant
@@ -105,15 +106,16 @@ function serviceEventsOVON( OvonJson ){
 }
 
 var transferFileData;
-function readSBFile( pathFromRoot ){
+function readSBFile( pathFromRoot, callBackFunction ){
   var url = pathFromRoot;
+  transferFileData = "sbWait";
   var request = new XMLHttpRequest();
-  readFileData = "";
   request.open("GET", url, true);
   request.onreadystatechange = function() {
       if (request.readyState === 4) {  // document is ready to parse.
           if (request.status === 200) {  // file is found
-            document.getElementById('fileData').innerHTML = request.responseText;
+            callBackFunction( request.responseText );
+            //transferFileData = request.responseText;
           }
       }
   }

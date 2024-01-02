@@ -36,18 +36,10 @@
     <br/>
     <br/>
     <div class="whisper">
-         <button class="homeBtn" onclick="inviteWithUtterance()"><b>Invite w/ WHISPER</b></button>
-    <textarea rows=1 type="text" id="whisperMessage" placeholder="Enter WHISPER message here ..."></textarea>
-  
+        <button class="homeBtn" onclick="inviteWithUtterance()"><b>Invite w/ WHISPER</b></button>
+        <textarea rows=1 type="text" id="whisperMessage" placeholder="Enter WHISPER message here ..."></textarea>
     </div>
-     <br/>
     <br/>
-    <input type="text" id="rf" placeholder="FileName to Read" onchange="readSBFile(document.getElementById('rf').value);">
-    <a href="sbSettings.html">Sandbox Settings</a>
-    <h3>Test File Read (e.g. testRead.txt )</h3>
-    <span><pre id="fileData"></pre></span>
-    <button class="homeBtn" id="writeJSON" onclick="writeSBFile('testJSONLog.txt', jsonLOG);">Write JSON Log</button>
-    <button class="homeBtn" id="dir" onclick="getDirectoryList('../');">Directory</button>
 
     <script>
         document.getElementById("assistantSelect").addEventListener("change", function() {
