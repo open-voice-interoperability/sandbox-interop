@@ -243,134 +243,79 @@ function sbSpeak( say, assistantObject ) {
   var aColor = "#555555";
   var voices = speechSynthesis.getVoices();
  
-  if (sbBrowserType === "chromium based edge" && assistantObject) {
-    setTimeout(function () {
-      //var voices = speechSynthesis.getVoices();
-      v = localStorage.getItem("voiceIndex");
-      v = (v == 115) ? 116 : v;
-      v = (v == 4255) ? 115 : v;
-      aColor = assistantObject.assistant.lightColor;
+  if (sbBrowserType === "chromium based edge") {
+    v = localStorage.getItem("voiceIndex");
+    v = (v == 115) ? 116 : v;
+    v = (v == 4255) ? 115 : v;
+  }else if (sbBrowserType === "safari" ) {
+    // Do something special for safari?????
+  }else if ( sbBrowserType === "chrome" ) {
+    // Do something special for chrome?????
+  }else{
+    console.error("Browser not supported"); // Message on the html page too?
+  }
 
-      // Ensure the selected voice index is within bounds
-      v = Math.min(Math.max(0, v), voices.length - 1);
+  if ( assistantObject) {
+    setTimeout(function () {
+      aColor = assistantObject.assistant.lightColor;
+      v = Math.min(Math.max(0, v), voices.length - 1); // v within bounds
 
       var msg = new SpeechSynthesisUtterance(say);
-      msg.voice = voices[v];
-      //msg.volume=0-1,msg.rate=0.1-10,msg.pitch=0-2,msg.text="stuff to say",msg.lang='en-US'
+      msg.voice = voices[v]; //.volume=0-1,.rate=0.1-10,.pitch=0-2,.text="stuff to say",.lang='en-US'
       msg.onend = function (event) {
         startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-        // Do something at the end of the TTS speech?????
+        ovonToSend =processOtherEvents( retOVONJSON.ovon.events, assistantObject, say );
+        // spPost the OVON
       };
       window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
       window.speechSynthesis.speak(msg);
     }, 100);
-  }else if(sbBrowserType === "chrome" && assistantObject){
-    aColor = assistantObject.assistant.lightColor;
-    v = localStorage.getItem("voiceIndex");
-    v = Math.min(Math.max(0, v), voices.length - 1); // Ensure voice index in bounds
-
-    var msg = new SpeechSynthesisUtterance(say);
-    msg.voice = voices[v];
-    msg.onend = function (event) {
-      startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-    };
-    window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
-    window.speechSynthesis.speak(msg);
+  }else{
+    console.error("Invalid Assistant");
   }
-  else if (sbBrowserType === "safari" && assistantObject) {
-  aColor = assistantObject.assistant.lightColor;
-  var voices = speechSynthesis.getVoices();
-  var v = localStorage.getItem("voiceIndex");
-  v = Math.min(Math.max(0, v), voices.length - 1); // Ensure voice index in bounds
-
-  var msg = new SpeechSynthesisUtterance(say);
-  msg.voice = voices[v];
-  msg.onend = function (event) {
-    startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-  };
-  window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
-  window.speechSynthesis.speak(msg);
-} else {
-  // Handle other browsers or provide a fallback
-  console.error("Browser not supported");
-}
 }
 
-function processCommands(){
-  var shortMessage = "utterance[TTS]]";
+function processOtherEvents( eventArray, assistantObject, thisSay ){
+  var shortMessage = "utterance[TTS]";
   var longMessage = "Send text to be spoken on the Client";
-
   var shortACtion = "";
   var longAction = "";
-  var command = "";
+  var agentName = assistantObject.assistant.name;
+  var cmdSummary = eventSummary( eventArray );
+  var referCmd = false;
 
-  var clientAction = false;
-  var ejAgentName = ejGetCookie( "ejAgentName" );
-  var cmd = ejGetNextCommand();
-
-  if( cmd.length > 0 ){ // has a command?
-    while( cmd.length > 0 ){ // loop thru all the commands (if any)
-      // <command>ejAgentTransfer=cassandra,resume.step.xml,localhost:15455</command>
-      var fullCmd = cmd.split( "=" );
-      var p = fullCmd[1].split( ",");
-      command = fullCmd[0];
-      if( fullCmd[0] == "ejAgentDelegate"){ // Goes to another agent "cold" (no context)
-        command = "Assistant_Delegation";
-        ejSetCookie( "ejAgentName", p[0] );
-
-        // put the seqDiagram data after the ejLogonBasic call (which was relocated to the ejTalkerCallback?)
-        clientAction = true;
-        shortMessage +="/assistant-engage"
-        longMessage += "/Send info for client to connect to the next Assistant"
-        shortACtion = "[[New CONN]]";
-        longAction = "Initiate the new connection to the delegated Assistant";
-
-        // send a negociate message and wait for it to return in ejTalkerCallback function
-        // then call the ejLogonBasic with the 3 parameters
-
-        ejLogonBasic( "reLogon", p[1], p[2] );
-      }else if( fullCmd[0] == "ejAgentHandoff"){ // Goes to another agent with context of reason to visit
-        ejSetCookie( "ejAgentName", p[0] );
-
-        clientAction = true;
-        shortMessage +="/assistant-engage"
-        longMessage += "/Send info for client to connect with context to the next Assistant"
-        shortACtion = "[[New CONN]]";
-        longAction = "Initiate the new connection with context to the delegated Assistant";
-        
-        ejLogonBasic( "agentHandOff", p[1], p[2] );
-      }else if( fullCmd[0] == "assistant-engage"){ // Goes to another REMOTE agent with context of reason to visit
-        ejSetCookie( "ejAgentName", p[0] );
-
-        clientAction = true;
-        shortMessage +="/assistant-engage"
-        longMessage += "/Send info for client to connect with context to the next Assistant"
-        shortACtion = "[[New CONN]]";
-        longAction = "Initiate the new connection with context to the delegated Assistant";
-
-        if( p[0] == "wizard" ){
-          ejTestOtherSrv( "ALAN" );
-          ejSetCookie( "ejAgentName", "wizard" );
-        }else if( p[0] == "ovon auto"){
-          ejTestOtherSrv( "DD" )
-          ejSetCookie( "ejAgentName", "ovon auto" );
-        }
-        //ejSetCookie( "ejAgentName", "cassandra" );
-
-      }else if( fullCmd[0] == "ejAgentNegociate"){ // not sure if this is needed as an atomic action (done before delegation automatically? see above)
-      }else if( fullCmd[0] == "ejDisplayURL_newWindow"){
-        newWindow = window.open( p[0], "_blank" );
-      }
-      cmd = ejGetNextCommand();
+  if( cmdSummary.invite){
+    referCmd = true;
+    // build OVON for the invite
+    shortMessage +="/bare-invite"
+    if( cmdSummary.whisperText.length > 0){
+      // add whisper for the adorned-invite
+      shortMessage +="/adorned-invite"
     }
+    longMessage += "/Send info for client to connect to the next Assistant"
+    shortACtion = "[[New CONN]]";
+    longAction = "Initiate the new connection to the delegated Assistant";
+  }else if( cmdSummary.bye){
+    referCmd = true;
+    // build OVON for return to the previous Assistant
+    shortMessage +="/bare-bye"
+    if( cmdSummary.whisperText.length > 0){
+      // add whisper for the adorned-bye
+      shortMessage +="/adorned-bye"
+    }
+    longMessage += "/Setup reconnection to the previous Assistant"
+    shortACtion = "[[New CONN]]";
+    longAction = "Delegate to previous Assistant";
   }
+
   var wc = "assistantBrowser";
-  buildSeqDiagJSON( ejAgentName, wc, shortMessage, longMessage, "" );
-  buildSeqDiagJSON( wc, wc, "[[Client TTS]]", "Speech synthesis via browser webKit", ejAgentName );
-  buildSeqDiagJSON( wc, "myHuman", thisSay, thisSay, ejAgentName );
+  buildSeqDiagJSON( agentName, wc, shortMessage, longMessage, "" );
+  buildSeqDiagJSON( wc, wc, "[[Client TTS]]", "Speech synthesis in browser", agentName );
+  buildSeqDiagJSON( wc, "myHuman", thisSay, thisSay, agentName );
 
   var JSQ = JSON.stringify( seqDiagJSON, null, "\t" );
   localStorage.setItem( "seqDiagJSON", JSQ );
+  // return OVON envelope to do the bye or invite
 }
 
 function sbTypeInput( inputHTMLID ) {

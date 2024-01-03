@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sandbox Sequence Diagram</title>
+  <link rel="stylesheet" href="../Scripts/css/styles.css">
+  <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
+  <script language="JavaScript" src= "../Scripts/sbAssistantMgr.js"></script>    
+  <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
+
+  <style>
+    .class-rect{
+      border: 1;
+      fill: whitesmoke;
+      stroke-width: 1px;
+      stroke: black;
+    }
+    .classInnerAgentMsg{
+      border: 1;
+      fill: whitesmoke;
+      stroke-width: 1px;
+      stroke: black;
+    }
+    .classArrowMsg{
+      border: 1;
+      fill: whitesmoke;
+      stroke-width: 1px;
+      stroke: whitesmoke;
+    }
+    .class-label{
+      font-size: large;
+      font-weight: bold;
+    }
+    .sMsg-rect{
+      border: 1;
+      fill: green;
+      stroke-width: 1px;
+      stroke: black;
+    }
+  </style>
+</head>
+<body onload="sbLoadSeq();">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+  <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
+  <h2 id="titleHead"><b> OVON Sequence Diagram</b> </h2>
+  <div class="browserAndOs">
+      <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
+      <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
+  </div>
+
+  <table>
+    <tr>
+      <td align="left"><button class="converseBtn" onclick="location.reload();">REFRESH</button></td>
+      <td align="left"><button class="converseBtn" onclick="sbSaveSequenceDiagram(data);location.reload();">Save Diagram</button></td>
+      <td>
+        <b>Put the drop down list for the saved seq files here</b>       
+      </td>
+      <td align="left"><button class="converseBtn" onclick="ejClearSeqDiag();">CLEAR</button></td>
+    </tr>
+  </table>
+
+  <svg id="sbSeqDiag" width="1200" height="600"></svg>
+</body>

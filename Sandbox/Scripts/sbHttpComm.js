@@ -1,5 +1,5 @@
 var sbOVON_CommObject = null; // used to send http messages 
-var retOVONJSON;
+var retOVONJSON; // the "returned OVON message from an assistant"
 var textColor = "#ffffff";
 var voiceIndex = 0;
 var sbTimeout = 10000;
@@ -41,8 +41,7 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
     if( sbOVON_CommObject != null ){  
       sbOVON_CommObject.open( 'POST', remoteURL, true ); // false makes it async
               if( contentType != "none"){  // UGLY HACK JUST TO MAKE "wizard" work
-                sbOVON_CommObject.setRequestHeader('Content-Type', contentType ); }
-              // END OF UGLY HACK!!!!!
+                sbOVON_CommObject.setRequestHeader('Content-Type', contentType ); } // END OF UGLY HACK!!!!!
       sbOVON_CommObject.send( JSON.stringify( OVONmsg ) ); // send to server
     }
   }

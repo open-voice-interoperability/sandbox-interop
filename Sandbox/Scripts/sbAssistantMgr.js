@@ -1,6 +1,6 @@
 var selectedAssistantIndex = 0;
 
-function ejGetAgentParams( someAgentName ){ //return object for this agent
+function sbGetAgentParams( someAgentName ){ //return object for this agent
   for (let i = 0; i < assistantTable.length; i++) {
     if( assistantTable[i].assistant.name === someAgentName ){
       return assistantTable[i];
@@ -74,7 +74,7 @@ function handleAssistantSelectionChange() {
     localStorage.setItem('lightColor', selectedAssistant.lightColor);
     localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
 
-    // assistantObject = ejGetAgentParams(selectedAssistant.name);
+    // assistantObject = sbGetAgentParams(selectedAssistant.name);
     displayAssistantSettings();
   } else {
     // No assistant selected, hide the settings
@@ -230,7 +230,7 @@ function createAssistant() {
 // Use this to get colors, urls, (eventually TTS voice index, etc)
 // Get Assistant Info in your Browser JS like this:
 /*
-	thisAgent = ejGetAgentParams( voiceName );
+	thisAgent = sbGetAgentParams( voiceName );
         if( thisAgent ){
           vIndex = thisAgent.assistant.voiceIndex;
           aColor = thisAgent.assistant.lightColor;

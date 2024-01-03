@@ -230,7 +230,7 @@ function sendReply() {
     const utteranceText = document.getElementById("utterance").value;
     const whisperText = document.getElementById("whisper").value;
 
-    browser = ejGetAgentParams( "assistantBrowser" );
+    browser = sbGetAgentParams( "assistantBrowser" );
     const baseEnvelope = baseEnvelopeOVON(browser);
 
     // Add utterance event if utterance text is provided
@@ -324,4 +324,30 @@ function saveTimeStampedLogFile(){
     fileName += cleanDateTimeString();
     fileName += ".log.txt";
     writeSBFile( fileName, JSON.stringify(conversationLOG, null, 2 ) );
+}
+
+function eventSummary( eventArray ) {
+    summaryJSON = {"invite": false,
+    "bye": false,
+    "utterance": false,
+    "whisper": false,
+    "utteranceText": "",
+    "whisperText": ""
+    }
+
+    for (let i = 0; i < eventArray.length; i++) {
+        type = eventArray[i].eventType;
+        if(type == "invite"){
+            summaryJSON.invite = true;
+        }else if(type == "bye"){
+            summaryJSON.bye = true;
+        }else if(type == "utterance"){
+            summaryJSON.utterance = true;
+            summaryJSON.utteranceText = eventArray[i].parameters.dialogEvent.features.text.tokens[0].value;
+        }else if(type == "whisper"){
+            summaryJSON.whisper = true;
+            summaryJSON.whisperText = eventArray[i].parameters.dialogEvent.features.text.tokens[0].value;
+        }
+    }           
+    return summaryJSON;
 }
