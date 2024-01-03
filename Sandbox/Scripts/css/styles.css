@@ -2,10 +2,11 @@
     border: 4px solid #016384;
     padding: 10px;
     margin-top: 20px;
-    max-width: 500px; /* Adjust max-width as needed */
+    max-width: 600px; /* Adjust max-width as needed */
     float: right;
     margin-right: 50px;
     background-color: #00ace6;
+    position: relative;
 }
 
 #assistantSettings h2 {
@@ -286,16 +287,16 @@ img {
   .tooltip .tooltiptext {
       display: block;
       visibility: hidden;
-      max-width: 200px; /* Set the maximum width */
+      max-width: 200px; 
       background-color: rgb(22, 0, 131);
       color: #fff;
       text-align: center;
       border-radius: 10px;
-      padding: 8px; /* Adjust the padding */
-      font-size: 13.5px; /* Adjust the font size */
-      position: absolute;
+      padding: 8px; 
+      font-size: 13.5px; 
+      position: fixed;
       margin-left: 8px;
-      margin-top: -3px;
+      margin-top: 1px;
       z-index: 1;
   }
   .tooltip:hover .tooltiptext {
@@ -303,9 +304,12 @@ img {
 
   }
   .AssistantName {
-      display: inline-block; /* Display inline */
-      margin-left: 15px; /* Add some margin to separate from the tooltip */
-      margin-top: 13px;
+    text-align: center;
+    font-size: 20px;
+    border-bottom: #000000 solid 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   
@@ -316,4 +320,22 @@ img {
 
 #createAssistantForm div{
     margin-top: 15px;
+}
+
+#llmSENT{
+    white-space: pre-wrap; 
+    word-wrap: break-word;
+}
+#assistantSettingsContainer{
+    position: relative;
+}
+.update-message {
+    margin-top: 8px;
+    display: none;
+    background-color: #219b25;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: 600;
 }

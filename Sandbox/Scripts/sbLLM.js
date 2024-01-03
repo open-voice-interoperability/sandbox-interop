@@ -97,7 +97,10 @@ function sbLLMstateChecker(){ // should something come in do this
         var targ = document.getElementById("msgRECEIVED");
         targ.innerHTML = jsonRECEIVED;
         console.log(jsonRECEIVED);
-        displayMsgRECEIVED(jsonRECEIVED, textColor); //
+        displayMsgRECEIVED(jsonRECEIVED, textColor); 
+        var llmSENT = document.getElementById("llmSENT");
+        var llmContent = JSON.stringify(retLLMJSON, null, 2);
+        llmSENT.innerHTML = llmContent;
         jsonLOG += jsonRECEIVED;
         localStorage.setItem( "jsonLOG", jsonLOG );
         const receivedMessage = {

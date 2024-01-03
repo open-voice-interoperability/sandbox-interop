@@ -10,7 +10,6 @@ var conversationLOG = [];
 
 function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
   remoteURL = localStorage.getItem('serviceAddress');
-  console.log(remoteURL);
   assistType = remoteURL.split(':');
   textColor = assistantObject.assistant.markerColor;
   localStorage.setItem('markerColor', textColor); // This may be right BUT review this
@@ -124,7 +123,8 @@ function readSBFile( pathFromRoot, callBackFunction ){
 function writeSBFile( fileName, data ){
   var request = new XMLHttpRequest();
   readFileData = "";
-  request.open("PUT", fileName, true);
+  var fullPath = '../Report/Logs/' + fileName
+  request.open("PUT", fullPath, true);
   request.onreadystatechange = function() {
       if (request.readyState === 4) {  // document is ready
           if (request.status === 200) {  // file was written???

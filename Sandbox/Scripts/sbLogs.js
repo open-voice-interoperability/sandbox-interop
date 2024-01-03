@@ -189,7 +189,7 @@ function fetchLogsAndPopulateDropdown() {
     const logDropdown = document.getElementById('logFileDropdown');
     const logFileNameRegex = /^OVON_\w+_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}\.log\.txt$/;
 
-    fetch('/Report/Logs/')
+    fetch('../Report/Logs/')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch log files. HTTP status ${response.status}`);

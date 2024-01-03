@@ -1,52 +1,94 @@
+function createAssistantDirectory(assistantName) {
+    // Create local.py file
+    const localContent = `
+# The latest working min Server code 20231105# =================================================
+# Note!!!! you will need to install flask_cors
+#    open a bash console and do this
+#    pip3.10 install --user flask_cors
+  
+from flask import Flask
+from flask import request
+from flask_cors import CORS
+import json
+import assistant
+  
+# ========= IMPORT your assistant code here
+# from MyAssistantPackage import *
+  
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+  
+#################
+port = 0000 # CHANGE THIS TO AN AVAILABLE PORT
+#################
+  
+@app.route('/', methods=['POST'])
+def home():
+    inputOVON = json.loads( request.data )
+  
+    host = request.host.split(":")[0]
+    port = request.host.split(":")[1] if ":" in request.host else 'None'
+  
+    sender_from = f"http://{host}:{port}/"
+    ovon_response = assistant.generate_response(inputOVON, sender_from)
+    return ovon_response
+  
+if __name__ == '__main__':
+    app.run(host="localhost",port=port, debug=True)
+# =================================================
+`;
+    
+    // Create assistant.py file
+    const assistantContent = `
 import json
 import logging
 from datetime import datetime
-
+    
 server_info = ""
 greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]
-
+    
 def generate_response(inputOVON, sender_from):
     global server_info
     global conversation_history
     server_info = ""
     response_text = "I'm not sure how to respond."
-
+    
     for event in inputOVON["ovon"]["events"]:
         event_type = event["eventType"]
         logging.info(f"Processing event type: {event_type}")
         if event_type == "invite":
             # Check if there is a whisper event
             whisper_event = next((e for e in inputOVON["ovon"]["events"] if e["eventType"] == "whisper"), None)
-
+    
             if whisper_event:
                 # Handle the invite with whisper event
                 whisper_text = whisper_event["parameters"]["dialogEvent"]["features"]["text"]["tokens"][0]["value"]
                 if any(greeting in whisper_text.lower() for greeting in greetings):
                     response_text = "Hello! How can I assist you today?"
-
+    
             else:
                 # Handle the bare invite event
-                if "parameters" in event and "to" in event["parameters"]:
+                  if "parameters" in event and "to" in event["parameters"]:
                     to_url = event["parameters"]["to"]["url"]
                     server_info = f"Server: {to_url}"
                     response_text = "Thanks for the invitation, I am ready to assist."
-
+    
         elif event_type == "utterance":
             user_input = event["parameters"]["dialogEvent"]["features"]["text"]["tokens"][0]["value"]
             if "hello" in user_input.lower():
                 response_text = "Hello! How can I assist you today?"
-
-
+    
+    
     currentTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+    
     if "to" in inputOVON["ovon"]["events"][0]["parameters"]:
         to_url = inputOVON["ovon"]["events"][0]["parameters"]["to"]["url"]
         sender_from = to_url
-
-
+    
+    
     # /find the one with utterance, make if statement
     ovon_response = {
-        "ovon": {
+    "ovon": {
             "conversation": inputOVON["ovon"]["conversation"],
             "schema": {
                 "version": "0.9.0",
@@ -55,13 +97,13 @@ def generate_response(inputOVON, sender_from):
             "sender": {"from": sender_from},
             "responseCode": 200,
             "events": [
-                {
+            {
                     "eventType": "utterance",
                     "parameters": {
                         "dialogEvent": {
                             "speakerId": "assistant",
                             "span": {
-                                "startTime": currentTime
+                                  "startTime": currentTime
                             },
                             "features": {
                                 "text": {
@@ -75,7 +117,33 @@ def generate_response(inputOVON, sender_from):
             ]
         }
     }
-
+    
     ovon_response_json = json.dumps(ovon_response)
-
+    
     return ovon_response_json
+  
+`;
+      fetch(`../Sandbox/AssistantServers/${assistantName}Assistant`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              localContent: localContent,
+          assistantContent: assistantContent,
+          }),
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`Failed to create directory: ${response.statusText}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log(data.message);
+      })
+      .catch(error => {
+          console.error('Error creating directory:', error);
+          alert('Failed to create directory. Please try again.');
+      });
+  }

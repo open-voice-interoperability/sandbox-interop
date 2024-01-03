@@ -68,24 +68,51 @@ class Serv(SimpleHTTPRequestHandler):
         path = self.translate_path(self.path)
         (srcpath, srcfile) = os.path.split(path)
         print( "the url path & file: ", srcpath, "  &  ", srcfile)
+        midpath = None
 
         if srcfile.__contains__(".log."):
             midpath = "/Report/Logs/"
         elif srcfile.__contains__(".seq."):
             midpath = "/Report/Sequence/"
-        path = rootpath + midpath + srcfile
-        print( "Full Path: ", path)
+        elif srcfile.__contains__(".json"):
+            midpath = "/Support/"
+        if midpath is not None:
+            path = rootpath + midpath + srcfile
+            print("Full Path: ", path)
 
-        with open(path, "wb") as dst:
-            dst.write(self.rfile.read(length))
-        self.send_response(200, 'OK')
-        self.send_header('Content-Type', 'text/html')
-        self.end_headers()
+            try:
+                with open(path, "wb") as dst:
+                    dst.write(self.rfile.read(length))
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'message': 'OK'}).encode('utf-8'))
+            except Exception as e:
+                print("Error writing file:", str(e))
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Internal Server Error'}).encode('utf-8'))
+        else:
+            print("Invalid file type")
+            self.send_response(400)  # Bad Request
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': 'Invalid file type'}).encode('utf-8'))
     def do_POST(self):
         # read the message and convert it into a python dictionary
         length = int(self.headers.get('content-length'))
         #length = int(self.headers.getheader('content-length'))
-        message = json.loads(self.rfile.read(length))
+        post_data = self.rfile.read(length).decode('utf-8')
+        try:
+            message = json.loads(post_data)
+        except json.JSONDecodeError:
+            # If there's an issue decoding JSON, handle it appropriately
+            self.send_response(400)  # Bad Request
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': 'Invalid JSON data'}).encode('utf-8'))
+            return
         if self.path == '/Support/ActiveAssistantList.json':
             # Assuming 'ActiveAssistantList.json' is in the same directory as the server script
             path = os.path.join(os.path.dirname(__file__), 'Support','ActiveAssistantList.json')
@@ -115,6 +142,27 @@ class Serv(SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(b'{"message": "Assistant created successfully!"}')
+        if self.path.startswith('/Sandbox/AssistantServers/'):
+            directory_name = self.path.split('/')[-1]
+            # Create the directory if it doesn't exist
+            directory_path = os.path.join(os.path.dirname(__file__), '..', 'Sandbox', 'AssistantServers', directory_name)
+            os.makedirs(directory_path, exist_ok=True)
+            
+            # Write the content of local.py
+            local_path = os.path.join(directory_path, 'local.py')
+            with open(local_path, 'w') as local_file:
+                local_file.write(message.get('localContent', ''))
+            
+            # Write the content of assistant.py
+            assistant_path = os.path.join(directory_path, 'assistant.py')
+            with open(assistant_path, 'w') as assistant_file:
+                assistant_file.write(message.get('assistantContent', ''))
+            
+            # Respond with a success message
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"message": "Directory created successfully!"}')
         else:
             # Handle other POST requests as needed
             pass

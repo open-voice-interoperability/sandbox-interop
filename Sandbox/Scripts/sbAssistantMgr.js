@@ -2,7 +2,7 @@ var selectedAssistantIndex = 0;
 
 function sbGetAgentParams( someAgentName ){ //return object for this agent
   for (let i = 0; i < assistantTable.length; i++) {
-    if( assistantTable[i].assistant.name === someAgentName ){
+    if( assistantTable[i].assistant && assistantTable[i].assistant.name === someAgentName ){
       return assistantTable[i];
     }
   }
@@ -17,13 +17,17 @@ async function fetchAssistantData() {
   }
 }
 
-async function initializeAssistantData() {
+async function initializeAssistantData(callback) {
   try {
     const data = await fetchAssistantData();
     assistantTable = data;
     selectedAssistantIndex = localStorage.getItem("currentAssistantIndex");
     assistantObject = assistantTable[selectedAssistantIndex];
     loadAssistantSelect();
+
+    if (typeof callback === 'function') {
+      callback();
+    }
   } catch (error) {
     console.error('Error fetching assistant data:', error);
   }
@@ -154,7 +158,9 @@ function displayAssistantSettings() {
 
       </div>
   <button id="updateSettingsButton" class="update-settings" onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
-`;
+  </div>
+  <div id="updateMessage" class="update-message"></div>
+  `;
 
   // Display settings and input fields in a single box
   document.getElementById('assistantSettings').innerHTML = settingsHTML;
@@ -163,11 +169,9 @@ var updateClicked = false;
 // Function to update the assistant settings based on user input
 function updateAssistantSettings() {
   updateClicked = true;
-
   var selectedAssistantIndex = document.getElementById("sbAssist").value;
-  var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
+  var selectedAssistant = JSON.parse(JSON.stringify(assistantTable[selectedAssistantIndex].assistant));
 
-  selectedAssistant.assistantID = document.getElementById("assistantID").value;
   selectedAssistant.voiceIndex = document.getElementById("voiceIndex").value;
   selectedAssistant.lightColor = document.getElementById("lightColor").value;
   selectedAssistant.markerColor = document.getElementById("markerColor").value;
@@ -181,8 +185,35 @@ function updateAssistantSettings() {
   localStorage.setItem('lightColor', selectedAssistant.lightColor);
   localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
 
-  console.log("Update button clicked");
+  assistantTable[selectedAssistantIndex].assistant = selectedAssistant;
+  // Save the updated assistantTable to localStorage
+  localStorage.setItem('assistantTable', JSON.stringify(assistantTable));
+  // Send a PUT request to update the server-side JSON file
+  fetch('../Support/ActiveAssistantList.json', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(assistantTable, null, 2), // Send the updated assistant data
+  })
+  .then(response => response.json())
+  
+  .catch(error => {
+    console.error('Error updating assistant on the server:', error);
+  });
+  // Update the local storage with other settings (if needed)
+  localStorage.setItem("markerColor", selectedAssistant.markerColor);
+  localStorage.setItem('voiceIndex', selectedAssistant.voiceIndex);
+  localStorage.setItem('lightColor', selectedAssistant.lightColor);
+  localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
   displayAssistantSettings();
+  var updateMessage = document.getElementById("updateMessage");
+  updateMessage.textContent = "Settings updated successfully!";
+  updateMessage.style.display = "block";
+  // Hide the message after a certain duration (e.g., 3 seconds)
+  setTimeout(function () {
+    updateMessage.style.display = "none";
+  }, 1200);
 }
 
 function createAssistant() {
@@ -209,7 +240,7 @@ function createAssistant() {
       "authCode": authCode,
       "contentType": contentType
   };
-
+  createAssistantDirectory(assistantName);
   fetch('../Support/ActiveAssistantList.json', {
     method: 'POST',
     headers: {
