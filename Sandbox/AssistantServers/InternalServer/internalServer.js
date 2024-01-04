@@ -6,10 +6,9 @@ var whisper = false;
 var utteranceText = "";
 var whisperText = "";
 var humanName = "Human";
-var respEnvelope;
 var sbLLM_CommObject;
 var LLMLog = [];
-var sendDiscoveryJSON;
+var sendInternalJSON;
 var aiCallType = "https://api.openai.com/v1/chat/completions";
 var aiModel = "gpt-3.5-turbo-1106";
 var startPrompt = "You are an assistant that will help the human user discover the domain expertise required by the human to complete their task. You will accept a phrase or sentence as a starting point and ask questions that help focus on the general expertise that is needed to help the human. Your responses will be friendly and conversational. You will try to keep your responses to less than 40 words .Your questions for clarification can and should be leading and suggestive enough to prompt the user to give clearer answers. The result of this conversation will be a single word or short phrase that identifies the domain expertise for the assistant they require.  This conversation should be no longer than two or three turns. You will return the resulting domain in the form *Domain = [the domain that you discovered with this conversation]";
@@ -22,7 +21,7 @@ var veronicaPrompt = "You are a serious expert on the superman comic book and mo
 function callInternalLLM( assistName, assistantObject, OVONmsg ){
     var aPoolMember = null;
     temp = parseFloat( localStorage.getItem( "AITemp" ) );
-    respEnvelope = baseEnvelopeOVON( assistantObject );
+    retOVONJSON = baseEnvelopeOVON( assistantObject );
     for (const x in aiAssistantPool) {
         if( x.name === assistName ){ // find the assistant data
             aPoolMember = x;
@@ -61,37 +60,37 @@ function callInternalLLM( assistName, assistantObject, OVONmsg ){
 }
 
 function callInternalAssistant( assistName, assistantObject, OVONmsg ){
-    respEnvelope = baseEnvelopeOVON( assistantObject );
+    retOVONJSON = baseEnvelopeOVON( assistantObject );
     if( assistName == "discovery"){
         findEvents( OVONmsg.ovon.events );
         if( invite ){
             temp = parseFloat( localStorage.getItem( "AITemp" ) );
-            sendDiscoveryJSON = {
+            sendInternalJSON = {
                 "model": aiModel, // e.g. "model": "gpt-3.5-turbo",
                   "temperature": temp, //0.0 - 2.0
                   "messages": []
               }
             if( whisperText != ""){
-                sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", whisperText ) );
+                sendInternalJSON.messages.push( sbAddMsg( "assistant", whisperText ) );
             }else{
-                sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", startPrompt ) );
+                sendInternalJSON.messages.push( sbAddMsg( "assistant", startPrompt ) );
             }
             if( utterance ){
-                sendDiscoveryJSON.messages.push( sbAddMsg( "user", utteranceText ) );
-                sbLLMPost( sendDiscoveryJSON );
+                sendInternalJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+                sbLLMPost( sendInternalJSON );
             }
         }else{
             if( utterance ){
-                sendDiscoveryJSON.messages.push( sbAddMsg( "user", utteranceText ) );
-                sbLLMPost( sendDiscoveryJSON );
+                sendInternalJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+                sbLLMPost( sendInternalJSON );
             }else{
                 ovonUtt = buildUtteranceOVON( assistName, "You must invite the assistant first." );
-                respEnvelope.ovon.events.push(ovonUtt);        
+                retOVONJSON.ovon.events.push(ovonUtt);        
             }
         }
     }else{
         ovonUtt = buildUtteranceOVON( assistName, "This assistant does not exist." );
-        respEnvelope.ovon.events.push(ovonUtt);
+        retOVONJSON.ovon.events.push(ovonUtt);
     }
     return;
 }
@@ -165,17 +164,17 @@ function sbLLMPost( someJSON) { //send to LLM
       sbLLM_CommObject.setRequestHeader('Authorization', key );
       sbLLM_CommObject.setRequestHeader('Content-Type', "application/json" );
   
-      jsonSENT = JSON.stringify( someJSON );
-      sbLLM_CommObject.send( jsonSENT ); // send to server (compressed string)
+      jsonSENTLLM = JSON.stringify( someJSON );
+      sbLLM_CommObject.send( jsonSENTLLM ); // send to server (compressed string)
 
-      jsonSENT = JSON.stringify( someJSON, null, 2 ); //make it pretty for display
+      jsonSENTLLM = JSON.stringify( someJSON, null, 2 ); //make it pretty for display
       var targ = document.getElementById("llmSENT");
-      targ.innerHTML = jsonSENT;
+      targ.innerHTML = jsonSENTLLM;
 
       const sentMessage = {
         direction: 'sent',
         timestamp: new Date().toISOString(),
-        content: jsonSENT,
+        content: jsonSENTLLM,
       };
   
       LLMLog.push(sentMessage);
@@ -184,14 +183,12 @@ function sbLLMPost( someJSON) { //send to LLM
 }
   
 function sbLLMPostResp( aiJSON ){ // should something come in do this
-//function sbLLMPostResp(){ // should something come in do this
-        if( sbLLM_CommObject.readyState == 4 ){
+    if( sbLLM_CommObject.readyState == 4 ){
         if( sbLLM_CommObject.status == 200 ){
             sbData = sbLLM_CommObject.responseText;
             if( sbData.length ){
                 retLLMJSON = JSON.parse(sbData);  
                 var text = retLLMJSON.choices[0].message.content; // what LLM "says"
-                //sendDiscoveryJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
                 aiJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
 
                 jsonRECEIVED = JSON.stringify( retLLMJSON, null, 2 );
@@ -204,8 +201,8 @@ function sbLLMPostResp( aiJSON ){ // should something come in do this
                 localStorage.setItem('LLMLog', JSON.stringify(LLMLog, null, 2 ));
 
                 ovonUtt = buildUtteranceOVON( localStorage.getItem('assistantName'), text );
-                respEnvelope.ovon.events.push(ovonUtt);        
-                handleReturnedOVON( respEnvelope );
+                retOVONJSON.ovon.events.push(ovonUtt);
+                handleReturnedOVON( retOVONJSON );
             }
         }
     }

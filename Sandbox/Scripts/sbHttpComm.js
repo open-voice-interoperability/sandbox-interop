@@ -22,7 +22,6 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
 
   if( assistType[0] == "internal" ){
     callInternalAssistant( assistType[1], assistantObject, OVONmsg );
-    //handleReturnedOVON( retOVONJSON ) // Note: Done in the LLM call above
   }else if( assistType[0] == "internalLLM" ){
     callInternalLLM( assistType[1], assistantObject, OVONmsg );
   }else{

@@ -264,7 +264,7 @@ function sbSpeak( say, assistantObject ) {
       msg.voice = voices[v]; //.volume=0-1,.rate=0.1-10,.pitch=0-2,.text="stuff to say",.lang='en-US'
       msg.onend = function (event) {
         startTime = new Date().getTime(); // for TYPING the startTime is the end of TTS
-        ovonToSend =processOtherEvents( retOVONJSON.ovon.events, assistantObject, say );
+        ovonToSend = processOtherEvents( retOVONJSON.ovon.events, assistantObject, say );
         // spPost the OVON
       };
       window.speechSynthesis.cancel(); // for some UNKNOWN reason it's needed on Win10/11
