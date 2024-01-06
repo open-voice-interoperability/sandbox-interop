@@ -15,12 +15,22 @@
     <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
 </head>
 <body>
-    <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
-    <h2 id="titleHead"> <b> Create New Assistant</b> </h2>
-    <div class="browserAndOs">
-        <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
-        <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-    </div>
+    <table>
+        <tr>
+            <td>
+                <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
+            </td>
+            <td>
+                <h2 id="titleHead"><b>Sandbox Create New Assistant</b> </h2>
+                <div class="browserAndOs">
+                    <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
+                    <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div id="lineSeparator"></div>
+    
     <a href="sbHome.html"><button class="homeBtn">Back Home</button></a>
     <form id="createAssistantForm" onsubmit="return createAssistant();">
        <div>

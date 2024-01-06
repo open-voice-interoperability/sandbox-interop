@@ -74,7 +74,7 @@ recognition.onresult = function(event) {
 //===============================================================
 
   var wc = "assistantBrowser";
-  buildSeqDiagJSON( "myHuman", wc, finalAsrText, finalAsrText, "" );
+  buildSeqDiagJSON( "human", wc, finalAsrText, finalAsrText, "" );
   buildSeqDiagJSON( wc, wc, "[[Client ASR]]", "Speech recognition via browser webKit", "" );
   buildSeqDiagJSON( wc, assistantName, "utterance[ASR]", "OVON Event string sent to Assistant", "" );
   buildSeqDiagJSON( assistantName, assistantName, "[[NLU/DIALOG]]", "Understand the words and do dialog management and biz logic", "" );
@@ -311,7 +311,7 @@ function processOtherEvents( eventArray, assistantObject, thisSay ){
   var wc = "assistantBrowser";
   buildSeqDiagJSON( agentName, wc, shortMessage, longMessage, "" );
   buildSeqDiagJSON( wc, wc, "[[Client TTS]]", "Speech synthesis in browser", agentName );
-  buildSeqDiagJSON( wc, "myHuman", thisSay, thisSay, agentName );
+  buildSeqDiagJSON( wc, "human", thisSay, thisSay, agentName );
 
   var JSQ = JSON.stringify( seqDiagJSON, null, "\t" );
   localStorage.setItem( "seqDiagJSON", JSQ );

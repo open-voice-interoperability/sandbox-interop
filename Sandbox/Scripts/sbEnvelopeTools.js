@@ -27,7 +27,7 @@ function sbConversationStart() {
         const whisperMessage = localStorage.getItem("whisperMessage");
         setEvelopeConvoID(baseEnvelope);
         const OVONmsg = bareInviteOVON (baseEnvelope, assistantObject);
-        OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject, whisperMessage));
+        OVONmsg.ovon.events.push(buildWhisperOVON(assistantObject.name, whisperMessage));
         sbPostToAssistant(assistantObject, OVONmsg);
         
         localStorage.removeItem("InviteWithWhisper");

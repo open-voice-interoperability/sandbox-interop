@@ -63,7 +63,7 @@ function sbLoadSeq(){
 
   sbMoveToHead( classes, "NLU_Service");
   sbMoveToHead( classes, "assistantBrowser");
-  sbMoveToHead( classes, "myHuman");
+  sbMoveToHead( classes, "human");
 
   console.log(data);
   console.log(froms);
@@ -133,7 +133,6 @@ data.forEach(function(m, i) {
   var draw = true;
   var y = MESSAGE_ARROW_Y_OFFSET + (i) * MESSAGE_SPACE;
   if( m.from != m.to ){
-    //var color=getArrowColor( m.from );
     var color=getArrowColor( m );
     var line = svg.append("line")
       .style("stroke", color )
@@ -219,10 +218,19 @@ function sbMoveToHead( arrayName, valueToMove ){
   }
 }
 
+function getClass( className ){
+  var c = sbGetAgentParams( className );
+  if( c ){
+    return c;
+  }else{
+    return null;
+  }
+}
+
 function getClassColor( className ){
   var c = sbGetAgentParams( className );
   if( c ){
-    return c.lightColor;
+    return c.assistant.lightColor;
   }else{
     return "#b3b3cc";
   }
@@ -235,7 +243,7 @@ function getArrowColor( lineItem ){
   }
   var c = sbGetAgentParams( className );
   if( c ){
-    return c.markerColor;
+    return c.assistant.markerColor;
   }else{
     return "#5c5c8a";
   }

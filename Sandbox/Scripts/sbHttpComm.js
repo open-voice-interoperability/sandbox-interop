@@ -44,6 +44,14 @@ function sbPostToAssistant( assistantObject, OVONmsg ) { //send to their server
     }
   }
 
+// do the seq diag load here?
+/*
+  var wc = "assistantBrowser";
+  buildSeqDiagJSON( "myHuman", wc, finalAsrText, finalAsrText, "" );
+  buildSeqDiagJSON( wc, wc, "[[Client ASR]]", "Speech recognition via browser webKit", "" );
+  buildSeqDiagJSON( wc, assistantName, "utterance[ASR]", "OVON Event string sent to Assistant", "" );
+  buildSeqDiagJSON( assistantName, assistantName, "[[NLU/DIALOG]]", "Understand the words and do dialog management and biz logic", "" );
+*/
   var targ = document.getElementById("msgSENT");
   targ.innerHTML = jsonSENT; 
   const sentMessage = {
