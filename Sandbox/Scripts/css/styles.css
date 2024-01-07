@@ -1,16 +1,17 @@
 #assistantSettings, #userInput {
-    border: 4px solid #016384;
+    border: 2px solid rgb(1, 120, 205);
+    border-radius: 10px;
     padding: 10px;
     margin-top: 20px;
-    max-width: 600px; /* Adjust max-width as needed */
+    max-width: 600px; 
     float: right;
     margin-right: 50px;
-    background-color: #00ace6;
+    background-color: rgb(58, 171, 252);
     position: relative;
 }
 
 #assistantSettings h2 {
-    color: black; /* Adjust text color as needed */
+    color: black; 
     margin-bottom: 1px;
     margin-top: -1px;
 }
@@ -19,44 +20,53 @@
     display: block;
     margin-bottom: 5px;
     margin-top: 2px;
-    color: black; /* Adjust label text color as needed */
+    color: black; 
+    pointer-events: none;
 }
-
+#assistantSettings input[type="text"]:hover,
+#assistantSettings input[type="color"]:hover {
+    background-color: rgb(218, 216, 216);
+}
 #assistantSettings input[type="text"] {
-    color: black; /* Adjust text color as needed */
+    color: black; 
 }
 
 #assistantSettings input[type="color"] {
-    width: 30px; /* Adjust width as needed */
-    height: 30px; /* Adjust height as needed */
-}
-#assistantSettings input:hover {
-    background-color: rgb(218, 216, 216);
+    width: 40px; 
+    height: 30px;
 }
 
+
 #assistantSettings .update-settings {
-    background-color: #ff944d;
-    color: black; /* Adjust text color as needed */
-    border: 2px solid #ff944d;
+    background-color: #003973;
+    color: white; 
+    border-radius: 10px;
+    border: 0px;
     padding: 8px 16px;
     cursor: pointer;
     margin-top: 10px;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #assistantSettings .update-settings:hover {
-    background-color: #ff7733; /* Adjust hover color as needed */
-    border: 2px solid #983301;
+    transition: .5s;
+    background-color: #ca4300; 
 }
 #assistantSettings .load-voices {
-    background-color: #ff944d;
-    color: black; /* Adjust text color as needed */
-    border: 2px solid #ff944d;
+    background-color: #003973;
+    padding: 5px 13px;
+    color: white; 
+    border-radius: 10px;
+    border: 0px;
     cursor: pointer;
 }
 
 #assistantSettings .load-voices:hover {
-    background-color: #ff7733; /* Adjust hover color as needed */
-    border: 2px solid #983301;
+    transition: .5s;
+    background-color: #ca4300; 
 }
 
 .log.sent{
@@ -156,19 +166,17 @@
 
 .homeBtn , .converseBtn , .logBtn, .settingBtn {
     border-radius: 8px;
-    border: 1.5px solid #016384;
+    opacity: 90%;
+    border: 0px;
     margin-top: 5px;
     margin-right: 5px;
-    padding: 3px;
-    padding-left: 6px;
-    padding-right: 6px;
-    background-color: #00bfff;
+    padding: 5px;
+    background-color: rgb(58, 171, 252);
     font-size: 16px;
 }
 .homeBtn:hover, .converseBtn:hover, .logBtn:hover, .settingBtn:hover{
-    background-color: #5dd2f9;
-    transform: scale(1.015);
-    transition: .35s;
+    background-color: rgb(101, 191, 255);
+    transition: .5s;
     cursor: pointer;
 }
 .assistantSelectDiv{
@@ -188,12 +196,6 @@
     cursor: pointer;
 }
 
-.browserAndOs{
-    margin-bottom: 6px;
-    font-size: 12px;
-
-}
-
 #logFileDropdown{
     margin-top: 10px;
     padding: 1.85px;
@@ -202,7 +204,16 @@
     border-radius: 8px;
     border-color: #484747;
 }
+.centerTable {
+    width: 100%;
+    max-width: 1150px; /* Set a specific width for the table */
+}
 
+.browserAndOs{
+    margin-bottom: 6px;
+    font-size: 12px;
+
+}
 #titleHead{
     margin-top: -10px;
 }
@@ -215,6 +226,7 @@ img {
 @media (max-width: 600px) {
     img {
         height: auto;
+        max-width: fit-content;
     }
 }
 

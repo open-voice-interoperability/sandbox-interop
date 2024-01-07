@@ -143,10 +143,15 @@ function buildWhisperOVON( speaker, whisperStr ){
     OVON_Whisper.parameters.dialogEvent.features.text.tokens[0].value = whisperStr;
     return OVON_Whisper;
 }
-
+var converseWindow = null;
 function startBareInvite() {
     localStorage.setItem("bareInviteSelected", "true");
-    location.href = 'sbConverse.html';
+    if (!converseWindow || converseWindow.closed) {
+        converseWindow = window.open('sbConverse.html', '_blank');
+    } else {
+        converseWindow.location.href = 'sbConverse.html';
+        converseWindow.focus();
+    }
     updateAssistantSettings();
 }
 
@@ -155,7 +160,12 @@ function inviteWithUtterance() {
     if (whisperMessage.trim() !== "") {
         localStorage.setItem("InviteWithWhisper", "true");
         localStorage.setItem("whisperMessage", whisperMessage);
-        location.href = 'sbConverse.html';
+        if (!converseWindow || converseWindow.closed) {
+            converseWindow = window.open('sbConverse.html', '_blank');
+        } else {
+            converseWindow.location.href = 'sbConverse.html';
+            converseWindow.focus();
+        }
     } else {
         alert("Please enter a Whisper message before inviting.");
     }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="5">
   <title>Sequence Diagram</title>
   <link rel="stylesheet" href="../Scripts/css/styles.css">
   <script language="JavaScript" src= "../Scripts/sbHomepage.js"></script>
@@ -36,28 +37,40 @@
       stroke-width: 1px;
       stroke: black;
     }
+    .reload-message {
+      display: none;
+      background-color: #dddddd;
+      border: 1px solid #ddd;
+      padding: 5px;
+      position: fixed;
+      top: 10px;
+      right: 25px;
+      
+    }
   </style>
 </head>
 <body onload="initializeAssistantData(sbLoadSeq);">
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 
-  <table>
-    <tr>
+  <table class="centerTable">
+    <tr >
         <td>
             <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
         </td>
         <td>
-            <h2 id="titleHead"><b>OVON Sandbox - Sequence Diagram</b> </h2>
+            <h2 id="titleHead"><b>Sandbox - Sequence Diagram</b> </h2>
             <div class="browserAndOs">
                 <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
                 <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-            </div>
+          </div>
         </td>
     </tr>
   </table>
   </div>
-
+  <div class="reload-message" id="reloadMessage">
+    The page has been reloaded!
+  </div>
   <table>
     <tr>
       <td align="left"><button class="converseBtn" onclick="location.reload();">REFRESH</button></td>
@@ -70,4 +83,17 @@
   </table>
 
   <svg id="sbSeqDiag" width="1200" height="600"></svg>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var reloadMessage = document.getElementById('reloadMessage');
+
+      // Show reload message
+      reloadMessage.style.display = 'block';
+
+      // Hide reload message after 2 seconds
+      setTimeout(function () {
+        reloadMessage.style.display = 'none';
+      }, 2000);
+    });
+  </script>
 </body>

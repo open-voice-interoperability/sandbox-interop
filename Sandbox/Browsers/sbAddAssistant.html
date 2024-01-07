@@ -15,24 +15,35 @@
     <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
 </head>
 <body>
-    <table>
-        <tr>
+    <table class="centerTable">
+        <tr >
             <td>
                 <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
             </td>
             <td>
-                <h2 id="titleHead"><b>Sandbox Create New Assistant</b> </h2>
+                <h2 id="titleHead"><b>Sandbox - Create New Assistant</b> </h2>
                 <div class="browserAndOs">
                     <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
                     <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-                </div>
+              </div>
             </td>
         </tr>
-    </table>
+      </table>
     <div id="lineSeparator"></div>
     
     <a href="sbHome.html"><button class="homeBtn">Back Home</button></a>
-    <form id="createAssistantForm" onsubmit="return createAssistant();">
+    <br>
+    <br>
+    <div>
+        <label for="assistantType"><b>Assistant Type:</b></label>
+        <select id="assistantType" onchange="toggleCreateAssistantForm()">
+            <option value="" disabled selected>Select an option</option>
+            <option value="python">Basic Python Assistant</option>
+            <option value="js">Basic JS Assistant</option>
+            <option value="llm">LLM JS Assistant</option>
+        </select>
+    </div>
+    <form id="createAssistantForm" onsubmit="return createAssistant();" style="display: none;">
        <div>
             <label for="assistantName"><b>Assistant Name:</b></label>
             <input type="text" id="assistantName" required>
@@ -70,6 +81,10 @@
         <div>
             <label for="contentType"><b>Content Type:</b></label>
             <input type="text" id="contentType" value="application/json">
+        </div><br>
+        <div id="openaiKeyDiv" style="display: none;"> <!-- Added an ID to the div -->
+            <label for="openaiKey"><b>OpenAI Key:</b></label>
+            <input type="text" id="OpenAI" onchange="setOpenAIKey();">
         </div>
     </form>
     <br>

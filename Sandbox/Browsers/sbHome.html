@@ -13,26 +13,26 @@
     <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>
 </head>
 <body onload="sbStart()">
-    <table>
-        <tr>
+    <table class="centerTable">
+        <tr >
             <td>
                 <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
             </td>
             <td>
-                <h2 id="titleHead"><b> OVON Sandbox</b> </h2>
+                <h2 id="titleHead"><b>Sandbox - Home</b> </h2>
                 <div class="browserAndOs">
                     <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
                     <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-                </div>
+              </div>
             </td>
         </tr>
-    </table>
+      </table>
 
     <div id="lineSeparator"></div>
     <a href="../sbStartup.html"><button class="homeBtn">Startup Page</button></a>
 
-    <button class="homeBtn" onclick="window.open('sbSettings.html', '_blank')">Settings</button>
-    <button class="homeBtn" onclick="window.open('sbAddAssistant.html', '_blank')">Create New Assistant</button>
+    <button class="homeBtn" onclick="openSettings()">Settings</button>
+    <button class="homeBtn" onclick="openNewAssistant()">Create New Assistant</button>
     <br/>
     <br/>
     <div class="assistantSelectDiv"><span id="assistantSelect"></span> </div>
@@ -53,7 +53,22 @@
         document.getElementById("assistantSelect").addEventListener("change", function() {
             handleAssistantSelectionChange();
         });
-
+        var settingsWindow = null;
+        var newAssistantWindow = null;
+        function openSettings() {
+        if (!settingsWindow || settingsWindow.closed) {
+            settingsWindow = window.open('sbSettings.html', '_blank');
+        } else {
+            settingsWindow.focus();
+        }
+        }
+        function openNewAssistant() {
+        if (!newAssistantWindow || newAssistantWindow.closed) {
+            newAssistantWindow = window.open('sbAddAssistant.html', '_blank');
+        } else {
+            newAssistantWindow.focus();
+        }
+        }
     </script>
 
 </body>

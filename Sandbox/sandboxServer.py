@@ -149,14 +149,21 @@ class Serv(SimpleHTTPRequestHandler):
             os.makedirs(directory_path, exist_ok=True)
             
             # Write the content of local.py
-            local_path = os.path.join(directory_path, 'local.py')
-            with open(local_path, 'w') as local_file:
-                local_file.write(message.get('localContent', ''))
-            
-            # Write the content of assistant.py
-            assistant_path = os.path.join(directory_path, 'assistant.py')
-            with open(assistant_path, 'w') as assistant_file:
-                assistant_file.write(message.get('assistantContent', ''))
+            assistant_type = message.get('assistantType')
+            if assistant_type == 'python':
+                # Write the content of local.py
+                local_path = os.path.join(directory_path, 'local.py')
+                with open(local_path, 'w') as local_file:
+                    local_file.write(message.get('localContent', ''))
+                
+                # Write the content of assistant.py
+                assistant_path = os.path.join(directory_path, 'assistant.py')
+                with open(assistant_path, 'w') as assistant_file:
+                    assistant_file.write(message.get('assistantContent', ''))
+            else:
+                assistant_path = os.path.join(directory_path, 'assistant.js')
+                with open(assistant_path, 'w') as assistant_file:
+                    assistant_file.write(message.get('LLMContent', ''))
             
             # Respond with a success message
             self.send_response(200)

@@ -37,7 +37,39 @@ function saveSequenceDiagram( data ) {
   //var name = "AT_ROOT:reports/seqDiagram/SD" + cleanDateTimeString() + ".json";
   //writeFile( name, JSON.stringify( data, null, "\t" ) );
 }
+function createTooltip(svg, message, x, y) {
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("left", (x + 10) + "px") // Adjust the offset from x
+    .style("top", (y - 10) + "px")  // Adjust the offset from y
+    .style("width", "250px")
+    .style("background-color", "lightgray")
+    .style("border", "1px solid gray")
+    .style("padding", "5px")
+    .style("opacity", "0.85")
+    .style("border-radius", "10px")
+    .style("word-wrap", "break-word")
+    .style("visibility", "hidden")
+    .on("mouseover", function() {
+      tooltip.style("visibility", "visible");
+    })
+    .on("mouseout", function() {
+      tooltip.style("visibility", "hidden");
+    });
 
+  const text = JSON.stringify(message, null, 2);
+  const textLines = text.split('\n');
+
+  tooltip.selectAll("p")
+    .data(textLines)
+    .enter()
+    .append("p")
+    .style("margin", "5px")
+    .text(function(d) { return d; });
+
+  return tooltip;
+}
 function sbLoadSeq(){
   //assistantTable = await fetchAssistantData();
 
@@ -56,7 +88,6 @@ function sbLoadSeq(){
     width = +svg.attr('width') - margin.left - margin.right,
     height = +svg.attr('height') - margin.top - margin.bottom,
     g = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
   var froms = d3.set(data.map(function(d){ return d.from; })).values();
   var tos = d3.set(data.map(function(d){ return d.to; })).values();
   var classes = _.union(froms, tos);
@@ -182,6 +213,7 @@ data.forEach(function(m, i) {
     fontWT = 700;
     msgBox = "classInnerAgentMsg";
   }
+  var tooltip = createTooltip(svg, m, xPos, yPos);
 
   var g1 = svg.append("g")
     .attr("transform", "translate(" + xPos + "," + yPos + ")")
@@ -192,7 +224,38 @@ data.forEach(function(m, i) {
     .style("font-size", "14px")
     .attr("font-weight",fontWT )
     .attr("fill", function(d,i) {return getArrowColor( m );})
-    .text(function (d) { return m.sMsg; });
+    .text(function (d) { return m.sMsg; })
+    .on("mouseover", function() {
+      tooltip.style("visibility", "visible");
+    })
+    .on("mouseout", function() {
+      tooltip.style("visibility", "hidden");
+    })
+    .on("mousemove", function () {
+      // Update tooltip position on mousemove
+      const [mouseX, mouseY] = d3.mouse(document.body);
+      const tooltipWidth = parseInt(tooltip.style("width"));
+      const tooltipHeight = parseInt(tooltip.style("height"));
+      const offsetX = 5; // Adjust the offset from x
+      const offsetY = -10; // Adjust the offset from y
+    
+      let left = mouseX + offsetX;
+      let top = mouseY + offsetY;
+    
+      // Check if the tooltip goes beyond the right edge of the window
+      if (left + tooltipWidth > window.innerWidth) {
+        left = window.innerWidth - tooltipWidth - offsetX;
+      }
+    
+      // Check if the tooltip goes beyond the bottom edge of the window
+      if (top + tooltipHeight > window.innerHeight) {
+        top = window.innerHeight - tooltipHeight - offsetY;
+      }
+    
+      tooltip.style("left", left + "px")
+        .style("top", top + "px");
+    });
+    
 });
 
 // Arrow style

@@ -15,24 +15,24 @@
     <script language="JavaScript" src= "../Scripts/sbSeqDiag.js"></script>     
 </head>
 <body onload="sbConversationStart();" >
-    <table>
-        <tr>
+    <table class="centerTable">
+        <tr >
             <td>
                 <h2><img src="../Media/img/Interoperability_Logo_color.jpg" alt="Interop graphic" height="60" width="300"/></h2>
             </td>
             <td>
-                <h2 id="titleHead"><b> OVON Sandbox</b> </h2>
+                <h2 id="titleHead"><b>Sandbox - Conversation</b> </h2>
                 <div class="browserAndOs">
                     <b>Browser: <span id="BrowserType" style="color:rgb(192, 25, 38);"></span></b>
                     <b>OS: <span id="OSType" style="color:rgb(53, 36, 197);"></span></b><br/>
-                </div>
+              </div>
             </td>
         </tr>
-    </table>
+      </table>
     <a href="sbHome.html"><button class="converseBtn">Back Home</button></a>
-    <button class="converseBtn" onclick="window.open('logs.html', '_blank')">Logs</button>
-    <button class="converseBtn" onclick="window.open('sbSequenceDiag.html', '_blank')">SeqDiagram</button>
-    <button class="converseBtn" onclick="window.open('sbSettings.html', '_blank')">Settings</button>
+    <button class="converseBtn" onclick="openOrFocusWindow('logs.html')">Logs</button>
+    <button class="converseBtn" onclick="openOrFocusWindow('sbSequenceDiag.html')">SeqDiagram</button>
+    <button class="converseBtn" onclick="openOrFocusWindow('sbSettings.html')">Settings</button>
     <div id="lineSeparator"></div>
 
     <table>
@@ -55,7 +55,8 @@
         </tr>
         <tr>
             <td><h3>Utterance:</h3></td>
-            <td><input type="text" id="utterance" placeholder="Type your UTTERANCE here" size="50" onkeyup="checkEnterKey(event, sendReply);"/></td>
+            <td><input style="margin-right: 5px" type="text" id="utterance" placeholder="Type your UTTERANCE here" size="50" onkeyup="checkEnterKey(event, sendReply);"/><button class="converseBtn" onclick="sendReply()" >Send Utterance</button>
+            </td>
         </tr>
         <tr>
             <td><h3>Whisper:</h3></td>
@@ -80,4 +81,47 @@
         </tr>
     </table>
 </body>
+<script>
+    var logsWindow = null;
+    var seqDiagramWindow = null;
+    var settingsWindow = null;
+    function openOrFocusWindow(url) {
+        var targetWindow = null;
+        switch (url) {
+            case 'logs.html':
+                targetWindow = logsWindow;
+                break;
+            case 'sbSequenceDiag.html':
+                targetWindow = seqDiagramWindow;
+                break;
+            case 'sbSettings.html':
+                targetWindow = settingsWindow;
+                break;
+            // Add more cases for other URLs if needed
+            default:
+                break;
+        }
+        if (!targetWindow || targetWindow.closed) {
+            targetWindow = window.open(url, '_blank');
+        } else {
+            targetWindow.location.href = url;
+            targetWindow.focus();
+        }
+        // Update the window variable based on the URL
+        switch (url) {
+            case 'logs.html':
+                logsWindow = targetWindow;
+                break;
+            case 'sbSequenceDiag.html':
+                seqDiagramWindow = targetWindow;
+                break;
+            case 'sbSettings.html':
+                settingsWindow = targetWindow;
+                break;
+            // Add more cases for other URLs if needed
+            default:
+                break;
+        }
+    }
+</script>
 </html>

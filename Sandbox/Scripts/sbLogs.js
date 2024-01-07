@@ -295,7 +295,7 @@ function displayLogFileContent(content, filter) {
                         logHeader.textContent = `Sent: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
                     }
                 } else if (direction === 'received') {
-                    logHeader.textContent = `Received: ${logLine.ovon?.events[0]?.parameters.dialogEvent.features.text.tokens[0].value || 'unknown'}`;
+                    logHeader.textContent = `Received: ${logLine.ovon?.events[0]?.parameters.dialogEvent?.features?.text?.tokens[0]?.value || 'unknown'}`;
                 }
                 const tooltip = document.createElement('div');
                 tooltip.className = 'log-tooltip-text';

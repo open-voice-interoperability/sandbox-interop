@@ -40,7 +40,7 @@ function loadAssistantSelect() {
   var assistantSelect = document.getElementById('assistantSelect');
 
   if (assistantSelect) {
-    var selCntl = '<label style="font-size: 18px;" for="AssistantList">Choose an Assistant:</label>';
+    var selCntl = '<label style="font-size: 18px;" for="sbAssist">Choose an Assistant:</label>';
     selCntl += '<select name="startAssistant" id="sbAssist" onchange="saveAssistantIndex();">';
     selCntl += '<option value="" disabled selected>Select an Assistant</option>';
 
@@ -119,15 +119,15 @@ function displayAssistantSettings() {
   <h2>${selectedAssistant.assistant.name}'s Settings</h2>
   <div>
             <label for="assistantName"><b>Assistant Name:</b></label>
-            <strong><input type="text" id="assistantName" value="${selectedAssistant.assistant.name}"></strong>
+            <input type="text" id="assistantName" value="${selectedAssistant.assistant.name}">
   </div>
   <div>
             <label for="assistantID"><b>Assistant ID:</b></label>
-            <strong><input type="text" id="assistantID" value="${uniqueID}"></strong>
+            <input type="text" id="assistantID" value="${uniqueID}">
         </div>
   <div>
   <label for="voiceIndex"><b>Voice Index:</b></label>
-  <strong><input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}"></strong>
+  <input type="text" id="voiceIndex" value="${selectedAssistant.assistant.voiceIndex}">
 
   <button id="voiceSelect" class="load-voices" onclick="openVoiceWindow()">Load Voices</button>
   </div>
@@ -141,20 +141,19 @@ function displayAssistantSettings() {
   </div>
   <div>
       <label for="serviceName"><b>Service Name:</b></label>
-      <strong><input type="text" id="serviceName" value="${selectedAssistant.assistant.serviceName}"></strong>
+      <input type="text" id="serviceName" value="${selectedAssistant.assistant.serviceName}">
   </div>
   <div>
       <label for="serviceAddress"><b>Service Address:</b></label>
-      <strong><input type="text" id="serviceAddress" value="${selectedAssistant.assistant.serviceAddress}"></strong>
+      <input type="text" id="serviceAddress" value="${selectedAssistant.assistant.serviceAddress}">
       </div>
   <div>
       <label for="authCode"><b>Auth Code:</b></label>
-      <strong><input type="text" id="authCode" value="${selectedAssistant.assistant.authCode}"></strong>
-
+      <input type="text" id="authCode" value="${selectedAssistant.assistant.authCode}">
       </div>
   <div>
       <label for="contentType"><b>Content Type:</b></label>
-      <strong><input type="text" id="contentType" value="${selectedAssistant.assistant.contentType}"></strong>
+      <input type="text" id="contentType" value="${selectedAssistant.assistant.contentType}">
 
       </div>
   <button id="updateSettingsButton" class="update-settings" onclick="updateAssistantSettings()"><b>Update Assistant Settings</b></button>
@@ -216,47 +215,6 @@ function updateAssistantSettings() {
   }, 1200);
 }
 
-function createAssistant() {
-  // Get form values
-  var assistantName = document.getElementById("assistantName").value;
-  var assistantID = document.getElementById("assistantID").value;
-  var voiceIndex = document.getElementById("voiceIndex").value;
-  var lightColor = document.getElementById("lightColor").value;
-  var markerColor = document.getElementById("markerColor").value;
-  var serviceName = document.getElementById("serviceName").value;
-  var serviceAddress = document.getElementById("serviceAddress").value;
-  var authCode = document.getElementById("authCode").value;
-  var contentType = document.getElementById("contentType").value;
-
-  // Create assistant object
-  var newAssistant = {
-      "name": assistantName,
-      "id": assistantID,
-      "voiceIndex": voiceIndex,
-      "lightColor": lightColor,
-      "markerColor": markerColor,
-      "serviceName": serviceName,
-      "serviceAddress": serviceAddress,
-      "authCode": authCode,
-      "contentType": contentType
-  };
-  createAssistantDirectory(assistantName);
-  fetch('../Support/ActiveAssistantList.json', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newAssistant),
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-  })
-  .catch(error => {
-    console.error('Error creating assistant:', error);
-    alert('Failed to create assistant. Please try again.');
-  });
-}
 
 // Use this to get colors, urls, (eventually TTS voice index, etc)
 // Get Assistant Info in your Browser JS like this:
