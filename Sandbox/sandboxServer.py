@@ -41,7 +41,25 @@ class Serv(SimpleHTTPRequestHandler):
                 else:
                     self.send_error(500, "Logs directory not found.")
                 
-                
+            if self.path == '/Report/Sequence':
+                sequence_directory = os.path.join(os.getcwd(), "Report", "Sequence")
+                if os.path.isdir(sequence_directory):
+                    sequence_files = [f for f in os.listdir(sequence_directory) if f.endswith(".json")]
+                    print("Response data:", sequence_files)
+
+                    # Join the list of sequence files into a string with each file on a new line
+                    response_data = '\n'.join(sequence_files) + '\n'
+
+                    # Send the response as plain text
+                    response_data = json.dumps(sequence_files)
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(response_data.encode('utf-8'))
+                else:
+                    self.send_error(500, "Sequence directory not found.")
+                    return  
+                return  
             if self.path.__contains__(".png") or self.path.__contains__(".jpg"):
                 file_to_open = self.path
                 file_to_open = file_to_open[1:]

@@ -31,12 +31,36 @@ function ejClearSeqDiag(){
     seqDiagJSON = [];
     localStorage.setItem( "seqDiagJSON", "" );
   }
+
   
-function saveSequenceDiagram( data ) {
-  // ========== Write the sequence data file
-  //var name = "AT_ROOT:reports/seqDiagram/SD" + cleanDateTimeString() + ".json";
-  //writeFile( name, JSON.stringify( data, null, "\t" ) );
+function sbSaveSequenceDiagram(  ) {
+  var content = JSON.stringify( data );
+  console.log( content);
+  const dateStr = cleanDateTimeString();
+  const fileName = `SD_${dateStr}.seq.json`;
+ 
+  writeSBFile(fileName, JSON.stringify(data, null, 2),'Sequence');
 }
+function fetchSequenceFiles() {
+  fetch('../Report/Sequence')
+    .then(response => response.json())
+    .then(data => {
+      const dropdown = document.getElementById('SDFileDropdown');
+      dropdown.innerHTML = '';
+
+      // Add fetched files to the dropdown
+      data.forEach(file => {
+        const option = document.createElement('option');
+        option.value = file;
+        option.text = file;
+        dropdown.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching sequence files:', error);
+    });
+}
+
 function createTooltip(svg, message, x, y) {
   const tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
@@ -70,6 +94,7 @@ function createTooltip(svg, message, x, y) {
 
   return tooltip;
 }
+var data;
 function sbLoadSeq(){
   //assistantTable = await fetchAssistantData();
 
@@ -78,8 +103,7 @@ function sbLoadSeq(){
 
   console.log(d3.version)
   var JSQ = localStorage.getItem( "seqDiagJSON" );
-  const data = JSON.parse( JSQ );
-  
+  data = JSON.parse( JSQ );
   // set the seqDiagram directory???
   //var reportPath = "AT_ROOT:reports/seqDiagram/";
 
@@ -271,6 +295,8 @@ svg.append("svg:defs").selectAll("marker")
   .attr("orient", "auto")
   .append("svg:path")
   .attr("d", "M0,-5L10,0L0,5");
+
+  fetchSequenceFiles();
 }
 
 function sbMoveToHead( arrayName, valueToMove ){

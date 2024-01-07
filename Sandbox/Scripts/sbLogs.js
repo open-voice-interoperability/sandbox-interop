@@ -180,7 +180,7 @@ function saveFullDialogToFile() {
     const assistantName = localStorage.getItem('assistantName');
     const fileName = `OVON_${assistantName}${dateStr}.log.txt`;
     const logContent = logs.map(log => log.content).join('\n\n');
-    writeSBFile(fileName, logContent);
+    writeSBFile(fileName, logContent, 'Logs');
     const successMessage = 'File written successfully';
     alert(successMessage);
 }

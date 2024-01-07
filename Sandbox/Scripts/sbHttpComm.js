@@ -127,19 +127,26 @@ function readSBFile( pathFromRoot, callBackFunction ){
   request.send();
 }
 
-function writeSBFile( fileName, data ){
-  var request = new XMLHttpRequest();
-  readFileData = "";
-  var fullPath = '../Report/Logs/' + fileName
-  request.open("PUT", fullPath, true);
-  request.onreadystatechange = function() {
-      if (request.readyState === 4) {  // document is ready
-          if (request.status === 200) {  // file was written???
-            readFileData = request.responseText;
-          }
-      }
-  }
-  request.send( data );
+function writeSBFile( fileName, data, directory ){
+  const fullPath = `../Report/${directory}/${fileName}`;
+
+  fetch(fullPath, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log(`File written successfully in ${directory} directory:`, fileName);
+    } else {
+      console.error(`Failed to write file in ${directory} directory:`, fileName);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 }
 
 function getDirectoryList( pathFromRoot ){
