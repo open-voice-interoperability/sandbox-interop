@@ -11,10 +11,11 @@ var LLMLog = [];
 var sendInternalJSON;
 var aiCallType = "https://api.openai.com/v1/chat/completions";
 var aiModel = "gpt-3.5-turbo-1106";
-var startPrompt = "You are an assistant that will help the human user discover the domain expertise required by the human to complete their task. You will accept a phrase or sentence as a starting point and ask questions that help focus on the general expertise that is needed to help the human. Your responses will be friendly and conversational. You will try to keep your responses to less than 40 words .Your questions for clarification can and should be leading and suggestive enough to prompt the user to give clearer answers. The result of this conversation will be a single word or short phrase that identifies the domain expertise for the assistant they require.  This conversation should be no longer than two or three turns. You will return the resulting domain in the form *Domain = [the domain that you discovered with this conversation]";
+//var startPrompt = "You are an assistant that will help the human user discover the domain expertise required by the human to complete their task. You will accept a phrase or sentence as a starting point and ask questions that help focus on the general expertise that is needed to help the human. Your responses will be friendly and conversational. You will try to keep your responses to less than 40 words .Your questions for clarification can and should be leading and suggestive enough to prompt the user to give clearer answers. The result of this conversation will be a single word or short phrase that identifies the domain expertise for the assistant they require.  This conversation should be no longer than two or three turns. You will return the resulting domain in the form *Domain = [the domain that you discovered with this conversation]";
+var startPrompt = "You are an assistant that will help the human user discover the domain expertise required by the human to complete their task. You will accept a phrase or sentence as a starting point and ask questions that help focus on the general expertise that is needed to help the human. Your responses will be friendly and conversational. You will try to keep your responses to less than 40 words .Your questions for clarification can and should be leading and suggestive enough to prompt the user to give clearer answers. The result of this conversation will be a single word or short phrase that identifies the domain expertise for the assistant they require (we will call this the DOMAIN value and it will be something like \"boating\" or \"culinary\" or \"composing\"). Also, if possible you will provide a SUBDOMAIN value to refine the focus of the larger DOMAIN. For example \"sailing\" is a SUBDOMAIN of \"boating\" (as \"poetry\" might be for \"composing\"). This conversation should be no longer than two or three turns. You will return the resulting domain in the form of a JSON structure of the form: {\"discovery:{\"domain\":\"the_DOMAIN_value\",\"subDomain\":\"the_SUBDOMAIN_value\"}}";
 var turnLLM = 0;
 var aiAssistantPool = [];
-var veronicaPrompt = "You are a serious expert on the superman comic book and movie genre. You will limit your comments to 5o words or less.";
+//var veronicaPrompt = "You are a serious expert on the superman comic book and movie genre. You will limit your comments to 5o words or less.";
 
 //localStorage.setItem( "internalLLM_veronica", veronicaPrompt);
 
@@ -62,26 +63,27 @@ function callInternalLLM( assistName, assistantObject, OVONmsg ){
 function callInternalAssistant( assistName, assistantObject, OVONmsg ){
     retOVONJSON = baseEnvelopeOVON( assistantObject );
     if( assistName == "discovery"){
-        findEvents( OVONmsg.ovon.events );
-        if( invite ){
+        //findEvents( OVONmsg.ovon.events );
+        var eventsJSON = eventSummary( OVONmsg.ovon.events );
+        if( eventsJSON.invite ){
             temp = parseFloat( localStorage.getItem( "AITemp" ) );
             sendInternalJSON = {
                 "model": aiModel, // e.g. "model": "gpt-3.5-turbo",
                   "temperature": temp, //0.0 - 2.0
                   "messages": []
               }
-            if( whisperText != ""){
-                sendInternalJSON.messages.push( sbAddMsg( "assistant", whisperText ) );
+            if( eventsJSON.whisperText != ""){
+                sendInternalJSON.messages.push( sbAddMsg( "assistant", eventsJSON.whisperText ) );
             }else{
                 sendInternalJSON.messages.push( sbAddMsg( "assistant", startPrompt ) );
             }
-            if( utterance ){
-                sendInternalJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+            if( eventsJSON.utterance ){
+                sendInternalJSON.messages.push( sbAddMsg( "user", eventsJSON.utteranceText ) );
                 sbLLMPost( sendInternalJSON );
             }
         }else{
-            if( utterance ){
-                sendInternalJSON.messages.push( sbAddMsg( "user", utteranceText ) );
+            if( eventsJSON.utterance ){
+                sendInternalJSON.messages.push( sbAddMsg( "user", eventsJSON.utteranceText ) );
                 sbLLMPost( sendInternalJSON );
             }else{
                 ovonUtt = buildUtteranceOVON( assistName, "You must invite the assistant first." );
@@ -189,6 +191,10 @@ function sbLLMPostResp( aiJSON ){ // should something come in do this
             if( sbData.length ){
                 retLLMJSON = JSON.parse(sbData);  
                 var text = retLLMJSON.choices[0].message.content; // what LLM "says"
+                // look inside text for some JSON
+                // e.g. {"discovery":{"domain":"Sports","subDomain":"Volleyball"}}
+                // if there then remove it from utt and put it in the whisper
+                // note: the first label "discovery" is the name of the assistant
                 aiJSON.messages.push( sbAddMsg( "assistant", text ) ); // keeping the convo context
 
                 jsonRECEIVED = JSON.stringify( retLLMJSON, null, 2 );

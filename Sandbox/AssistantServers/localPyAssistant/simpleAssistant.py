@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 import re
 import os
-#from openai import OpenAI
 import openai
 
 # Set your assistant's unique speakerID and service address
@@ -13,27 +12,26 @@ f = open( "C:/ejDev/3rdParty/OAIK/amphibian.txt")
 amphibCode = f.read()
 print( "theKey: ", amphibCode )
 openai.api_key = amphibCode
-#client = OpenAI(api_key=amphibCode)
+initialPrompt = "You are an inquisitive child. Whenever the user mentions something you are curious. You ask logical questions that an eight year old child would."
 
 def promptLLM( inputStr):
     response = openai.ChatCompletion.create(
-    #response = client.chat.completions.create(
-        #response_format={ "type": "json_object" },
+        model="gpt-3.5-turbo-1106",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+            {"role": "system", "content": initialPrompt},
             {"role": "user", "content": inputStr}
         ],
         temperature=0.3,
-        model="gpt-3.5-turbo-1106",
+            max_tokens=400,  # Adjust the max_tokens parameter as needed
+            n=1,
+            stop=None,
+            top_p=1.0
+
     )
     print("Raw LLM response: ", response )
-    #print(dir(response))
-    #respJSON = json.loads( response )
-    #response = respJSON["ChatCompletion"]
-    resptext = response.choices[0].message['content'].strip()
-    return resptext
-    #return respJSON['choices'][0]['message']['content']
-    #return response.choices[0].message.content
+    response_text = response_text.choices[0].message['content'].strip()
+    return response_text
+    #print("whisper: ",conversation_history)
 
 def setServAddressAndSpeakerID( srvAdd, speakerID ):
     myServiceAddress = srvAdd
