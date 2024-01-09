@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     logDropdown.addEventListener('change', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            fetchLogFileContent(selectedFileName, 'all');
+            fetchOvonLogs(selectedFileName, 'all');
         }else{
             showFullDialog();
         }
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     showAllButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            fetchLogFileContent(selectedFileName, 'all');
+            fetchOvonLogs(selectedFileName, 'all');
         }else{
             applyFilter('all')
         }
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ovonFullDialogButton.addEventListener('click', function () {
         const selectedFileName = logDropdown.value;
         if (selectedFileName && selectedFileName.endsWith('.txt')) {
-            fetchLogFileContent(selectedFileName, 'all');
+            fetchOvonLogs(selectedFileName, 'all');
         } else {
             showFullDialog();
         }
@@ -218,23 +218,6 @@ function fetchLogsAndPopulateDropdown() {
     return true;
 }
 
-function fetchLogFileContent(fileName) {
-    fetch(`/Report/Logs/${fileName}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch log file content for ${fileName}. HTTP status ${response.status}`);
-            }
-            // Read the response as text
-            return response.text();
-        })
-        .then(content => {
-            // Split the content into lines
-            displayLogFileContent(content, 'all');
-        })
-        .catch(error => {
-            console.error(`Error fetching content for file ${fileName}:`, error);
-        });
-}
 function displayLogFileContent(content, filter) {
     const logContainer = document.getElementById('logContainer');
     logContainer.innerHTML = ''; // Clear previous logs

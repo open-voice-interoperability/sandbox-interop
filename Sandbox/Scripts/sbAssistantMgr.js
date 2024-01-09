@@ -35,6 +35,7 @@ async function initializeAssistantData(callback) {
 
 // Call the initialization function
 initializeAssistantData();
+loadAssistantSelect();
 //build the Assistant <select> html innerHTML string
 function loadAssistantSelect() {
   var assistantSelect = document.getElementById('assistantSelect');
@@ -60,6 +61,7 @@ function loadAssistantSelect() {
 }
 
 function saveAssistantIndex() {  
+  console.log('savingAssistant');
   selectedAssistantIndex = document.getElementById("sbAssist").selectedIndex;
   selectedAssistantIndex = selectedAssistantIndex >= 2 ? selectedAssistantIndex + 1 : 2; 
   localStorage.setItem( "currentAssistantIndex", selectedAssistantIndex );
@@ -70,7 +72,8 @@ function handleAssistantSelectionChange() {
   if (selectedAssistantIndex !== "") {
     // Assistant is selected, show the settings
     document.getElementById("assistantSettings").style.display = 'block';
-    var selectedAssistantIndex = document.getElementById("sbAssist").value;
+    var selectedAssistantList = getSelectedAssistantList();
+    console.log("Selected Assistant List:", selectedAssistantList);
     var selectedAssistant = assistantTable[selectedAssistantIndex].assistant;
     localStorage.setItem("voiceIndex", selectedAssistant.voiceIndex);
     localStorage.setItem("assistantName", selectedAssistant.name);
@@ -80,10 +83,26 @@ function handleAssistantSelectionChange() {
 
     // assistantObject = sbGetAgentParams(selectedAssistant.name);
     displayAssistantSettings();
+
   } else {
     // No assistant selected, hide the settings
-    document.getElementById('assistantSettings').style.display = 'none';
+    document.getElementById('assistantSettings').style.display = 'block';
   }
+}
+
+// Function to get the list of selected assistants
+function getSelectedAssistantList() {
+  var selectedAssistantList = [];
+  var assistantSelect = document.getElementById("sbAssist");
+
+  for (var i = 0; i < assistantSelect.options.length; i++) {
+    if (assistantSelect.options[i].selected) {
+      var selectedAssistant = assistantTable[i + 1].assistant.name;
+      selectedAssistantList.push(selectedAssistant);
+    }
+  }
+
+  return selectedAssistantList;
 }
 
 function generateRandomID() {
@@ -170,6 +189,7 @@ function updateAssistantSettings() {
   updateClicked = true;
   var selectedAssistantIndex = document.getElementById("sbAssist").value;
   var selectedAssistant = JSON.parse(JSON.stringify(assistantTable[selectedAssistantIndex].assistant));
+  selectedAssistant.name = document.getElementById("assistantName").value;
 
   selectedAssistant.voiceIndex = document.getElementById("voiceIndex").value;
   selectedAssistant.lightColor = document.getElementById("lightColor").value;
@@ -183,6 +203,7 @@ function updateAssistantSettings() {
   localStorage.setItem('voiceIndex', selectedAssistant.voiceIndex);
   localStorage.setItem('lightColor', selectedAssistant.lightColor);
   localStorage.setItem('serviceAddress', selectedAssistant.serviceAddress);
+  localStorage.setItem('assistantName', selectedAssistant.assistantName);
 
   assistantTable[selectedAssistantIndex].assistant = selectedAssistant;
   // Save the updated assistantTable to localStorage

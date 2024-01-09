@@ -9,6 +9,59 @@ var selectedAssistantIndex;
 var bareInviteSelected = false;
 var InviteWithWhisper = false;
 
+
+var logsWindow = null;
+var seqDiagramWindow = null;
+var settingsWindow = null;
+var homeWindow = null;
+
+function openOrFocusTab(url) {
+  console.log(window.top.length)
+    var targetWindow = null;
+    switch (url) {
+        case 'logs.html':
+            targetWindow = logsWindow;
+            break;
+        case 'sbSequenceDiag.html':
+            targetWindow = seqDiagramWindow;
+            break;
+        case 'sbSettings.html':
+            targetWindow = settingsWindow;
+            break;
+        case 'sbHome.html':
+            targetWindow = homeWindow;
+            break;
+        default:
+            break;
+    }
+    if (!targetWindow || targetWindow.closed) {
+      if (url === 'sbHome.html' && homeWindow && !homeWindow.closed) {
+            targetWindow = homeWindow;
+        } else {
+            targetWindow = window.open(url, '_blank');
+        }
+    } else {
+        targetWindow.focus();
+    }
+    // Update the window variable based on the URL
+    switch (url) {
+        case 'logs.html':
+            logsWindow = targetWindow;
+            break;
+        case 'sbSequenceDiag.html':
+            seqDiagramWindow = targetWindow;
+            break;
+        case 'sbSettings.html':
+            settingsWindow = targetWindow;
+            break;
+        case 'sbHome.html':
+            homeWindow = targetWindow;
+            break;
+        default:
+            break;
+    }
+}
+
 var sbBrowserType;
 const agent = window.navigator.userAgent.toLowerCase();
 sbBrowserType =

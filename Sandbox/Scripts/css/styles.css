@@ -5,8 +5,8 @@
     margin-top: 20px;
     max-width: 600px; 
     float: right;
-    margin-right: 50px;
-    background-color: rgb(58, 171, 252);
+    margin-right: 100px;
+    background-color: #3aabfc;
     position: relative;
 }
 
@@ -205,14 +205,17 @@
     border-color: #484747;
 }
 .centerTable {
+    margin-right: 100px;
     width: 100%;
-    max-width: 1150px; /* Set a specific width for the table */
+    max-width: 1100px; /* Set a specific width for the table */
 }
-
+#centerDiv {
+    align-items: center;
+    text-align: center;
+}
 .browserAndOs{
     margin-bottom: 6px;
     font-size: 12px;
-
 }
 #titleHead{
     margin-top: -10px;

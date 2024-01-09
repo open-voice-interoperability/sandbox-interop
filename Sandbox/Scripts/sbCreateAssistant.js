@@ -76,7 +76,7 @@ function toggleCreateAssistantForm() {
         openaiKeyInput.style.display = "none"; // Hide OpenAI Key field
     }
 }
-function createAssistantDirectory(assistantName) {
+function createAssistantDirectory(assistantName, assistantType) {
     var localContent = "";
     var assistantContent = "";
     if (assistantType === "python"){

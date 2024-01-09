@@ -210,7 +210,7 @@ function updateSpeechParams() {
 }
 
 function openVoiceWindow() {
-  window.open('sbVoices.html', '_new');
+  window.open('sbVoices.html', '_blank');
 }
 
 function saveTTSVoiceIndex() {  
